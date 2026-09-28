@@ -3,7 +3,7 @@ import random
 import time
 import streamlit as st
 
-# --- पेज सेटअप और सुप्रीम ब्लैक-गोल्ड थीम ---
+# --- पेज सेटअप ---
 st.set_page_config(
     page_title="Sure Shot PRO v23 - Anti-Cheat Sentinel",
     page_icon="🔒",
@@ -100,7 +100,6 @@ PAYMENT_UPI_ID = "kishorsingh226105.wallet@phonepe"
 REQUIRED_AMOUNT = 2000
 VALIDITY_DAYS = 25
 
-# 💾 पर्मानेंट सर्वर डेटाबेस और सख्त UTR ब्लैकलिस्ट रजिस्टर
 if "user_db" not in st.session_state:
   st.session_state.user_db = {
       "9999999999": {
@@ -110,11 +109,9 @@ if "user_db" not in st.session_state:
       }
   }
 
-# सभी इस्तेमाल हो चुके UTR नंबर इस सेट में परमानेंट लॉक हो जाएंगे
 if "used_utrs" not in st.session_state:
   st.session_state.used_utrs = {"123456789012"}
 
-# ₹2000 के वेरीफाइड ओरिजिनल UTRs की सूची
 VERIFIED_KISHOR_PAYMENTS = {
     "482910384756": 2000,
     "918273645012": 2000,
@@ -149,7 +146,7 @@ def get_bulletproof_period_and_timer(game_seconds):
 
 
 # ==========================================================
-# 🛡️ SENTINEL MULTI-CORE OVERWATCH (v23) - "एंटी-चीट इंजन"
+# 🛡️ SENTINEL MULTI-CORE OVERWATCH (v23)
 # ==========================================================
 def sentinel_overwatch_master_engine(period_num, current_block_idx):
   c1 = "BIG" if (current_block_idx % 3 != 0) else "SMALL"
@@ -194,7 +191,7 @@ def sentinel_overwatch_master_engine(period_num, current_block_idx):
 
 
 # ==========================================================
-# भाग 1: सख्त एंटी-डुप्लीकेट UTR रिचार्ज और लॉगिन सिस्टम
+# भाग 1: लॉगिन और UTR फायरवॉल
 # ==========================================================
 if not st.session_state.authenticated:
   st.markdown(
@@ -281,16 +278,13 @@ if not st.session_state.authenticated:
     if st.button(
         "🛡️ Verify UTR & Open File (Anti-Cheat)", use_container_width=True
     ):
-      # 🛑 सख्त चेकिंग: फॉर्मेट, डुप्लीकेट और डेटाबेस मैचिंग
       if not entered_utr.isdigit() or len(entered_utr) != 12:
         st.error(
             "❌ अमान्य UTR फॉर्मेट! कृपया केवल 12 अंकों का सही UTR दर्ज करें।"
         )
       elif entered_utr in st.session_state.used_utrs:
-        # ⚠️ डुप्लीकेट UTR पकड़ा गया - फाइल कभी ओपन नहीं होगी!
         st.error(
             "🚨 CRITICAL SECURITY ERROR: यह UTR नंबर पहले ही इस्तेमाल किया जा चुका"
-            " है! डुप्लीकेट UTR स्वीकार नहीं किया जाएगा। फाइल ब्लॉक कर दी गई"
             " है!"
         )
       elif entered_utr not in VERIFIED_KISHOR_PAYMENTS:
@@ -298,7 +292,6 @@ if not st.session_state.authenticated:
             "❌ UTR डेटाबेस से मैच नहीं हुआ! कृपया भुगतान करके सही UTR डालें।"
         )
       else:
-        # ✅ UTR एकदम नया और सही है - अब इसे परमानेंट लॉक कर दो ताकि दोबारा न इस्तेमाल हो सके
         st.session_state.used_utrs.add(entered_utr)
         new_expiry = datetime.now() + timedelta(days=VALIDITY_DAYS)
         mob = st.session_state.get("pending_mobile", "")
@@ -313,8 +306,7 @@ if not st.session_state.authenticated:
         st.session_state.authenticated = True
         st.session_state.user_mobile = mob
         st.success(
-            "🎉 UTR 100% मैच हो गया! डुप्लीकेट चेक पास। अब फाइल और डैशबोर्ड"
-            " खोला जा रहा है..."
+            "🎉 UTR 100% मैच हो गया! अब डैशबोर्ड खोला जा रहा है..."
         )
         st.rerun()
     st.markdown("</div>", unsafe_allow_html=True)
@@ -379,15 +371,18 @@ else:
         unsafe_allow_html=True,
     )
 
-    manual_input_val = st.number_input(
+    # 🛠️ यहाँ नंबर इनपुट की जगह टेक्स्ट इनपुट कर दिया गया है ताकि बड़ा पीरियड नंबर क्रैश न हो
+    manual_input_str = st.text_input(
         "Live Period Override",
-        min_value=0,
-        value=int(default_period),
-        step=1,
-        format="%d",
-        key=f"override_num_{tab_name}",
+        value=str(default_period),
+        key=f"override_str_{tab_name}",
         label_visibility="collapsed",
     )
+
+    try:
+      manual_input_val = int(manual_input_str.strip())
+    except ValueError:
+      manual_input_val = int(default_period)
 
     if base_block_key not in st.session_state or manual_input_val != default_period:
       st.session_state[base_block_key] = current_block
@@ -439,7 +434,7 @@ else:
       status_badge_html = (
           "<div class='loss-badge'>❌ LOSS (लॉस हो गया) ⚠️</div>"
       )
-      banner_msg = f"अर्टल: पैनल ({pred_size}) और BDG गेम ({actual_game_size}) अलग हैं!"
+      banner_msg = f"अलर्ट: पैनल ({pred_size}) और BDG गेम ({actual_game_size}) अलग हैं!"
 
     st.markdown(
         f"""
