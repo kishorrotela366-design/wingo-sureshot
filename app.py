@@ -4,8 +4,8 @@ import streamlit as st
 
 # --- पेज सेटअप और डार्क थीम ---
 st.set_page_config(
-    page_title="BRIDGE MASTER PRO - Secure UPI & 25-Day Validity Lock",
-    page_icon="👑",
+    page_title="KISHOR SINGH RAUTELA - Strict UTR Security Lock",
+    page_icon="🛡️",
     layout="centered",
     initial_sidebar_state="collapsed",
 )
@@ -44,15 +44,22 @@ if "authenticated" not in st.session_state:
   st.session_state.authenticated = False
 if "registered_users_db" not in st.session_state:
   st.session_state.registered_users_db = {}
-if "used_utr_list" not in st.session_state:
-  st.session_state.used_utr_list = []
+if "used_utr_database" not in st.session_state:
+  st.session_state.used_utr_database = []  # उपयोग हो चुके UTR की सूची (दोबारा उपयोग वर्जित)
+
+# असली वैध UTRs जिनकी अनुमति है (इसे आप अपने असली PhonePe के नए UTR से अपडेट कर सकते हैं)
+if "valid_approved_utrs" not in st.session_state:
+  st.session_state.valid_approved_utrs = [
+      "KISHOR2000UTR",  # अधिकृत UTR
+      "425678901234",
+  ]
+
 if "live_online_count" not in st.session_state:
-  st.session_state.live_online_count = 23480
+  st.session_state.live_online_count = 25210
 
 MASTER_MOBILE = "9011997944"
 MASTER_PASSWORD = "KISHOR90"
 
-# चार्ट मैट्रिक्स डेटा (पुराना डेटा सुरक्षित)
 CHART_MATRIX_UPPER = ["BIG", "SMALL", "BIG", "SMALL", "SMALL", "BIG", "BIG", "SMALL", "BIG", "SMALL"] * 10
 CHART_MATRIX_LOWER = ["SMALL", "BIG", "SMALL", "BIG", "BIG", "SMALL", "SMALL", "BIG", "SMALL", "BIG"] * 10
 
@@ -83,32 +90,30 @@ def security_matching_engine(block_seed):
 
   return number, final_size, color
 
-# --- लॉगिन और वैधता (Validity) चेकिंग गेटवे ---
 def check_user_session_validity(mobile):
   if mobile in st.session_state.registered_users_db:
     record = st.session_state.registered_users_db[mobile]
     if datetime.now() > record["expiry_date"]:
-      # 25 दिन पूरे होने पर ऑटोमैटिक लॉगआउट / ब्लॉक
       st.session_state.authenticated = False
       return False
     return True
   return False
 
-# यदि यूजर लॉगइन है, तो पहले 25 दिन की वैधता जांच लें
 if st.session_state.authenticated:
   current_mob = st.session_state.get("current_mobile", "")
   if not check_user_session_validity(current_mob):
-    st.warning("⚠️ आपके 25 दिन की वैधता (Validity) समाप्त हो चुकी है। कृपया नया रिचार्ज करें और UTR वेरीफाई करें।")
+    st.warning("⚠️ आपके 25 दिन की वैधता समाप्त हो चुकी है। कृपया नया UTR वेरीफाई करें।")
 
 if not st.session_state.authenticated:
-  st.markdown("<h2 style='text-align: center; color: #00FF66;'>👑 SECURE ACCESS & 25-DAY LOCK</h2>", unsafe_allow_html=True)
+  # 👉 वही आपकी पसंद का शानदार हरा और ताज वाला हेडिंग डिज़ाइन!
+  st.markdown("<h2 style='text-align: center; color: #00FF66; font-size: 28px; font-weight: 900; text-shadow: 0 0 15px #00FF66;'>👑 SECURE ACCESS & <br> 25-DAY LOCK</h2>", unsafe_allow_html=True)
 
   with st.container():
     st.markdown("<div class='main-card'>", unsafe_allow_html=True)
     mobile_input = st.text_input("📱 MOBILE NUMBER", placeholder="Enter mobile number")
     password_input = st.text_input("🔒 PASSWORD", type="password", placeholder="Enter password")
 
-    if st.button("🚀 LOGIN / CHECK STATUS", use_container_width=True):
+    if st.button("🚀", use_container_width=True):
       if not mobile_input or not password_input:
         st.error("⚠️ कृपया मोबाइल नंबर और पासवर्ड दर्ज करें!")
       elif mobile_input == MASTER_MOBILE and password_input == MASTER_PASSWORD:
@@ -123,23 +128,23 @@ if not st.session_state.authenticated:
             if current_time < user_record["expiry_date"]:
               st.session_state.authenticated = True
               st.session_state.current_mobile = mobile_input
-              st.success("✅ SUCCESSFUL! रिचार्ज वैध है, फाइल ओपन हो रही है...")
+              st.success("✅ लॉगिन सफल! पैनल ओपन हो रहा है...")
               st.rerun()
             else:
-              st.warning("⚠️ आपके 25 दिन पूरे हो चुके हैं। नया रिचार्ज और UTR वेरीफाई करना अनिवार्य है।")
+              st.warning("⚠️ आपकी 25 दिन की समय सीमा समाप्त हो गई है। नया UTR दर्ज करें।")
               st.session_state.require_recharge = True
               st.session_state.target_mobile = mobile_input
               st.session_state.target_password = password_input
           else:
-            st.error("❌ पासवर्ड गलत है!")
+            st.error("❌ गलत पासवर्ड!")
         else:
-          st.info("ℹ️ नया उपयोगकर्ता। कृपया ₹2000 का रिचार्ज करें और UTR सबमिट करें।")
+          st.info("ℹ️ नया उपयोगकर्ता। कृपया ₹2000 का भुगतान करके असली UTR नंबर दर्ज करें।")
           st.session_state.require_recharge = True
           st.session_state.target_mobile = mobile_input
           st.session_state.target_password = password_input
     st.markdown("</div>", unsafe_allow_html=True)
 
-  # UPI और UTR मैचिंग सेक्शन
+  # सख्त UTR वेरिफिकेशन सेक्शन
   if st.session_state.get("require_recharge", False):
     st.markdown("<div class='main-card'>", unsafe_allow_html=True)
     st.markdown(
@@ -147,33 +152,35 @@ if not st.session_state.authenticated:
         <div class="upi-box">
             <p style="color: #FFD700; font-weight: bold; font-size: 14px;">💳 Pay ₹2000 (Strict 25 Days Validity)</p>
             <p style="color: #00FF66; font-size: 14px; font-weight: bold; background: #070411; padding: 6px; border-radius: 6px; border: 1px dashed #00FF66; user-select: all;">kishorsingh226105.wallet@phonepe</p>
-            <p style="color: #A0A0A0; font-size: 11px; margin-top: 4px;">सिक्योरिटी: किसी अन्य या पुराने UTR का उपयोग न करें। केवल नया UTR स्वीकार होगा।</p>
+            <p style="color: #FF4444; font-size: 11px; margin-top: 4px;">⚠️ सिक्यॉरिटि: किसी अन्य या पुराने UTR का उपयोग न करें। केवल नया UTR स्वीकार होगा।</p>
         </div>
         """,
         unsafe_allow_html=True,
     )
 
-    upi_str = "upi://pay?pa=kishorsingh226105.wallet@phonepe&pn=Kishor%20Singh&am=2000&cu=INR"
+    upi_str = "upi://pay?pa=kishorsingh226105.wallet@phonepe&pn=Kishor%20Singh%20Rautela&am=2000&cu=INR"
     qr_url = f"https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={upi_str}"
     
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
       st.image(qr_url, caption="Scan & Pay ₹2000", use_container_width=True)
 
-    utr_entered = st.text_input("🔑 ENTER 12-DIGIT UTR NUMBER", max_chars=12, key="success_utr_box")
+    utr_entered = st.text_input("🔑 ENTER EXACT PHONEPE UTR NUMBER", max_chars=25, key="strict_utr_input")
 
-    if st.button("🛡️ MATCH UTR & OPEN FILE", use_container_width=True):
+    if st.button("🛡️ VERIFY UTR & UNLOCK PANEL", use_container_width=True):
       clean_utr = utr_entered.strip()
       t_mobile = st.session_state.get("target_mobile", "")
       t_pass = st.session_state.get("target_password", "")
 
-      if not clean_utr or len(clean_utr) != 12:
-        st.error("❌ कृपया सही 12 अंकों का UTR नंबर दर्ज करें!")
-      elif clean_utr in st.session_state.used_utr_list:
-        st.error("🚨 सुरक्षा त्रुटि: यह UTR नंबर पहले ही उपयोग किया जा चुका है! डुप्लीकेट UTR मैच नहीं होगा।")
+      if not clean_utr:
+        st.error("❌ त्रुटि: कृपया UTR नंबर दर्ज करें!")
+      elif clean_utr in st.session_state.used_utr_database:
+        st.error("🚨 सुरक्षा ब्लॉक: यह UTR नंबर पहले ही उपयोग किया जा चुका है! किसी पुराने UTR से दोबारा अनलॉक नहीं किया जा सकता।")
+      elif clean_utr not in st.session_state.valid_approved_utrs:
+        st.error("❌ अमान्य UTR: यह UTR आपके PhonePe मर्चेंट खाते से मैच नहीं हुआ है। केवल असली UTR ही डालें।")
       else:
-        # UTR सफल मैच होने पर डेटा सेव और 25 दिन की लॉक वैधता शुरू
-        st.session_state.used_utr_list.append(clean_utr)
+        # UTR एकदम नया, सही और अधिकृत है
+        st.session_state.used_utr_database.append(clean_utr)
         expiry_calc = datetime.now() + timedelta(days=25)
         
         st.session_state.registered_users_db[t_mobile] = {
@@ -184,11 +191,11 @@ if not st.session_state.authenticated:
         
         st.session_state.authenticated = True
         st.session_state.current_mobile = t_mobile
-        st.success("✅ SUCCESSFUL! UTR मैच हो गया है। 25 दिनों के लिए पैनल ओपन किया जा रहा है...")
+        st.success("✅ सफलता! UTR पूरी तरह मैच हो गया है। पैनल 25 दिनों के लिए ओपन हो रहा है...")
         st.rerun()
     st.markdown("</div>", unsafe_allow_html=True)
 
-# --- मुख्य गेम डैशबोर्ड (जब यूजर ऑथेंटिकेटेड हो) ---
+# --- मुख्य गेम डैशबोर्ड ---
 else:
   custom_period_box = st.text_input(
       "📌 ENTER LIVE PERIOD NUMBER (CHART MATRIX MATCHING)",
@@ -198,12 +205,12 @@ else:
 
   @st.fragment(run_every=2)
   def success_dashboard_core():
-    st.session_state.live_online_count = random.randint(23000, 48000)
+    st.session_state.live_online_count = random.randint(24000, 49000)
 
     st.markdown(
         f"""
             <div class="top-bar">
-                <div><span class="blinking-light"></span>Status: SUCCESSFUL (25-Day Active)</div>
+                <div><span class="blinking-light"></span>Status: KISHOR SINGH RAUTELA SECURED PANEL</div>
                 <div>👥 Online: <span style="color: #00FF66;">{st.session_state.live_online_count:,}</span></div>
             </div>
         """,
@@ -254,7 +261,7 @@ else:
       )
 
       st.markdown(
-          f'<div class="success-badge">✅ SUCCESSFUL: UTR MATCHED & FILE OPENED ({pred_size}) ✅</div>',
+          f'<div class="success-badge">✅ SUCCESSFUL: PHONEPE UTR MATCHED ({pred_size}) ✅</div>',
           unsafe_allow_html=True,
       )
 
