@@ -4,7 +4,7 @@ import streamlit as st
 
 # --- पेज सेटअप और डार्क थीम ---
 st.set_page_config(
-    page_title="BIG DADDY (BDG) PRO - Exact Match Panel",
+    page_title="BIG DADDY (BDG) PRO - Auto Live Panel",
     page_icon="🔥",
     layout="centered",
     initial_sidebar_state="collapsed",
@@ -13,92 +13,17 @@ st.set_page_config(
 st.markdown(
     """
     <style>
-    .stApp {
-        background-color: #0c081e;
-        color: #FFFFFF;
-    }
-    @keyframes blink-animation {
-        0% { opacity: 1; transform: scale(1); }
-        50% { opacity: 0.3; transform: scale(0.9); }
-        100% { opacity: 1; transform: scale(1); }
-    }
-    @keyframes color-glow {
-        0% { box-shadow: 0 0 10px #FFD700, 0 0 20px #FF4500; }
-        50% { box-shadow: 0 0 25px #00FF66, 0 0 35px #00FFFF; }
-        100% { box-shadow: 0 0 10px #FFD700, 0 0 20px #FF4500; }
-    }
-    .blinking-light {
-        display: inline-block;
-        width: 10px;
-        height: 10px;
-        background-color: #00FF66;
-        border-radius: 50%;
-        margin-right: 6px;
-        box-shadow: 0 0 10px #00FF66;
-        animation: blink-animation 0.8s infinite ease-in-out;
-    }
-    .top-bar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background: #16122d;
-        padding: 10px 15px;
-        border-radius: 12px;
-        font-size: 13px;
-        font-weight: bold;
-        border: 1px solid #2a2250;
-        margin-bottom: 15px;
-    }
-    .main-card {
-        background-color: #141026;
-        border: 2px solid #3d3170;
-        border-radius: 20px;
-        padding: 20px;
-        box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
-        margin-top: 10px;
-    }
-    .timer-text {
-        color: #FFD700;
-        font-weight: bold;
-        font-size: 15px;
-    }
-    .period-text {
-        color: #FFFFFF;
-        font-weight: bold;
-        font-size: 15px;
-    }
-    .matched-sureshot-banner {
-        background: linear-gradient(45deg, #FF007F, #7F00FF, #00F0FF);
-        background-size: 200% 200%;
-        color: #FFFFFF;
-        text-align: center;
-        padding: 14px;
-        border-radius: 12px;
-        font-weight: 900;
-        font-size: 16px;
-        letter-spacing: 1.2px;
-        margin: 12px 0;
-        border: 2px solid #FFD700;
-        animation: color-glow 1.5s infinite ease-in-out;
-        text-shadow: 0 2px 5px rgba(0,0,0,0.9);
-    }
-    .sync-status-box {
-        background: linear-gradient(135deg, #1b2a1e, #0f1c13);
-        border: 1px solid #00FF66;
-        padding: 10px 14px;
-        border-radius: 10px;
-        margin-bottom: 12px;
-        text-align: center;
-        box-shadow: 0 0 12px rgba(0, 255, 102, 0.3);
-    }
-    .future-alert-box {
-        background: linear-gradient(135deg, #22153b, #1a103c);
-        border: 1px dashed #FFD700;
-        padding: 10px 14px;
-        border-radius: 10px;
-        margin-top: 12px;
-        text-align: center;
-    }
+    .stApp { background-color: #0c081e; color: #FFFFFF; }
+    @keyframes blink-animation { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.3; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1); } }
+    @keyframes color-glow { 0% { box-shadow: 0 0 10px #FFD700, 0 0 20px #FF4500; } 50% { box-shadow: 0 0 25px #00FF66, 0 0 35px #00FFFF; } 100% { box-shadow: 0 0 10px #FFD700, 0 0 20px #FF4500; } }
+    .blinking-light { display: inline-block; width: 10px; height: 10px; background-color: #00FF66; border-radius: 50%; margin-right: 6px; box-shadow: 0 0 10px #00FF66; animation: blink-animation 0.8s infinite ease-in-out; }
+    .top-bar { display: flex; justify-content: space-between; align-items: center; background: #16122d; padding: 10px 15px; border-radius: 12px; font-size: 13px; font-weight: bold; border: 1px solid #2a2250; margin-bottom: 15px; }
+    .main-card { background-color: #141026; border: 2px solid #3d3170; border-radius: 20px; padding: 20px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.8); margin-top: 10px; }
+    .timer-text { color: #FFD700; font-weight: bold; font-size: 15px; }
+    .period-text { color: #FFFFFF; font-weight: bold; font-size: 15px; }
+    .matched-banner { background: linear-gradient(45deg, #FF007F, #7F00FF, #00F0FF); background-size: 200% 200%; color: #FFFFFF; text-align: center; padding: 14px; border-radius: 12px; font-weight: 900; font-size: 16px; letter-spacing: 1.2px; margin: 12px 0; border: 2px solid #FFD700; animation: color-glow 1.5s infinite ease-in-out; text-shadow: 0 2px 5px rgba(0,0,0,0.9); }
+    .sync-box { background: linear-gradient(135deg, #1b2a1e, #0f1c13); border: 1px solid #00FF66; padding: 10px 14px; border-radius: 10px; margin-bottom: 12px; text-align: center; box-shadow: 0 0 12px rgba(0, 255, 102, 0.3); }
+    .future-box { background: linear-gradient(135deg, #22153b, #1a103c); border: 1px dashed #FFD700; padding: 10px 14px; border-radius: 10px; margin-top: 12px; text-align: center; }
     </style>
 """,
     unsafe_allow_html=True,
@@ -107,11 +32,10 @@ st.markdown(
 # --- सेशन स्टेट ---
 if "authenticated" not in st.session_state:
   st.session_state.authenticated = False
-
 if "live_online_count" not in st.session_state:
   st.session_state.live_online_count = 58900
 
-# --- मास्टर लॉगिन क्रेडेंशियल्स ---
+# --- मास्टर लॉगिन और आपके क्रेडेंशियल्स ---
 MASTER_MOBILE = "9011997944"
 MASTER_PASSWORD = "KISHOR90"
 PAYMENT_UPI_ID = "kishorsingh226105.wallet@phonepe"
@@ -145,16 +69,12 @@ def get_period_and_timer(game_seconds):
   current_block_idx = total_seconds // game_seconds
   date_prefix = now.strftime("%Y%m%d")
   auto_period = int(f"{date_prefix}{current_block_idx:04d}")
-
   remaining_secs = game_seconds - (total_seconds % game_seconds)
   mins = remaining_secs // 60
   secs = remaining_secs % 60
-  timer_str = f"{mins:02d}:{secs:02d}"
-
-  return auto_period, timer_str, current_block_idx
+  return auto_period, f"{mins:02d}:{secs:02d}", current_block_idx
 
 
-# --- सटीक गेम मैच और 100% श्योर-शॉट इंजन ---
 def exact_match_engine(block_seed):
   game_server_val = (block_seed * 31) % 10
   game_server_size = "BIG" if game_server_val >= 4 else "SMALL"
@@ -175,7 +95,10 @@ def exact_match_engine(block_seed):
 
   future_val = ((block_seed + 1) * 31) % 10
   future_size = "BIG" if future_val >= 4 else "SMALL"
-  future_message = f"🔮 **AI Live Alert:** अगले आने वाले पीरियड में **{future_size}** आने की पूरी तैयारी है!"
+  future_message = (
+      f"🔮 **AI Live Alert:** अगले आने वाले पीरियड में **{future_size}** आने की पूरी"
+      " तैयारी है!"
+  )
 
   if final_size == "BIG":
     number = random.choice([6, 7, 8, 9])
@@ -279,116 +202,157 @@ if not st.session_state.authenticated:
         st.rerun()
     st.markdown("</div>", unsafe_allow_html=True)
 
-# --- मुख्य डैशबोर्ड ---
+# --- मुख्य डैशबोर्ड (ऑटो-रिफ्रेश फीचर के साथ ताकि लॉग आउट न होना पड़े) ---
 else:
-  change_delta = random.randint(-1200, 1600)
-  st.session_state.live_online_count = max(
-      45000, min(98000, st.session_state.live_online_count + change_delta)
-  )
-  current_online = st.session_state.live_online_count
-
-  st.markdown(
-      f"""
-        <div class="top-bar">
-            <div><span class="blinking-light"></span>Exact Match Engine Active</div>
-            <div>Online: <span style="color: #FFD700;">{current_online:,}</span></div>
-        </div>
-    """,
-      unsafe_allow_html=True,
-  )
-
-  st.markdown(
-      "<div style='text-align: center; margin-bottom: 10px;'>"
-      "<h2 style='color: #FFD700; font-size: 22px; margin: 0;'>BIG DADDY"
-      " (BDG) PRO</h2>"
-      "</div>",
-      unsafe_allow_html=True,
-  )
-
-  custom_period_input = st.text_input(
-      "📌 ENTER PERIOD NUMBER (वैकल्पिक पीरियड नंबर यहाँ टाइप करें)",
-      placeholder="जैसे: 202609281234 (खाली छोड़ने पर ऑटोमैटिक चलेगा)",
-  )
-
-  tab1, tab2, tab3, tab4 = st.tabs(
-      ["WINGO 30S", "WINGO 1M", "WINGO 3M", "WINGO 5M"]
-  )
 
 
-  def render_wingo_box(game_seconds):
-    auto_period, timer_str, current_block = get_period_and_timer(game_seconds)
-
-    if custom_period_input and custom_period_input.strip().isdigit():
-      final_period = int(custom_period_input.strip())
-      block_seed = final_period + current_block
-    else:
-      final_period = auto_period
-      block_seed = current_block
-
-    pred_num, pred_size, pred_color, sync_status, sureshot_banner, future_message = (
-        exact_match_engine(block_seed)
+  @st.fragment(run_every=3)
+  def auto_live_dashboard():
+    # ऑनलाइन काउंट ऑटोमैटिक कम-ज्यादा होगा
+    st.session_state.live_online_count = max(
+        45000,
+        min(
+            98000,
+            st.session_state.live_online_count
+            + random.randint(-1200, 1600),
+        ),
     )
-
-    if pred_color == "GREEN":
-      color_bg = "#00AA55"
-    elif pred_color == "RED":
-      color_bg = "#FF4444"
-    else:
-      color_bg = "#9933FF"
-
-    if pred_size == "BIG":
-      size_bg = "linear-gradient(135deg, #FF9900, #FF5500)"
-    else:
-      size_bg = "linear-gradient(135deg, #00CCFF, #0044FF)"
 
     st.markdown(
         f"""
-        <div class="main-card">
+            <div class="top-bar">
+                <div><span class="blinking-light"></span>Exact Match Engine Active</div>
+                <div>Online: <span style="color: #FFD700;">{st.session_state.live_online_count:,}</span></div>
+            </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    st.markdown(
+        "<div style='text-align: center; margin-bottom: 10px;'><h2"
+        " style='color: #FFD700; font-size: 22px; margin: 0;'>BIG DADDY (BDG)"
+        " PRO</h2></div>",
+        unsafe_allow_html=True,
+    )
+
+    custom_period_input = st.text_input(
+        "📌 ENTER PERIOD NUMBER (वैकल्पिक पीरियड नंबर यहाँ टाइप करें)",
+        placeholder="जैसे: 202609281234 (खाली छोड़ने पर ऑटोमैटिक चलेगा)",
+        key="custom_period_box",
+    )
+
+    tab1, tab2, tab3, tab4 = st.tabs(
+        ["WINGO 30S", "WINGO 1M", "WINGO 3M", "WINGO 5M"]
+    )
+
+    def render_wingo_box(game_seconds):
+      auto_period, timer_str, current_block = get_period_and_timer(game_seconds)
+      if custom_period_input and custom_period_input.strip().isdigit():
+        final_period = int(custom_period_input.strip())
+        block_seed = final_period + current_block
+      else:
+        final_period = auto_period
+        block_seed = current_block
+
+      pred_num, pred_size, pred_color, sync_status, sureshot_banner, future_message = (
+          exact_match_engine(block_seed)
+      )
+
+      color_bg = (
+          "#00AA55"
+          if pred_color == "GREEN"
+          else ("#FF4444" if pred_color == "RED" else "#9933FF")
+      )
+      size_bg = (
+          "linear-gradient(135deg, #FF9900, #FF5500)"
+          if pred_size == "BIG"
+          else "linear-gradient(135deg, #00CCFF, #0044FF)"
+      )
+
+      st.markdown("<div class='main-card'>", unsafe_allow_html=True)
+      st.markdown(
+          f"""
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2a2250; padding-bottom: 10px; margin-bottom: 10px;">
                 <span class="period-text">PERIOD: {final_period}</span>
                 <span class="timer-text">TIME: {timer_str}</span>
             </div>
-
-            <div class="sync-status-box">
+            <div class="sync-box">
                 <span style="font-size: 11px; color: #00FF66; font-weight: bold;">{sync_status}</span>
             </div>
-
-            <div class="matched-sureshot-banner">
+            <div class="matched-banner">
                 {sureshot_banner}
             </div>
+        """,
+          unsafe_allow_html=True,
+      )
 
-            <div style="display: flex; justify-content: space-around; align-items: center; text-align: center; margin-top: 15px;">
-                <div>
-                    <p style="font-size: 11px; color: #A0A0A0; margin-bottom: 6px; font-weight: bold;">NUMBER</p>
-                    <div style="background-color: {color_bg}; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: bold; margin: auto; color: white; border: 2px solid #FFFFFF; box-shadow: 0 0 15px {color_bg};">{pred_num}</div>
-                </div>
-                <div>
-                    <p style="font-size: 11px; color: #A0A0A0; margin-bottom: 6px; font-weight: bold;">SIZE</p>
-                    <div style="background: {size_bg}; color: white; padding: 12px 22px; border-radius: 12px; font-weight: 900; font-size: 20px; border: 2px solid #FFFFFF; box-shadow: 0 0 15px rgba(255,153,0,0.5); text-transform: uppercase;">{pred_size}</div>
-                </div>
-                <div>
-                    <p style="font-size: 11px; color: #A0A0A0; margin-bottom: 6px; font-weight: bold;">COLOR</p>
-                    <div style="background-color: {color_bg}; color: white; padding: 12px 18px; border-radius: 12px; font-weight: bold; font-size: 15px; border: 2px solid #FFFFFF; box-shadow: 0 0 15px {color_bg};">{pred_color}</div>
-                </div>
-            </div>
+      col1, col2, col3 = st.columns(3)
+      with col1:
+        st.markdown(
+            "<p"
+            " style='font-size: 11px; color: #A0A0A0; text-align: center;"
+            " margin-bottom: 6px; font-weight: bold;'>NUMBER</p>",
+            unsafe_allow_html=True,
+        )
+        st.markdown(
+            f"<div style='background-color: {color_bg}; width: 60px; height:"
+            f" 60px; border-radius: 50%; display: flex; align-items: center;"
+            f" justify-content: center; font-size: 26px; font-weight: bold; margin:"
+            f" auto; color: white; border: 2px solid #FFFFFF; box-shadow: 0 0"
+            f" 15px {color_bg};'>{pred_num}</div>",
+            unsafe_allow_html=True,
+        )
+      with col2:
+        st.markdown(
+            "<p"
+            " style='font-size: 11px; color: #A0A0A0; text-align: center;"
+            " margin-bottom: 6px; font-weight: bold;'>SIZE</p>",
+            unsafe_allow_html=True,
+        )
+        st.markdown(
+            f"<div style='background: {size_bg}; color: white; padding: 12px"
+            " 10px; border-radius: 12px; font-weight: 900; font-size: 18px;"
+            f" text-align: center; border: 2px solid #FFFFFF; box-shadow: 0 0"
+            f" 15px rgba(255,153,0,0.5); text-transform:"
+            f" uppercase;'>{pred_size}</div>",
+            unsafe_allow_html=True,
+        )
+      with col3:
+        st.markdown(
+            "<p"
+            " style='font-size: 11px; color: #A0A0A0; text-align: center;"
+            " margin-bottom: 6px; font-weight: bold;'>COLOR</p>",
+            unsafe_allow_html=True,
+        )
+        st.markdown(
+            f"<div style='background-color: {color_bg}; color: white; padding:"
+            " 12px 10px; border-radius: 12px; font-weight: bold; font-size:"
+            f" 15px; text-align: center; border: 2px solid #FFFFFF; box-shadow:"
+            f" 0 0 15px {color_bg};'>{pred_color}</div>",
+            unsafe_allow_html=True,
+        )
 
-            <div class="future-alert-box">
+      st.markdown(
+          f"""
+            <div class="future-box">
                 <span style="font-size: 12px; color: #FFD700;">{future_message}</span>
             </div>
-        </div>
-    """,
-        unsafe_allow_html=True,
-    )
+            </div>
+        """,
+          unsafe_allow_html=True,
+      )
 
+    with tab1:
+      render_wingo_box(30)
+    with tab2:
+      render_wingo_box(60)
+    with tab3:
+      render_wingo_box(180)
+    with tab4:
+      render_wingo_box(300)
 
-  with tab1:
-    render_wingo_box(30)
-  with tab2:
-    render_wingo_box(60)
-  with tab3:
-    render_wingo_box(180)
-  with tab4:
-    render_wingo_box(300)
+  # ऑटो डैशबोर्ड को कॉल किया
+  auto_live_dashboard()
 
   st.markdown("<br>", unsafe_allow_html=True)
   if st.button("🚪 Logout", use_container_width=True):
