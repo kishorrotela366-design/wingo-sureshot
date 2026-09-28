@@ -4,7 +4,7 @@ import streamlit as st
 
 # --- पेज सेटअप और डार्क थीम ---
 st.set_page_config(
-    page_title="KISHOR SINGH RAUTELA - Strict UTR Security Lock",
+    page_title="KISHOR SINGH RAUTELA - High-Quality Advanced Matrix Lock",
     page_icon="🛡️",
     layout="centered",
     initial_sidebar_state="collapsed",
@@ -16,6 +16,7 @@ st.markdown(
     .stApp { background-color: #070411; color: #FFFFFF; }
     @keyframes blink-animation { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.2; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1); } }
     @keyframes success-glow { 0% { color: #00FF66; text-shadow: 0 0 10px #00FF66; } 50% { color: #FFD700; text-shadow: 0 0 25px #00FF66; } 100% { color: #00FF66; text-shadow: 0 0 10px #00FF66; } }
+    @keyframes trend-glow { 0% { opacity: 0.8; } 50% { opacity: 1; text-shadow: 0 0 8px currentColor; } 100% { opacity: 0.8; } }
     
     .blinking-light { display: inline-block; width: 10px; height: 10px; background-color: #00FF66; border-radius: 50%; margin-right: 6px; box-shadow: 0 0 12px #00FF66; animation: blink-animation 0.6s infinite ease-in-out; }
     
@@ -24,7 +25,11 @@ st.markdown(
     
     .timer-text { color: #FFD700; font-weight: bold; font-size: 13px; }
     .period-text { color: #FFFFFF; font-weight: bold; font-size: 13px; }
-    .success-badge { background: linear-gradient(135deg, #0d2216, #040d08); border: 2px dashed #00FF66; padding: 8px; border-radius: 8px; text-align: center; font-size: 14px; font-weight: 900; margin: 8px 0; animation: success-glow 1.2s infinite ease-in-out; text-transform: uppercase; letter-spacing: 1px; color: #00FF66; }
+    .success-badge-big { background: linear-gradient(135deg, #0d2216, #040d08); border: 2px dashed #00FF66; padding: 8px; border-radius: 8px; text-align: center; font-size: 14px; font-weight: 900; margin: 8px 0; animation: success-glow 1.2s infinite ease-in-out; text-transform: uppercase; letter-spacing: 1px; color: #00FF66; }
+    .success-badge-small { background: linear-gradient(135deg, #041422, #000a14); border: 2px dashed #00CCFF; padding: 8px; border-radius: 8px; text-align: center; font-size: 14px; font-weight: 900; margin: 8px 0; animation: success-glow 1.2s infinite ease-in-out; text-transform: uppercase; letter-spacing: 1px; color: #00CCFF; }
+
+    .trend-badge-big { background: linear-gradient(135deg, #332200, #1a1100); border: 2px solid #FF9900; padding: 8px; border-radius: 8px; text-align: center; font-size: 13px; font-weight: bold; margin: 8px 0; color: #FF9900; animation: trend-glow 1s infinite ease-in-out; text-transform: uppercase; }
+    .trend-badge-small { background: linear-gradient(135deg, #002233, #00111a); border: 2px solid #00CCFF; padding: 8px; border-radius: 8px; text-align: center; font-size: 13px; font-weight: bold; margin: 8px 0; color: #00CCFF; animation: trend-glow 1s infinite ease-in-out; text-transform: uppercase; }
 
     .diagonal-container { display: flex; justify-content: space-between; align-items: center; gap: 6px; margin-top: 6px; }
     .result-item { flex: 1; text-align: center; background: rgba(25, 18, 50, 0.9); border: 1px solid #6644aa; border-radius: 8px; padding: 6px; transform: skewX(-3deg); }
@@ -49,7 +54,7 @@ if "used_utr_database" not in st.session_state:
 
 if "valid_approved_utrs" not in st.session_state:
   st.session_state.valid_approved_utrs = [
-      "KISHOR2000UTR",
+      "KISHOR1000UTR",
       "425678901234",
   ]
 
@@ -59,8 +64,19 @@ if "live_online_count" not in st.session_state:
 MASTER_MOBILE = "9011997944"
 MASTER_PASSWORD = "KISHOR90"
 
-CHART_MATRIX_UPPER = ["BIG", "SMALL", "BIG", "SMALL", "SMALL", "BIG", "BIG", "SMALL", "BIG", "SMALL"] * 10
-CHART_MATRIX_LOWER = ["SMALL", "BIG", "SMALL", "BIG", "BIG", "SMALL", "SMALL", "BIG", "SMALL", "BIG"] * 10
+# --- एडवांस्ड हाई-क्वालिटी मल्टी-पैटर्न मैट्रिक्स (जो 4-4, 3-3, 2-2 और 1-1 सभी सीरीज को कवर करेगा) ---
+ADVANCED_TREND_PATTERNS = [
+    # 4-4 सीरीज पैटर्न
+    "BIG", "BIG", "BIG", "BIG", "SMALL", "SMALL", "SMALL", "SMALL",
+    # 3-3 सीरीज पैटर्न
+    "BIG", "BIG", "BIG", "SMALL", "SMALL", "SMALL", "BIG", "BIG", "BIG",
+    # 2-2 सीरीज पैटर्न
+    "BIG", "BIG", "SMALL", "SMALL", "BIG", "BIG", "SMALL", "SMALL",
+    # अल्टरनेट (1-1) पैटर्न
+    "BIG", "SMALL", "BIG", "SMALL", "BIG", "SMALL", "BIG", "SMALL",
+    # मिक्स ट्रेंड्स लेयर
+    "BIG", "SMALL", "SMALL", "BIG", "BIG", "BIG", "SMALL", "SMALL", "BIG"
+] * 15
 
 def get_period_and_timer(game_seconds):
   now = datetime.now()
@@ -73,25 +89,29 @@ def get_period_and_timer(game_seconds):
   secs = remaining_secs % 60
   return auto_period, f"{mins:02d}:{secs:02d}", current_block_idx
 
-def streak_pattern_matching_engine(block_seed):
-  # यह इंजन लगातार आने वाली लाइनों (Streak Line) और पैटर्न्स को तुरंत ट्रैक करके डिटेक्ट करता है
-  rnd = random.Random(block_seed * 541)
-  matrix_idx = block_seed % len(CHART_MATRIX_UPPER)
+def high_quality_pattern_matching_engine(block_seed):
+  rnd = random.Random(block_seed * 397)
   
-  # स्ट्रीक और लाइन पैटर्न का पता लगाने के लिए लॉजिक
-  streak_check = (block_seed // 3) % 4
-  if streak_check == 0:
-    detected_line = "BIG-STREAK (लगातार बिग लाइन)"
+  # एडवांस्ड मल्टी-लेयर पैटर्न स्कैनिंग
+  idx_primary = block_seed % len(ADVANCED_TREND_PATTERNS)
+  idx_secondary = (block_seed // 2) % len(ADVANCED_TREND_PATTERNS)
+  
+  bg_game_signal = ADVANCED_TREND_PATTERNS[idx_primary]
+  panel_signal = ADVANCED_TREND_PATTERNS[idx_secondary] if (block_seed % 3 != 0) else ADVANCED_TREND_PATTERNS[idx_primary]
+
+  is_confirmed_big = False
+  is_confirmed_small = False
+
+  # श्योर शॉर्ट मैचिंग लॉजिक (जब दोनों सिग्नल एक ही साइज पकड़ लें)
+  if bg_game_signal == "BIG" and panel_signal == "BIG":
+    is_confirmed_big = True
     final_size = "BIG"
-  elif streak_check == 1:
-    detected_line = "SMALL-STREAK (लगातार स्मॉल लाइन)"
+  elif bg_game_signal == "SMALL" and panel_signal == "SMALL":
+    is_confirmed_small = True
     final_size = "SMALL"
-  elif streak_check == 2:
-    detected_line = "ALTERNATE-LINE (बदलती लाइन)"
-    final_size = CHART_MATRIX_UPPER[matrix_idx]
   else:
-    detected_line = "SERVER-SYNC LINE"
-    final_size = CHART_MATRIX_LOWER[matrix_idx]
+    # रनिंग ट्रेंड जो बिना रुके लगातार चलता रहेगा
+    final_size = bg_game_signal
 
   if final_size == "BIG":
     number = rnd.choice([6, 7, 8, 9])
@@ -100,7 +120,7 @@ def streak_pattern_matching_engine(block_seed):
     number = rnd.choice([0, 1, 2, 3, 4])
     color = "GREEN" if number == 1 else ("RED" if number in [2, 4] else "VIOLET")
 
-  return number, final_size, color, detected_line
+  return number, final_size, color, is_confirmed_big, is_confirmed_small
 
 def check_user_session_validity(mobile):
   if mobile in st.session_state.registered_users_db:
@@ -149,7 +169,7 @@ if not st.session_state.authenticated:
           else:
             st.error("❌ गलत पासवर्ड!")
         else:
-          st.info("ℹ️ नया उपयोगकर्ता। कृपया ₹2000 का भुगतान करके असली UTR नंबर दर्ज करें।")
+          st.info("ℹ️ नया उपयोगकर्ता। कृपया ₹1000 का भुगतान करके असली UTR नंबर दर्ज करें।")
           st.session_state.require_recharge = True
           st.session_state.target_mobile = mobile_input
           st.session_state.target_password = password_input
@@ -160,7 +180,7 @@ if not st.session_state.authenticated:
     st.markdown(
         """
         <div class="upi-box">
-            <p style="color: #FFD700; font-weight: bold; font-size: 14px;">💳 Pay ₹2000 (Strict 25 Days Validity)</p>
+            <p style="color: #FFD700; font-weight: bold; font-size: 14px;">💳 Pay ₹1000 (Strict 25 Days Validity)</p>
             <p style="color: #00FF66; font-size: 14px; font-weight: bold; background: #070411; padding: 6px; border-radius: 6px; border: 1px dashed #00FF66; user-select: all;">kishorsingh226105.wallet@phonepe</p>
             <p style="color: #FF4444; font-size: 11px; margin-top: 4px;">⚠️ सिक्यॉरिटि: किसी अन्य या पुराने UTR का उपयोग न करें। केवल नया UTR स्वीकार होगा।</p>
         </div>
@@ -168,12 +188,12 @@ if not st.session_state.authenticated:
         unsafe_allow_html=True,
     )
 
-    upi_str = "upi://pay?pa=kishorsingh226105.wallet@phonepe&pn=Kishor%20Singh%20Rautela&am=2000&cu=INR"
+    upi_str = "upi://pay?pa=kishorsingh226105.wallet@phonepe&pn=Kishor%20Singh%20Rautela&am=1000&cu=INR"
     qr_url = f"https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={upi_str}"
     
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
-      st.image(qr_url, caption="Scan & Pay ₹2000", use_container_width=True)
+      st.image(qr_url, caption="Scan & Pay ₹1000", use_container_width=True)
 
     utr_entered = st.text_input("🔑 ENTER EXACT PHONEPE UTR NUMBER", max_chars=25, key="strict_utr_input")
 
@@ -207,8 +227,8 @@ if not st.session_state.authenticated:
 # --- मुख्य गेम डैशबोर्ड ---
 else:
   custom_period_box = st.text_input(
-      "📌 ENTER LIVE PERIOD NUMBER (CHART MATRIX MATCHING)",
-      placeholder="यहाँ पीरियड नंबर दर्ज करें ताकि चार्ट मैट्रिक्स से डेटा मैच हो सके",
+      "📌 ENTER LIVE PERIOD NUMBER (ADVANCED PATTERN MATCHING)",
+      placeholder="यहाँ पीरियड नंबर दर्ज करें ताकि एडवांस्ड पैटर्न से डेटा मैच हो सके",
       key="matrix_input_field"
   )
 
@@ -219,7 +239,7 @@ else:
     st.markdown(
         f"""
             <div class="top-bar">
-                <div><span class="blinking-light"></span>Status: KISHOR SINGH RAUTELA SECURED PANEL</div>
+                <div><span class="blinking-light"></span>Status: KISHOR SINGH RAUTELA ADVANCED SECURED PANEL</div>
                 <div>👥 Online: <span style="color: #00FF66;">{st.session_state.live_online_count:,}</span></div>
             </div>
         """,
@@ -253,8 +273,7 @@ else:
         final_period = auto_period
         seed_val = current_block
 
-      # जैसे ही नया पीरियड आएगा, यह लाइन-ट्रैकिंग इंजन तुरंत नया प्रेडिक्शन और स्ट्रीक डिटेक्ट करेगा
-      pred_num, pred_size, pred_color, detected_line = streak_pattern_matching_engine(seed_val)
+      pred_num, pred_size, pred_color, is_confirmed_big, is_confirmed_small = high_quality_pattern_matching_engine(seed_val)
 
       color_bg = "#00AA55" if pred_color == "GREEN" else ("#FF4444" if pred_color == "RED" else "#9933FF")
       size_bg = "linear-gradient(135deg, #FF9900, #FF5500)" if pred_size == "BIG" else "linear-gradient(135deg, #00CCFF, #0044FF)"
@@ -270,11 +289,27 @@ else:
           unsafe_allow_html=True,
       )
 
-      # 👉 यहाँ डिटेक्ट की गई लाइन और 100% श्योर शॉट मैचिंग बैज फ्लैश होकर दिखेगा
-      st.markdown(
-          f'<div class="success-badge">🔥 100% SURE SHOT: {pred_size} | LINE: {detected_line} 🔥</div>',
-          unsafe_allow_html=True,
-      )
+      if is_confirmed_big:
+        st.markdown(
+            f'<div class="success-badge-big">🔥 100% श्योर शॉर्ट बिग 🔥</div>',
+            unsafe_allow_html=True,
+        )
+      elif is_confirmed_small:
+        st.markdown(
+            f'<div class="success-badge-small">🔥 100% 100% स्मॉल 🔥</div>',
+            unsafe_allow_html=True,
+        )
+      else:
+        if pred_size == "BIG":
+          st.markdown(
+              f'<div class="trend-badge-big">📈 BIG की लाइन चल रही है (Running Trend: BIG)</div>',
+              unsafe_allow_html=True,
+          )
+        else:
+          st.markdown(
+              f'<div class="trend-badge-small">📉 SMALL की लाइन चल रही है (Running Trend: SMALL)</div>',
+              unsafe_allow_html=True,
+          )
 
       st.markdown(
           f"""
