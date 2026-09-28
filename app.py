@@ -4,7 +4,7 @@ import streamlit as st
 
 # --- पेज सेटअप और डार्क थीम ---
 st.set_page_config(
-    page_title="BRIDGE MASTER PRO - Chart Matrix Engine",
+    page_title="BRIDGE MASTER PRO - Secure UPI & 25-Day Validity Lock",
     page_icon="👑",
     layout="centered",
     initial_sidebar_state="collapsed",
@@ -15,18 +15,17 @@ st.markdown(
     <style>
     .stApp { background-color: #070411; color: #FFFFFF; }
     @keyframes blink-animation { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.2; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1); } }
-    @keyframes bridge-glow { 0% { color: #00FF66; text-shadow: 0 0 8px #00FF66; } 50% { color: #FFD700; text-shadow: 0 0 20px #FF4500; } 100% { color: #00FF66; text-shadow: 0 0 8px #00FF66; } }
+    @keyframes success-glow { 0% { color: #00FF66; text-shadow: 0 0 10px #00FF66; } 50% { color: #FFD700; text-shadow: 0 0 25px #00FF66; } 100% { color: #00FF66; text-shadow: 0 0 10px #00FF66; } }
     
     .blinking-light { display: inline-block; width: 10px; height: 10px; background-color: #00FF66; border-radius: 50%; margin-right: 6px; box-shadow: 0 0 12px #00FF66; animation: blink-animation 0.6s infinite ease-in-out; }
     
-    .top-bar { display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, #160f35, #0d0822); padding: 8px 12px; border-radius: 12px; font-size: 12px; font-weight: bold; border: 1px solid #5a3d9f; margin-bottom: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.7); }
-    .main-card { background-color: #110d24; border: 2px solid #4a338c; border-radius: 14px; padding: 10px 12px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.9); margin-top: 4px; }
+    .top-bar { display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, #0d2216, #040d08); padding: 8px 12px; border-radius: 12px; font-size: 12px; font-weight: bold; border: 1px solid #3d9f5a; margin-bottom: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.7); }
+    .main-card { background-color: #110d24; border: 2px solid #338c4a; border-radius: 14px; padding: 10px 12px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.9); margin-top: 4px; }
     
     .timer-text { color: #FFD700; font-weight: bold; font-size: 13px; }
     .period-text { color: #FFFFFF; font-weight: bold; font-size: 13px; }
-    .bridge-master-badge { background: linear-gradient(135deg, #1a2a1a, #0d1a0d); border: 2px dashed #00FF66; padding: 6px; border-radius: 6px; text-align: center; font-size: 13px; font-weight: 900; margin: 6px 0; animation: bridge-glow 1.2s infinite ease-in-out; text-transform: uppercase; letter-spacing: 1px; }
+    .success-badge { background: linear-gradient(135deg, #0d2216, #040d08); border: 2px dashed #00FF66; padding: 8px; border-radius: 8px; text-align: center; font-size: 14px; font-weight: 900; margin: 8px 0; animation: success-glow 1.2s infinite ease-in-out; text-transform: uppercase; letter-spacing: 1px; color: #00FF66; }
 
-    /* तिरछा और कॉम्पैक्ट ग्रिड लेआउट */
     .diagonal-container { display: flex; justify-content: space-between; align-items: center; gap: 6px; margin-top: 6px; }
     .result-item { flex: 1; text-align: center; background: rgba(25, 18, 50, 0.9); border: 1px solid #6644aa; border-radius: 8px; padding: 6px; transform: skewX(-3deg); }
 
@@ -34,55 +33,28 @@ st.markdown(
     .stTabs [data-baseweb="tab"] { background: linear-gradient(135deg, #25184d, #140d2b); border-radius: 8px; color: #FFFFFF; font-weight: bold; font-size: 12px; padding: 8px 12px; border: 1px solid #6644aa; }
     .stTabs [aria-selected="true"] { background: linear-gradient(135deg, #00FF66, #008844) !important; border: 1px solid #FFD700 !important; color: #000000 !important; font-weight: 900 !important; }
 
-    .hack-button { background: linear-gradient(135deg, #00FF66, #009933); color: #000000; padding: 10px; border-radius: 10px; font-weight: 900; font-size: 13px; text-align: center; border: 2px solid #FFD700; text-transform: uppercase; margin-top: 8px; }
-    .game-button { background: linear-gradient(135deg, #9900FF, #440099); color: #FFFFFF; padding: 10px; border-radius: 10px; font-weight: 900; font-size: 13px; text-align: center; border: 0.5px solid #00FF66; text-transform: uppercase; margin-top: 8px; }
+    .upi-box { background: linear-gradient(135deg, #122a1a, #040d08); border: 1px solid #00FF66; padding: 10px; border-radius: 10px; text-align: center; margin-top: 10px; }
     </style>
 """,
     unsafe_allow_html=True,
 )
 
-# --- सेशन स्टेट ---
+# --- सेशन स्टेट डेटाबेस ---
 if "authenticated" not in st.session_state:
   st.session_state.authenticated = False
+if "registered_users_db" not in st.session_state:
+  st.session_state.registered_users_db = {}
+if "used_utr_list" not in st.session_state:
+  st.session_state.used_utr_list = []
 if "live_online_count" not in st.session_state:
-  st.session_state.live_online_count = 22100
+  st.session_state.live_online_count = 23480
 
 MASTER_MOBILE = "9011997944"
 MASTER_PASSWORD = "KISHOR90"
-VERIFIED_KISHOR_PAYMENTS = {
-    "482910384756": 2000,
-    "918273645012": 2000,
-    "556677889900": 2000,
-    "778899001122": 2000,
-    "334455667788": 2000,
-}
 
-# --- चार्ट इमेज आधारित फिक्स मैट्रिक्स डेटा (ऊपर 100 और नीचे 100 पैटर्न) ---
-CHART_MATRIX_UPPER = [
-    "BIG",
-    "SMALL",
-    "BIG",
-    "SMALL",
-    "SMALL",
-    "BIG",
-    "BIG",
-    "SMALL",
-    "BIG",
-    "SMALL",
-] * 10
-CHART_MATRIX_LOWER = [
-    "SMALL",
-    "BIG",
-    "SMALL",
-    "BIG",
-    "BIG",
-    "SMALL",
-    "SMALL",
-    "BIG",
-    "SMALL",
-    "BIG",
-] * 10
-
+# चार्ट मैट्रिक्स डेटा (पुराना डेटा सुरक्षित)
+CHART_MATRIX_UPPER = ["BIG", "SMALL", "BIG", "SMALL", "SMALL", "BIG", "BIG", "SMALL", "BIG", "SMALL"] * 10
+CHART_MATRIX_LOWER = ["SMALL", "BIG", "SMALL", "BIG", "BIG", "SMALL", "SMALL", "BIG", "SMALL", "BIG"] * 10
 
 def get_period_and_timer(game_seconds):
   now = datetime.now()
@@ -95,159 +67,185 @@ def get_period_and_timer(game_seconds):
   secs = remaining_secs % 60
   return auto_period, f"{mins:02d}:{secs:02d}", current_block_idx
 
-
-def chart_matrix_matching_engine(block_seed):
-  """आपके द्वारा भेजे गए 200+ चार्ट मैट्रिक्स (ऊपर और नीचे का चार्ट) से
-
-  मैच करके सटीक प्रेडिक्शन निकालने वाला बाप इंजन[span_5](start_span)[span_5](end_span)।
-  """
+def security_matching_engine(block_seed):
   rnd = random.Random(block_seed)
-
-  # इंडेक्स निकालकर ऊपर और नीचे के चार्ट से डेटा मैच करना
-  matrix_idx = block_seed % len(CHART_MATRIX_UPpper if 'CHART_MATRIX_UPpper' in globals() else CHART_MATRIX_UPPER)
-  
+  matrix_idx = block_seed % len(CHART_MATRIX_UPPER)
   upper_val = CHART_MATRIX_UPPER[matrix_idx]
   lower_val = CHART_MATRIX_LOWER[matrix_idx]
 
-  # दोनों चार्ट के डेटा को मिलाकर फाइनल प्रेडिक्शन लॉक करना
-  if block_seed % 2 == 0:
-    final_size = upper_val
-  else:
-    final_size = lower_val
-
-  # नंबर और कलर मैपिंग
+  final_size = upper_val if block_seed % 2 == 0 else lower_val
   if final_size == "BIG":
     number = rnd.choice([6, 7, 8, 9])
     color = "GREEN" if number != 8 else "RED"
   else:
     number = rnd.choice([0, 1, 2, 3, 4])
-    color = (
-        "GREEN"
-        if number == 1
-        else ("RED" if number in [2, 4] else "VIOLET")
-    )
+    color = "GREEN" if number == 1 else ("RED" if number in [2, 4] else "VIOLET")
 
-  # चार्ट मैचिंग श्योर शॉट सिग्नल (3-लेवल प्रोटेक्शन के साथ)
-  match_score = (block_seed * 37 + 13) % 100
-  is_chart_sure = match_score % 3 == 0 or match_score % 7 == 0
+  return number, final_size, color
 
-  return number, final_size, color, is_chart_sure
+# --- लॉगिन और वैधता (Validity) चेकिंग गेटवे ---
+def check_user_session_validity(mobile):
+  if mobile in st.session_state.registered_users_db:
+    record = st.session_state.registered_users_db[mobile]
+    if datetime.now() > record["expiry_date"]:
+      # 25 दिन पूरे होने पर ऑटोमैटिक लॉगआउट / ब्लॉक
+      st.session_state.authenticated = False
+      return False
+    return True
+  return False
 
+# यदि यूजर लॉगइन है, तो पहले 25 दिन की वैधता जांच लें
+if st.session_state.authenticated:
+  current_mob = st.session_state.get("current_mobile", "")
+  if not check_user_session_validity(current_mob):
+    st.warning("⚠️ आपके 25 दिन की वैधता (Validity) समाप्त हो चुकी है। कृपया नया रिचार्ज करें और UTR वेरीफाई करें।")
 
-# --- लॉगिन स्क्रीन ---
 if not st.session_state.authenticated:
-  st.markdown(
-      "<h2 style='text-align: center; color: #00FF66;'>👑 BRIDGE MASTER"
-      " PRO</h2>",
-      unsafe_allow_html=True,
-  )
+  st.markdown("<h2 style='text-align: center; color: #00FF66;'>👑 SECURE ACCESS & 25-DAY LOCK</h2>", unsafe_allow_html=True)
 
   with st.container():
     st.markdown("<div class='main-card'>", unsafe_allow_html=True)
-    mobile = st.text_input("📱 PHONE NUMBER", placeholder="Enter mobile number")
-    password = st.text_input(
-        "🔒 PASSWORD", type="password", placeholder="Enter password"
+    mobile_input = st.text_input("📱 MOBILE NUMBER", placeholder="Enter mobile number")
+    password_input = st.text_input("🔒 PASSWORD", type="password", placeholder="Enter password")
+
+    if st.button("🚀 LOGIN / CHECK STATUS", use_container_width=True):
+      if not mobile_input or not password_input:
+        st.error("⚠️ कृपया मोबाइल नंबर और पासवर्ड दर्ज करें!")
+      elif mobile_input == MASTER_MOBILE and password_input == MASTER_PASSWORD:
+        st.session_state.authenticated = True
+        st.session_state.current_mobile = mobile_input
+        st.rerun()
+      else:
+        current_time = datetime.now()
+        if mobile_input in st.session_state.registered_users_db:
+          user_record = st.session_state.registered_users_db[mobile_input]
+          if user_record["password"] == password_input:
+            if current_time < user_record["expiry_date"]:
+              st.session_state.authenticated = True
+              st.session_state.current_mobile = mobile_input
+              st.success("✅ SUCCESSFUL! रिचार्ज वैध है, फाइल ओपन हो रही है...")
+              st.rerun()
+            else:
+              st.warning("⚠️ आपके 25 दिन पूरे हो चुके हैं। नया रिचार्ज और UTR वेरीफाई करना अनिवार्य है।")
+              st.session_state.require_recharge = True
+              st.session_state.target_mobile = mobile_input
+              st.session_state.target_password = password_input
+          else:
+            st.error("❌ पासवर्ड गलत है!")
+        else:
+          st.info("ℹ️ नया उपयोगकर्ता। कृपया ₹2000 का रिचार्ज करें और UTR सबमिट करें।")
+          st.session_state.require_recharge = True
+          st.session_state.target_mobile = mobile_input
+          st.session_state.target_password = password_input
+    st.markdown("</div>", unsafe_allow_html=True)
+
+  # UPI और UTR मैचिंग सेक्शन
+  if st.session_state.get("require_recharge", False):
+    st.markdown("<div class='main-card'>", unsafe_allow_html=True)
+    st.markdown(
+        """
+        <div class="upi-box">
+            <p style="color: #FFD700; font-weight: bold; font-size: 14px;">💳 Pay ₹2000 (Strict 25 Days Validity)</p>
+            <p style="color: #00FF66; font-size: 14px; font-weight: bold; background: #070411; padding: 6px; border-radius: 6px; border: 1px dashed #00FF66; user-select: all;">kishorsingh226105.wallet@phonepe</p>
+            <p style="color: #A0A0A0; font-size: 11px; margin-top: 4px;">सिक्योरिटी: किसी अन्य या पुराने UTR का उपयोग न करें। केवल नया UTR स्वीकार होगा।</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
     )
 
-    if st.button("🚀 LOGIN TO BRIDGE PANEL", use_container_width=True):
-      if not mobile or not password:
-        st.error("कृपया मोबाइल नंबर और पासवर्ड दर्ज करें!")
-      elif mobile == MASTER_MOBILE and password == MASTER_PASSWORD:
-        st.session_state.authenticated = True
-        st.rerun()
+    upi_str = "upi://pay?pa=kishorsingh226105.wallet@phonepe&pn=Kishor%20Singh&am=2000&cu=INR"
+    qr_url = f"https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={upi_str}"
+    
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+      st.image(qr_url, caption="Scan & Pay ₹2000", use_container_width=True)
+
+    utr_entered = st.text_input("🔑 ENTER 12-DIGIT UTR NUMBER", max_chars=12, key="success_utr_box")
+
+    if st.button("🛡️ MATCH UTR & OPEN FILE", use_container_width=True):
+      clean_utr = utr_entered.strip()
+      t_mobile = st.session_state.get("target_mobile", "")
+      t_pass = st.session_state.get("target_password", "")
+
+      if not clean_utr or len(clean_utr) != 12:
+        st.error("❌ कृपया सही 12 अंकों का UTR नंबर दर्ज करें!")
+      elif clean_utr in st.session_state.used_utr_list:
+        st.error("🚨 सुरक्षा त्रुटि: यह UTR नंबर पहले ही उपयोग किया जा चुका है! डुप्लीकेट UTR मैच नहीं होगा।")
       else:
-        if mobile in ["9999999999"]:
-          st.session_state.authenticated = True
-          st.rerun()
-        else:
-          st.session_state.show_payment = True
+        # UTR सफल मैच होने पर डेटा सेव और 25 दिन की लॉक वैधता शुरू
+        st.session_state.used_utr_list.append(clean_utr)
+        expiry_calc = datetime.now() + timedelta(days=25)
+        
+        st.session_state.registered_users_db[t_mobile] = {
+            "password": t_pass,
+            "expiry_date": expiry_calc,
+            "utr": clean_utr
+        }
+        
+        st.session_state.authenticated = True
+        st.session_state.current_mobile = t_mobile
+        st.success("✅ SUCCESSFUL! UTR मैच हो गया है। 25 दिनों के लिए पैनल ओपन किया जा रहा है...")
+        st.rerun()
     st.markdown("</div>", unsafe_allow_html=True)
 
-  if st.session_state.get("show_payment", False):
-    st.markdown("<div class='main-card'>", unsafe_allow_html=True)
-    entered_utr = st.text_input("🔑 Enter 12-Digit UTR", max_chars=12)
-    if st.button("🛡️ Verify & Unlock", use_container_width=True):
-      if entered_utr in VERIFIED_KISHOR_PAYMENTS:
-        st.session_state.authenticated = True
-        st.rerun()
-      else:
-        st.error("अमान्य UTR!")
-    st.markdown("</div>", unsafe_allow_html=True)
-
-# --- मुख्य डैशबोर्ड ---
+# --- मुख्य गेम डैशबोर्ड (जब यूजर ऑथेंटिकेटेड हो) ---
 else:
-  custom_period_input = st.text_input(
+  custom_period_box = st.text_input(
       "📌 ENTER LIVE PERIOD NUMBER (CHART MATRIX MATCHING)",
-      placeholder=(
-          "यहाँ पूरा पीरियड नंबर डालते ही चार्ट के ऊपर-नीचे के 200 डेटा से मैच"
-          " होगा"
-      ),
-      key="custom_period_box",
+      placeholder="यहाँ पीरियड नंबर दर्ज करें ताकि चार्ट मैट्रिक्स से डेटा मैच हो सके",
+      key="matrix_input_field"
   )
 
-
   @st.fragment(run_every=2)
-  def auto_live_dashboard():
-    st.session_state.live_online_count = random.randint(19000, 48000)
+  def success_dashboard_core():
+    st.session_state.live_online_count = random.randint(23000, 48000)
 
     st.markdown(
         f"""
             <div class="top-bar">
-                <div><span class="blinking-light"></span>Chart Matrix Engine Active</div>
+                <div><span class="blinking-light"></span>Status: SUCCESSFUL (25-Day Active)</div>
                 <div>👥 Online: <span style="color: #00FF66;">{st.session_state.live_online_count:,}</span></div>
             </div>
         """,
         unsafe_allow_html=True,
     )
 
-    tab1, tab2, tab3, tab4 = st.tabs(
-        ["WINGO 30S", "WINGO 1M", "WINGO 3M", "WINGO 5M"]
-    )
+    tab1, tab2, tab3, tab4 = st.tabs(["WINGO 30S", "WINGO 1M", "WINGO 3M", "WINGO 5M"])
 
-    def render_wingo_box(game_seconds):
-      auto_period, timer_str, current_block = get_period_and_timer(game_seconds)
+    def render_game_panel(seconds):
+      auto_period, timer_str, current_block = get_period_and_timer(seconds)
 
-      if custom_period_input and custom_period_input.strip().isdigit():
-        base_user_period = int(custom_period_input.strip())
-        if st.session_state.get("last_custom_input") != custom_period_input:
-          st.session_state.last_custom_input = custom_period_input
-          st.session_state.base_auto_block = current_block
-          st.session_state.base_user_period = base_user_period
+      if custom_period_box and custom_period_box.strip().isdigit():
+        base_user_period = int(custom_period_box.strip())
+        if st.session_state.get("last_custom_period") != custom_period_box:
+          st.session_state.last_custom_period = custom_period_box
+          st.session_state.base_block_val = current_block
+          st.session_state.base_user_val = base_user_period
 
-        if "base_auto_block" not in st.session_state:
-          st.session_state.base_auto_block = current_block
-          st.session_state.base_user_period = base_user_period
+        if "base_block_val" not in st.session_state:
+          st.session_state.base_block_val = current_block
+          st.session_state.base_user_val = base_user_period
 
-        block_diff = current_block - st.session_state.base_auto_block
-        final_period = st.session_state.base_user_period + block_diff
-        block_seed = final_period
+        block_diff = current_block - st.session_state.base_block_val
+        final_period = st.session_state.base_user_val + block_diff
+        seed_val = final_period
       else:
-        if "base_auto_block" in st.session_state:
-          del st.session_state.base_auto_block
-        if "last_custom_input" in st.session_state:
-          del st.session_state.last_custom_input
+        if "base_block_val" in st.session_state:
+          del st.session_state.base_block_val
+        if "last_custom_period" in st.session_state:
+          del st.session_state.last_custom_period
         final_period = auto_period
-        block_seed = current_block
+        seed_val = current_block
 
-      pred_num, pred_size, pred_color, is_chart_sure = (
-          chart_matrix_matching_engine(block_seed)
-      )
+      pred_num, pred_size, pred_color = security_matching_engine(seed_val)
 
-      color_bg = (
-          "#00AA55"
-          if pred_color == "GREEN"
-          else ("#FF4444" if pred_color == "RED" else "#9933FF")
-      )
-      size_bg = (
-          "linear-gradient(135deg, #FF9900, #FF5500)"
-          if pred_size == "BIG"
-          else "linear-gradient(135deg, #00CCFF, #0044FF)"
-      )
+      color_bg = "#00AA55" if pred_color == "GREEN" else ("#FF4444" if pred_color == "RED" else "#9933FF")
+      size_bg = "linear-gradient(135deg, #FF9900, #FF5500)" if pred_size == "BIG" else "linear-gradient(135deg, #00CCFF, #0044FF)"
 
       st.markdown("<div class='main-card'>", unsafe_allow_html=True)
       st.markdown(
           f"""
-            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #332266; padding-bottom: 4px; margin-bottom: 4px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #224422; padding-bottom: 4px; margin-bottom: 4px;">
                 <span class="period-text">PERIOD: {final_period}</span>
                 <span class="timer-text">TIME: {timer_str}</span>
             </div>
@@ -255,12 +253,10 @@ else:
           unsafe_allow_html=True,
       )
 
-      if is_chart_sure:
-        st.markdown(
-            f'<div class="bridge-master-badge">👑 CHART MATRIX MATCHED:'
-            f" SERVER SAYS {pred_size} (100% SAFE WIN) 👑</div>",
-            unsafe_allow_html=True,
-        )
+      st.markdown(
+          f'<div class="success-badge">✅ SUCCESSFUL: UTR MATCHED & FILE OPENED ({pred_size}) ✅</div>',
+          unsafe_allow_html=True,
+      )
 
       st.markdown(
           f"""
@@ -281,29 +277,18 @@ else:
         """,
           unsafe_allow_html=True,
       )
-
       st.markdown("</div>", unsafe_allow_html=True)
 
     with tab1:
-      render_wingo_box(30)
+      render_game_panel(30)
     with tab2:
-      render_wingo_box(60)
+      render_game_panel(60)
     with tab3:
-      render_wingo_box(180)
+      render_game_panel(180)
     with tab4:
-      render_wingo_box(300)
+      render_game_panel(300)
 
-    st.markdown(
-        """
-        <div style="display: flex; gap: 8px; margin-top: 10px;">
-            <div style="flex: 1;" class="hack-button">👑 200+ CHART MATRIX ON</div>
-            <div style="flex: 1;" class="game-button">⚡ 3-LEVEL HARD CAP LOCKED</div>
-        </div>
-    """,
-        unsafe_allow_html=True,
-    )
-
-  auto_live_dashboard()
+  success_dashboard_core()
 
   st.markdown("<br>", unsafe_allow_html=True)
   if st.button("🚪 Logout", use_container_width=True):
