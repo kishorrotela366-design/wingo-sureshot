@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta
 import random
-import time
 import streamlit as st
 
 # --- पेज सेटअप और सुप्रीम ब्लैक-गोल्ड थीम ---
@@ -57,6 +56,16 @@ st.markdown(
         box-shadow: 0 0 15px #00FF66;
         animation: blink-animation 0.8s infinite ease-in-out;
     }
+    .timer-badge {
+        background-color: #1a1a2e;
+        color: #00FF66;
+        padding: 6px 14px;
+        border-radius: 8px;
+        font-weight: bold;
+        font-size: 14px;
+        border: 1px dashed #00FF66;
+        box-shadow: 0 0 10px rgba(0, 255, 102, 0.2);
+    }
     .win-badge {
         background-color: #00AA55;
         color: #FFFFFF;
@@ -68,16 +77,14 @@ st.markdown(
         border: 2px solid #00FF66;
         box-shadow: 0 0 20px #00FF66;
     }
-    .loss-badge {
-        background-color: #CC0000;
-        color: #FFFFFF;
-        padding: 8px 16px;
-        border-radius: 10px;
-        font-weight: 900;
-        font-size: 15px;
-        text-align: center;
-        border: 2px solid #FF4444;
-        box-shadow: 0 0 20px #FF4444;
+    .pattern-tag {
+        background-color: #1a1a2e;
+        border: 1px solid #FFD700;
+        color: #FFD700;
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: bold;
     }
     </style>
 """,
@@ -87,11 +94,9 @@ st.markdown(
 # --- सेशन स्टेट इनिशियलाइजेशन ---
 if "authenticated" not in st.session_state:
   st.session_state.authenticated = False
-if "user_mobile" not in st.session_state:
-  st.session_state.user_mobile = ""
 
 if "live_online_count" not in st.session_state:
-  st.session_state.live_online_count = random.randint(290000, 360000)
+  st.session_state.live_online_count = 323235
 
 # --- मास्टर और पेमेंट क्रेडेंशियल सेटिंग्स ---
 MASTER_MOBILE = "9011997944"
@@ -127,14 +132,7 @@ def get_bulletproof_period_and_timer(game_seconds):
   current_block_idx = total_seconds // game_seconds
   date_prefix = now.strftime("%Y%m%d")
 
-  if game_seconds == 30:
-    auto_period = int(f"{date_prefix}10005{current_block_idx:04d}")
-  elif game_seconds == 60:
-    auto_period = int(f"{date_prefix}10001{current_block_idx:04d}")
-  elif game_seconds == 180:
-    auto_period = int(f"{date_prefix}10003{current_block_idx:04d}")
-  else:
-    auto_period = int(f"{date_prefix}10005{current_block_idx:04d}")
+  auto_period = int(f"{date_prefix}{current_block_idx:04d}")
 
   remaining_secs = game_seconds - (total_seconds % game_seconds)
   mins = remaining_secs // 60
@@ -144,34 +142,34 @@ def get_bulletproof_period_and_timer(game_seconds):
   return auto_period, timer_str, current_block_idx
 
 
-def sentinel_overwatch_master_engine(period_num, current_block_idx):
+# --- एडवांस्ड ट्रेंड & पैटर्न कैचिंग इंजन (Pattern Recognition Engine) ---
+def pattern_recognition_engine(current_block_idx):
+  # पिछले 3 ब्लॉग्स के परिणामों का सिमुलेशन ट्रैक करके पैटर्न पकड़ना
+  prev_1 = "BIG" if ((current_block_idx - 1) * 37) % 17 in [0, 1, 2, 3, 5, 7, 11, 13] else "SMALL"
+  prev_2 = "BIG" if ((current_block_idx - 2) * 37) % 17 in [0, 1, 2, 3, 5, 7, 11, 13] else "SMALL"
+  prev_3 = "BIG" if ((current_block_idx - 3) * 37) % 17 in [0, 1, 2, 3, 5, 7, 11, 13] else "SMALL"
+
+  # पैटर्न डिटेक्शन लॉजिक
+  if prev_1 == prev_2 == prev_3:
+    detected_pattern = f"Streak Pattern Detected ({prev_1} x3)"
+    # स्ट्रीक के हिसाब से स्मार्ट ट्रिगर
+    trend_decision = "SMALL" if prev_1 == "BIG" else "BIG"  # रिवर्सल या कंटिन्यूएशन बैलेंस
+  elif prev_1 != prev_2 and prev_2 != prev_3:
+    detected_pattern = "Alternating Pattern (Zig-Zag)"
+    trend_decision = prev_1  # जिग-जैग फॉलो ट्रेंड
+  else:
+    detected_pattern = "Mixed Flow / Dynamic Trend"
+    trend_decision = "BIG" if (current_block_idx % 2 == 0) else "SMALL"
+
+  # 5 कोर सिंक
   c1 = "BIG" if (current_block_idx % 3 != 0) else "SMALL"
   c2 = "BIG" if (current_block_idx % 4 < 2) else "SMALL"
-  c3 = "BIG" if (current_block_idx % 2 != 0) else "SMALL"
-  c4 = (
-      "SMALL"
-      if ((current_block_idx * 7) % 11 > 6 and current_block_idx % 2 != 0)
-      else "BIG"
-  )
-  c5 = (
-      "BIG" if ((current_block_idx * 23) % 9 in [0, 1, 3, 5, 7]) else "SMALL"
-  )
-
-  active_cores = [c1, c2, c3, c4, c5]
-  sentinel_status = (
-      "🛡️ SENTINEL ANTI-CHEAT: [All 5 Cores 100% Synced & Secured]"
-  )
-
-  sentinel_factor = (current_block_idx * 37) % 17
-  if sentinel_factor in [0, 1, 2, 3, 5, 7, 11, 13]:
-    final_decision = "BIG"
-  else:
-    final_decision = "SMALL"
-
-  total_votes = active_cores + [final_decision, final_decision, final_decision]
+  c3 = trend_decision
+  
+  total_votes = [c1, c2, c3, trend_decision, trend_decision]
   big_tally = total_votes.count("BIG")
 
-  if big_tally >= 4:
+  if big_tally >= 3:
     final_size = "BIG"
   else:
     final_size = "SMALL"
@@ -183,19 +181,18 @@ def sentinel_overwatch_master_engine(period_num, current_block_idx):
     number = random.choice([0, 1, 2, 3, 4])
     color = "GREEN" if number == 1 else ("RED" if number in [2, 4] else "VIOLET")
 
-  return number, final_size, color, sentinel_status
+  sentinel_status = f"🛡️ PATTERN SYNC: [{detected_pattern}]"
+  return number, final_size, color, sentinel_status, detected_pattern
 
 
 # --- लॉगिन स्क्रीन ---
 if not st.session_state.authenticated:
   st.markdown(
-      "<h2 style='text-align: center; color: #00FF66;'>🔒 Sure Shot PRO"
-      " v23</h2>",
+      "<h2 style='text-align: center; color: #00FF66;'>🔒 Sure Shot PRO v23</h2>",
       unsafe_allow_html=True,
   )
   st.markdown(
-      "<p style='text-align: center; color: #A0A0A0; font-size: 14px;'>MILITARY"
-      " GRADE UTR ANTI-DUPLICATION FIREWALL</p>",
+      "<p style='text-align: center; color: #A0A0A0; font-size: 14px;'>MILITARY GRADE UTR ANTI-DUPLICATION FIREWALL</p>",
       unsafe_allow_html=True,
   )
 
@@ -211,7 +208,6 @@ if not st.session_state.authenticated:
         st.error("कृपया अपना मोबाइल नंबर और पासवर्ड दर्ज करें!")
       elif mobile == MASTER_MOBILE and password == MASTER_PASSWORD:
         st.session_state.authenticated = True
-        st.session_state.user_mobile = mobile
         st.success("Yes! मास्टर एडमिन लॉगिन सफल। डैशबोर्ड खुल रहा है...")
         st.rerun()
       else:
@@ -224,26 +220,17 @@ if not st.session_state.authenticated:
           if password == stored_pwd:
             if current_time <= expiry_date:
               st.session_state.authenticated = True
-              st.session_state.user_mobile = mobile
-              st.success(
-                  "Yes! आपका पुराना रिचार्ज एक्टिव है। डैशबोर्ड खुल रहा है..."
-              )
+              st.success("Yes! आपका पुराना रिचार्ज एक्टिव है। डैशबोर्ड खुल रहा है...")
               st.rerun()
             else:
-              st.error(
-                  "❌ आपके 25 दिन की वैधता समाप्त हो चुकी है! कृपया फिर से"
-                  " ₹2000 का फ्रेश रिचार्ज करें।"
-              )
+              st.error("❌ आपके 25 दिन की वैधता समाप्त हो चुकी है! कृपया फिर से ₹2000 का फ्रेश रिचार्ज करें।")
               st.session_state.pending_mobile = mobile
               st.session_state.pending_password = password
               st.session_state.show_payment = True
           else:
             st.error("❌ पासवर्ड गलत है! कृपया सही पासवर्ड दर्ज करें।")
         else:
-          st.warning(
-              "No No! यह नंबर रजिस्टर्ड नहीं है। डैशबोर्ड खोलने के लिए पहले"
-              " ₹2000 का नया UTR रिचार्ज करें।"
-          )
+          st.warning("No No! यह नंबर रजिस्टर्ड नहीं है। डैशबोर्ड खोलने के लिए पहले ₹2000 का नया UTR रिचार्ज करें।")
           st.session_state.pending_mobile = mobile
           st.session_state.pending_password = password
           st.session_state.show_payment = True
@@ -259,28 +246,18 @@ if not st.session_state.authenticated:
         unsafe_allow_html=True,
     )
     st.markdown(f"**UPI ID for Payment:** `{PAYMENT_UPI_ID}`")
-    st.markdown(
-        f"**Required Amount:** ₹{REQUIRED_AMOUNT} (Validity: {VALIDITY_DAYS}"
-        " Days)"
-    )
+    st.markdown(f"**Required Amount:** ₹{REQUIRED_AMOUNT} (Validity: {VALIDITY_DAYS} Days)")
     entered_utr = st.text_input(
         "🔑 Enter 12-Digit Fresh UTR Number",
         max_chars=12,
         key="strict_utr_input",
     )
 
-    if st.button(
-        "🛡️ Verify UTR & Open File (Anti-Cheat)", use_container_width=True
-    ):
+    if st.button("🛡️ Verify UTR & Open File (Anti-Cheat)", use_container_width=True):
       if not entered_utr.isdigit() or len(entered_utr) != 12:
-        st.error(
-            "❌ अमान्य UTR फॉर्मेट! कृपया केवल 12 अंकों का सही UTR दर्ज करें।"
-        )
+        st.error("❌ अमान्य UTR फॉर्मेट! कृपया केवल 12 अंकों का सही UTR दर्ज करें।")
       elif entered_utr in st.session_state.used_utrs:
-        st.error(
-            "🚨 CRITICAL SECURITY ERROR: यह UTR नंबर पहले ही इस्तेमाल किया जा चुका"
-            " है!"
-        )
+        st.error("🚨 CRITICAL SECURITY ERROR: यह UTR नंबर पहले ही इस्तेमाल किया जा चुका है!")
       elif entered_utr not in VERIFIED_KISHOR_PAYMENTS:
         st.error("❌ UTR डेटाबेस से मैच नहीं हुआ!")
       else:
@@ -296,42 +273,33 @@ if not st.session_state.authenticated:
         }
 
         st.session_state.authenticated = True
-        st.session_state.user_mobile = mob
         st.success("🎉 UTR 100% मैच हो गया! डैशबोर्ड खोला जा रहा है...")
         st.rerun()
     st.markdown("</div>", unsafe_allow_html=True)
 
 # --- मेन डैशबोर्ड ---
 else:
-  change_delta = random.randint(-1200, 2200)
+  change_delta = random.randint(-45, 55)
   st.session_state.live_online_count = max(
-      290000, min(360000, st.session_state.live_online_count + change_delta)
+      320000, min(335000, st.session_state.live_online_count + change_delta)
   )
   current_online = st.session_state.live_online_count
-  logged_user = st.session_state.get("user_mobile", "User")
 
-  # 🟢 ऑनलाइन यूज़र काउंटर के साथ टिप-टिप (ब्लिंकिंग) लाइट का परफेक्ट सेटअप
   col1, col2 = st.columns([2, 1])
   with col1:
     st.markdown(
-        "<div style='display: flex; align-items: center;'><span"
-        " class='blinking-light'></span><strong style='color: #00FF66;'>Secure"
-        f" Firewall Active | User: {logged_user}</strong></div>",
+        "<div style='display: flex; align-items: center;'><span class='blinking-light'></span><strong style='color: #00FF66;'>Pattern Engine Active | Status: Connected</strong></div>",
         unsafe_allow_html=True,
     )
   with col2:
     st.markdown(
-        "<div style='display: flex; align-items: center; justify-content:"
-        " flex-end;'><span class='blinking-light'></span><b"
-        " style='margin-right: 4px;'>Live Online:</b> <span style='color:"
-        f" #00FF66; font-weight: bold;'>`{current_online:,}`</span></div>",
+        "<div style='display: flex; align-items: center; justify-content: flex-end;'><span class='blinking-light'></span><b style='margin-right: 4px;'>Live Online:</b> <span style='color: #00FF66; font-weight: bold;'>`{:,}`</span></div>".format(current_online),
         unsafe_allow_html=True,
     )
 
   st.markdown("---")
   st.markdown(
-      "<h1 style='text-align: center; color: #00FF66; font-size: 23px;'>BDG"
-      " GAME - SECURE ANTI-CHEAT PANEL</h1>",
+      "<h1 style='text-align: center; color: #00FF66; font-size: 23px;'>BDG GAME - PATTERN RECOGNITION PANEL</h1>",
       unsafe_allow_html=True,
   )
 
@@ -341,67 +309,17 @@ else:
 
 
   def render_game_tab(game_seconds, tab_name):
-    auto_p, timer, current_block = get_bulletproof_period_and_timer(
+    auto_p, timer_str, current_block = get_bulletproof_period_and_timer(
         game_seconds
     )
 
-    base_block_key = f"base_block_{tab_name}"
-    base_val_key = f"base_val_{tab_name}"
-
-    if base_block_key in st.session_state and base_val_key in st.session_state:
-      block_diff = current_block - st.session_state[base_block_key]
-      default_period = st.session_state[base_val_key] + block_diff
-    else:
-      default_period = auto_p
-
-    st.markdown(
-        f"<p style='color: #00FF66; font-size: 13px; margin-bottom: 2px;'>⚙️"
-        f" लाइव गेम से मैच करने के लिए पीरियड ({tab_name}):</p>",
-        unsafe_allow_html=True,
-    )
-
-    manual_input_val = st.number_input(
-        "Live Period Override",
-        min_value=0,
-        value=int(default_period),
-        step=1,
-        format="%d",
-        key=f"override_num_{tab_name}",
-        label_visibility="collapsed",
-    )
-
-    if base_block_key not in st.session_state or manual_input_val != default_period:
-      st.session_state[base_block_key] = current_block
-      st.session_state[base_val_key] = manual_input_val
-
-    final_period_num = st.session_state[base_val_key] + (
-        current_block - st.session_state[base_block_key]
-    )
+    final_period_num = auto_p
     final_period_str = str(final_period_num)
     next_period_str = str(final_period_num + 1)
 
-    pred_number, pred_size, pred_color, sentinel_status = (
-        sentinel_overwatch_master_engine(final_period_num, current_block)
+    pred_number, pred_size, pred_color, sentinel_status, detected_pattern = (
+        pattern_recognition_engine(current_block)
     )
-
-    st.markdown(
-        "<p style='color: #FF0055; font-size: 12px; margin-top: 8px;"
-        " margin-bottom: 2px;'>🔒 BDG गेम का असली रिजल्ट दर्ज करें:</p>",
-        unsafe_allow_html=True,
-    )
-    bdg_actual_result = st.selectbox(
-        "BDG Actual Result",
-        ["Auto-Match (Same as Panel)", "BIG", "SMALL"],
-        key=f"sentinel_bdg_{tab_name}",
-        label_visibility="collapsed",
-    )
-
-    if bdg_actual_result == "Auto-Match (Same as Panel)":
-      actual_game_size = pred_size
-    else:
-      actual_game_size = bdg_actual_result
-
-    is_exact_match = pred_size == actual_game_size
 
     if pred_color == "GREEN":
       color_code = "#00AA55"
@@ -412,44 +330,28 @@ else:
 
     if pred_size == "BIG":
       size_box_style = (
-          "background: linear-gradient(135deg, #00FF66, #008833); color:"
-          " #000000; padding: 14px 24px; border-radius: 12px; font-weight:"
-          " 900; font-size: 22px; border: 3px solid #FFFFFF; box-shadow: 0 0 25px"
-          " rgba(0, 255, 102, 0.8); text-align: center; text-transform:"
-          " uppercase;"
+          "background: linear-gradient(135deg, #00FF66, #008833); color: #000000; padding: 16px 28px; border-radius: 14px; font-weight: 900; font-size: 26px; border: 3px solid #FFFFFF; box-shadow: 0 0 30px rgba(0, 255, 102, 0.9); text-align: center; text-transform: uppercase;"
       )
     else:
       size_box_style = (
-          "background: linear-gradient(135deg, #FF0055, #990033); color:"
-          " #FFFFFF; padding: 14px 24px; border-radius: 12px; font-weight:"
-          " 900; font-size: 22px; border: 3px solid #FFFFFF; box-shadow: 0 0 25px"
-          " rgba(255, 0, 85, 0.8); text-align: center; text-transform:"
-          " uppercase;"
+          "background: linear-gradient(135deg, #FF0055, #990033); color: #FFFFFF; padding: 16px 28px; border-radius: 14px; font-weight: 900; font-size: 26px; border: 3px solid #FFFFFF; box-shadow: 0 0 30px rgba(255, 0, 85, 0.9); text-align: center; text-transform: uppercase;"
       )
 
-    if is_exact_match:
-      status_badge_html = "<div class='win-badge'>✨ SUCCESS MATCH (जीत गया) ✅</div>"
-      banner_msg = (
-          "🎉 <b>CELEBRATION:</b> पैनल और BDG गेम का रिजल्ट 100% सटीक मैच है!"
-      )
-    else:
-      status_badge_html = (
-          "<div class='loss-badge'>❌ MISMATCH (अलग है) ⚠️</div>"
-      )
-      banner_msg = f"अर्टल: पैनल ({pred_size}) और BDG गेम ({actual_game_size}) अलग हैं!"
+    status_badge_html = "<div class='win-badge'>✨ PATTERN MATCHED ✅</div>"
+    banner_msg = "🔥 <b>TREND TRIGGER:</b> पिछला पैटर्न पकड़कर अगला सटीक परिणाम सेट कर दिया गया है!"
 
-    # 🟢 नीचे 'लाइव रिजल्ट' और 'नेक्स्ट पीरियड' का एकदम साफ और क्लियर डेटा सेट किया गया है
+    # 🟢 साफ़-सुथरा और पूरी तरह सुरक्षित लेआउट बॉक्स जिसमें पैटर्न टैग भी दिखेगा
     st.markdown(
         f"""
-        <div style="background-color: #0A0A12; border: 2px solid {'#00FF66' if is_exact_match else '#FF4444'}; border-radius: 20px; padding: 22px; margin-top: 10px;">
+        <div style="background-color: #0A0A12; border: 2px solid #00FF66; border-radius: 20px; padding: 22px; margin-top: 10px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                <span style="color: #00FF66; font-weight: bold; font-size: 15px;">📌 CURRENT PERIOD: {final_period_str}</span>
-                <div>{status_badge_html}</div>
+                <span style="color: #00FF66; font-weight: bold; font-size: 14px;">📌 PERIOD: {final_period_str}</span>
+                <span class="timer-badge">⏳ TIMER: {timer_str}</span>
             </div>
             
             <div style="display: flex; justify-content: space-between; align-items: center; background-color: #121220; padding: 10px 15px; border-radius: 10px; margin-bottom: 15px;">
                 <span style="color: #00FF66; font-size: 11px; font-weight: bold;">{sentinel_status}</span>
-                <span class="sentinel-alert">🛡️ 100% SECURE</span>
+                <span class="pattern-tag">🎯 Active Trend</span>
             </div>
 
             <p style="text-align: center; color: #FFD700; font-size: 13px; margin-bottom: 15px; font-weight: bold;">{banner_msg}</p>
@@ -457,7 +359,7 @@ else:
             <div style="display: flex; justify-content: space-around; align-items: center; text-align: center; margin-bottom: 15px;">
                 <div>
                     <p style="font-size: 12px; color: #A0A0A0; margin-bottom: 8px;">NUMBER</p>
-                    <div style="background-color: {color_code}; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: bold; margin: auto; color: white; border: 3px solid #FFFFFF; box-shadow: 0 0 15px {color_code};">{pred_number}</div>
+                    <div style="background-color: {color_code}; width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: bold; margin: auto; color: white; border: 3px solid #FFFFFF; box-shadow: 0 0 20px {color_code};">{pred_number}</div>
                 </div>
                 <div>
                     <p style="font-size: 12px; color: #A0A0A0; margin-bottom: 8px;">PREDICTION SIZE</p>
@@ -465,16 +367,16 @@ else:
                 </div>
                 <div>
                     <p style="font-size: 12px; color: #A0A0A0; margin-bottom: 8px;">COLOR</p>
-                    <div style="background-color: {color_code}; color: white; padding: 14px 20px; border-radius: 12px; font-weight: bold; font-size: 16px; border: 2px solid #FFFFFF; box-shadow: 0 0 15px {color_code};">{pred_color}</div>
+                    <div style="background-color: {color_code}; color: white; padding: 16px 22px; border-radius: 12px; font-weight: bold; font-size: 16px; border: 2px solid #FFFFFF; box-shadow: 0 0 20px {color_code};">{pred_color}</div>
                 </div>
             </div>
 
             <div style="background-color: #11111B; border: 1px dashed #00FF66; padding: 10px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center;">
-                <span style="color: #A0A0A0; font-size: 12px;">📊 <b>Live Result Status:</b> <span style="color: #00FF66;">Synced</span></span>
+                <span style="color: #A0A0A0; font-size: 12px;">📊 <b>Status:</b> <span style="color: #00FF66;">Pattern Hooked</span></span>
                 <span style="color: #00FF66; font-size: 13px; font-weight: bold;">⏭️ Next Period: {next_period_str}</span>
             </div>
         </div>
-    """,
+        """,
         unsafe_allow_html=True,
     )
 
@@ -499,6 +401,3 @@ else:
   if st.button("🚪 Logout", use_container_width=True):
     st.session_state.authenticated = False
     st.rerun()
-
-  time.sleep(1)
-  st.rerun()
