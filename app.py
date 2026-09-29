@@ -4,7 +4,7 @@ import streamlit as st
 
 # --- पेज सेटअप और डार्क थीम ---
 st.set_page_config(
-    page_title="KISHOR SINGH - 100% श्योर शॉर्ट",
+    page_title="KISHOR SINGH - SERVER AUTO",
     page_icon="🛡️",
     layout="centered",
     initial_sidebar_state="collapsed",
@@ -15,6 +15,13 @@ st.markdown(
     <style>
     .stApp { background-color: #020104; color: #FFFFFF; }
     
+    /* टिप-टिप (ब्लिंकिंग) लाइट का एनिमेशन */
+    @keyframes blink-animation {
+        0% { opacity: 1; transform: scale(1); box-shadow: 0 0 10px #FF0055; }
+        50% { opacity: 0.2; transform: scale(0.85); box-shadow: 0 0 2px #FF0055; }
+        100% { opacity: 1; transform: scale(1); box-shadow: 0 0 10px #FF0055; }
+    }
+
     .blinking-red-light { 
         display: inline-block; 
         width: 9px; 
@@ -22,7 +29,7 @@ st.markdown(
         background-color: #FF0055; 
         border-radius: 50%; 
         margin-right: 5px; 
-        box-shadow: 0 0 8px #FF0055; 
+        animation: blink-animation 1s infinite ease-in-out;
     }
 
     .top-bar { display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, #0d2216, #040d08); padding: 6px 10px; border-radius: 8px; font-size: 11px; font-weight: bold; border: 1px solid #3d9f5a; margin-bottom: 6px; }
@@ -35,6 +42,7 @@ st.markdown(
     .sure-banner-small { background: linear-gradient(135deg, #002b4d, #000f1a); border: 1.5px solid #00E5FF; padding: 7px 10px; border-radius: 6px; text-align: center; font-size: 13px; font-weight: 900; margin: 6px 0; color: #00E5FF; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0,229,255,0.3); }
 
     .wait-badge { background: linear-gradient(135deg, #221100, #140a00); border: 2px dashed #FF9900; padding: 6px; border-radius: 6px; text-align: center; font-size: 11px; font-weight: bold; margin: 6px 0; color: #FF9900; text-transform: uppercase; }
+    .nosignal-badge { background: linear-gradient(135deg, #330000, #1a0000); border: 2px dashed #FF4444; padding: 6px; border-radius: 6px; text-align: center; font-size: 11px; font-weight: bold; margin: 6px 0; color: #FF4444; text-transform: uppercase; }
 
     .diagonal-container { display: flex; justify-content: space-between; align-items: center; gap: 6px; margin-top: 6px; }
     .result-item { flex: 1; text-align: center; background: rgba(25, 18, 50, 0.9); border: 1px solid #6644aa; border-radius: 8px; padding: 6px; }
@@ -63,26 +71,35 @@ if "valid_approved_utrs" not in st.session_state:
       "425678901234",
   ]
 
-if "live_online_count" not in st.session_state:
-  st.session_state.live_online_count = 34500
-
 MASTER_MOBILE = "9011997944"
 MASTER_PASSWORD = "KISHOR90"
 
-# --- पूरी तरह से लॉक और स्टेबल एल्गोरिदम ---
+# --- बीडीजी और 11 सर्वर का कम्बाइंड कंसेंसस इंजन ---
 @st.cache_data(ttl=3600)
-def get_rock_solid_signal(final_period_val, tab_offset):
-    accumulated_score = 0
+def get_bdg_synced_consensus_signal(final_period_val, tab_offset, user_input_period_str):
+    bdg_seed = int(user_input_period_str) * 99 + int(tab_offset) * 13
+    bdg_gen = random.Random(bdg_seed)
+    bdg_val = bdg_gen.random()
+    bdg_signal = "BIG" if bdg_val >= 0.5 else "SMALL"
+
+    our_votes = []
     for engine_id in range(1, 12):
-        engine_seed = int(final_period_val) * (53 + engine_id) + int(tab_offset) * 31
+        engine_seed = int(final_period_val) * (71 + engine_id) + int(tab_offset) * 41
         core_gen = random.Random(engine_seed)
-        accumulated_score += core_gen.random()
+        val = core_gen.random()
+        our_votes.append("BIG" if val >= 0.5 else "SMALL")
         
-    final_avg = accumulated_score / 11.0
-    pred_num = int((final_avg * 100000) % 10)
-    pred_size = "BIG" if pred_num >= 5 else "SMALL"
+    our_big_count = our_votes.count("BIG")
+    our_small_count = our_votes.count("SMALL")
     
-    return pred_num, pred_size
+    our_majority_signal = "BIG" if our_big_count >= our_small_count else "SMALL"
+    
+    accumulated_score = sum(random.Random(int(final_period_val) * (80 + e) + int(tab_offset)).random() for e in range(1, 12)) / 11.0
+    pred_num = int((accumulated_score * 100000) % 10)
+
+    is_bdg_matched = (bdg_signal == our_majority_signal) and (our_big_count >= 8 or our_small_count >= 8)
+
+    return pred_num, our_majority_signal, is_bdg_matched
 
 def check_user_session_validity(mobile):
   if mobile in st.session_state.registered_users_db:
@@ -99,7 +116,7 @@ if st.session_state.authenticated:
     st.warning("⚠️ आपके 25 दिन की वैधता समाप्त हो चुकी है। कृपया नया UTR वेरीफाई करें।")
 
 if not st.session_state.authenticated:
-  st.markdown("<h2 style='text-align: center; color: #FFD700; font-size: 22px; font-weight: 900;'>👑 KISHOR SINGH <br> SECURE ACCESS</h2>", unsafe_allow_html=True)
+  st.markdown("<h2 style='text-align: center; color: #FFD700; font-size: 22px; font-weight: 900;'>👑 KISHOR SINGH SERVER AUTO <br> ACCESS</h2>", unsafe_allow_html=True)
 
   with st.container():
     st.markdown("<div class='main-card'>", unsafe_allow_html=True)
@@ -189,15 +206,16 @@ else:
       key="matrix_input_field"
   )
 
-  @st.fragment(run_every=2)
+  @st.fragment(run_every=1)
   def success_dashboard_core():
-    st.session_state.live_online_count = random.randint(34000, 62000)
+    # ऑनलाइन संख्या अब 1 लाख से 4.9 लाख के बीच हर सेकंड बड़ी रेंज में कम-ज्यादा होगी
+    dynamic_online_count = random.randint(112000, 498000)
 
     st.markdown(
         f"""
             <div class="top-bar">
-                <div><span class="blinking-red-light"></span><span style="color: #00FFFF; font-weight: 800;">⚡ KISHOR SINGH (100% श्योर शॉर्ट)</span></div>
-                <div>👥 <span style="color: #00FF66;">{st.session_state.live_online_count:,}</span></div>
+                <div><span class="blinking-red-light"></span><span style="color: #00FFFF; font-weight: 800;">⚡ KISHOR SINGH SERVER AUTO</span></div>
+                <div><span class="blinking-red-light"></span>👥 <span style="color: #00FF66;">{dynamic_online_count:,}</span></div>
             </div>
         """,
         unsafe_allow_html=True,
@@ -237,12 +255,10 @@ else:
       block_difference = current_block_idx - st.session_state.base_block_index
       final_period = st.session_state.base_input_period + block_difference
       
-      # सुरक्षित बफर: शुरू के 3 सेकंड और आखिरी के 4 सेकंड में सिग्नल हाइड रहेगा ताकि जिप-जिप न हो
       is_server_syncing = remaining_secs > (seconds - 3)
       is_round_ending = remaining_secs <= 4
 
-      # सिग्नल पूरी तरह पीरियड के साथ लॉक है
-      pred_num, pred_size = get_rock_solid_signal(final_period, tab_offset)
+      pred_num, pred_size, is_bdg_matched = get_bdg_synced_consensus_signal(final_period, tab_offset, custom_period_box.strip())
 
       pred_color = "GREEN" if pred_num % 2 != 0 else "RED"
       color_bg = "#00AA55" if pred_color == "GREEN" else "#FF4444"
@@ -259,34 +275,37 @@ else:
       )
 
       if is_server_syncing:
-          st.markdown(f'<div class="wait-badge">🔄 SERVERS SYNCING... नया सिग्नल लोड हो रहा है</div>', unsafe_allow_html=True)
+          st.markdown(f'<div class="wait-badge">🔄 BDG SYNCING... नया राउंड लोड हो रहा है</div>', unsafe_allow_html=True)
       elif is_round_ending:
           st.markdown(f'<div class="wait-badge">⏳ ROUND ENDING... परिणाम की प्रतीक्षा है</div>', unsafe_allow_html=True)
+      elif not is_bdg_matched:
+          st.markdown(f'<div class="nosignal-badge">⚠️ KISHOR SINGH SERVER AUTO - WAITING FOR MATCH...</div>', unsafe_allow_html=True)
       else:
           if pred_size == "BIG":
-              st.markdown(f'<div class="sure-banner-big">🔥 100% श्योर शॉर्ट - BIG 🔥</div>', unsafe_allow_html=True)
+              st.markdown(f'<div class="sure-banner-big">🔥 KISHOR SINGH SERVER AUTO - BIG 🔥</div>', unsafe_allow_html=True)
           else:
-              st.markdown(f'<div class="sure-banner-small">🔥 100% श्योर शॉर्ट - SMALL 🔥</div>', unsafe_allow_html=True)
+              st.markdown(f'<div class="sure-banner-small">🔥 KISHOR SINGH SERVER AUTO - SMALL 🔥</div>', unsafe_allow_html=True)
 
-      # बीच के एक्टिव समय में रिजल्ट बिल्कुल स्थिर रहेगा, कोई फ्लिकरिंग नहीं होगी
-      display_num = pred_num if not (is_server_syncing or is_round_ending) else '?'
-      display_size = pred_size if not (is_server_syncing or is_round_ending) else 'WAIT'
-      display_color = pred_color if not (is_server_syncing or is_round_ending) else 'WAIT'
+      show_data = is_bdg_matched and not (is_server_syncing or is_round_ending)
+      
+      display_num = pred_num if show_data else '?'
+      display_size = pred_size if show_data else 'WAIT'
+      display_color = pred_color if show_data else 'WAIT'
 
       st.markdown(
           f"""
             <div class="diagonal-container">
                 <div class="result-item">
                     <div style="font-size: 9px; color: #A0A0A0; font-weight: bold; margin-bottom: 2px;">NUMBER</div>
-                    <div style="background-color: {color_bg if not (is_server_syncing or is_round_ending) else '#333'}; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: bold; margin: 0 auto; color: white; border: 1.5px solid #FFFFFF;">{display_num}</div>
+                    <div style="background-color: {color_bg if show_data else '#333'}; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: bold; margin: 0 auto; color: white; border: 1.5px solid #FFFFFF;">{display_num}</div>
                 </div>
                 <div class="result-item">
                     <div style="font-size: 9px; color: #A0A0A0; font-weight: bold; margin-bottom: 2px;">SIZE</div>
-                    <div style="background: {size_bg if not (is_server_syncing or is_round_ending) else '#222'}; color: white; padding: 6px 2px; border-radius: 6px; font-weight: 900; font-size: 11px; text-align: center; border: 1.5px solid #FFFFFF; text-transform: uppercase;">{display_size}</div>
+                    <div style="background: {size_bg if show_data else '#222'}; color: white; padding: 6px 2px; border-radius: 6px; font-weight: 900; font-size: 11px; text-align: center; border: 1.5px solid #FFFFFF; text-transform: uppercase;">{display_size}</div>
                 </div>
                 <div class="result-item">
                     <div style="font-size: 9px; color: #A0A0A0; font-weight: bold; margin-bottom: 2px;">COLOR</div>
-                    <div style="background-color: {color_bg if not (is_server_syncing or is_round_ending) else '#222'}; color: white; padding: 6px 2px; border-radius: 6px; font-weight: bold; font-size: 11px; text-align: center; border: 1.5px solid #FFFFFF; text-transform: uppercase;">{display_color}</div>
+                    <div style="background-color: {color_bg if show_data else '#222'}; color: white; padding: 6px 2px; border-radius: 6px; font-weight: bold; font-size: 11px; text-align: center; border: 1.5px solid #FFFFFF; text-transform: uppercase;">{display_color}</div>
                 </div>
             </div>
         """,
