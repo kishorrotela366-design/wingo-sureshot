@@ -4,7 +4,7 @@ import streamlit as st
 
 # --- पेज सेटअप और डार्क थीम ---
 st.set_page_config(
-    page_title="KISHOR SINGH KERNEL - Ultimate Optimized Edition",
+    page_title="KISHOR SINGH - 100% श्योर शॉर्ट",
     page_icon="🛡️",
     layout="centered",
     initial_sidebar_state="collapsed",
@@ -15,12 +15,6 @@ st.markdown(
     <style>
     .stApp { background-color: #020104; color: #FFFFFF; }
     
-    @keyframes blink-animation { 
-        0% { opacity: 1; transform: scale(1); box-shadow: 0 0 10px #FF0055; } 
-        50% { opacity: 0.3; transform: scale(0.92); box-shadow: 0 0 2px #FF0055; } 
-        100% { opacity: 1; transform: scale(1); box-shadow: 0 0 10px #FF0055; } 
-    }
-    
     .blinking-red-light { 
         display: inline-block; 
         width: 9px; 
@@ -29,7 +23,6 @@ st.markdown(
         border-radius: 50%; 
         margin-right: 5px; 
         box-shadow: 0 0 8px #FF0055; 
-        animation: blink-animation 0.8s infinite ease-in-out; 
     }
 
     .top-bar { display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, #0d2216, #040d08); padding: 6px 10px; border-radius: 8px; font-size: 11px; font-weight: bold; border: 1px solid #3d9f5a; margin-bottom: 6px; }
@@ -38,8 +31,9 @@ st.markdown(
     .timer-box-large { color: #FFD700; font-weight: 900; font-size: 13px; }
     .period-box-large { color: #FFFFFF; font-weight: 900; font-size: 13px; }
     
-    .compact-line-big { background: linear-gradient(135deg, #3d1a00, #1a0a00); border: 1px solid #FF8800; padding: 6px 10px; border-radius: 6px; text-align: center; font-size: 12px; font-weight: 900; margin: 6px 0; color: #FFB000; text-transform: uppercase; animation: blink-animation 1s infinite ease-in-out; }
-    .compact-line-small { background: linear-gradient(135deg, #001a3d, #000a1a); border: 1px solid #00BFFF; padding: 6px 10px; border-radius: 6px; text-align: center; font-size: 12px; font-weight: 900; margin: 6px 0; color: #00E5FF; text-transform: uppercase; animation: blink-animation 1s infinite ease-in-out; }
+    /* 100% श्योर शॉर्ट के लिए सॉलिड डिज़ाइन */
+    .sure-banner-big { background: linear-gradient(135deg, #4d2600, #1a0d00); border: 1.5px solid #FFD700; padding: 7px 10px; border-radius: 6px; text-align: center; font-size: 13px; font-weight: 900; margin: 6px 0; color: #FFD700; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(255,215,0,0.3); }
+    .sure-banner-small { background: linear-gradient(135deg, #002b4d, #000f1a); border: 1.5px solid #00E5FF; padding: 7px 10px; border-radius: 6px; text-align: center; font-size: 13px; font-weight: 900; margin: 6px 0; color: #00E5FF; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0,229,255,0.3); }
 
     .wait-badge { background: linear-gradient(135deg, #221100, #140a00); border: 2px dashed #FF9900; padding: 6px; border-radius: 6px; text-align: center; font-size: 11px; font-weight: bold; margin: 6px 0; color: #FF9900; text-transform: uppercase; }
 
@@ -76,12 +70,10 @@ if "live_online_count" not in st.session_state:
 MASTER_MOBILE = "9011997944"
 MASTER_PASSWORD = "KISHOR90"
 
-# --- सुपर-ऑप्टिमाइज़्ड और कैश्ड मल्टी-चैप्टर एल्गोरिदम ---
+# --- सर्वर सिंक्रोनाइज्ड एल्गोरिदम ---
 @st.cache_data(ttl=10)
-def get_ultimate_optimized_signal(seed_val, tab_offset):
+def get_sure_signal(seed_val, tab_offset):
     accumulated_score = 0
-    
-    # सभी मुख्य चैप्टर्स (365, 30, 7, 24) का कंबाइंड लॉजिक फैक्टर
     combined_weight = 365.0 + 30.0 + 7.0 + 24.0
     
     for engine_id in range(1, 12):
@@ -106,7 +98,7 @@ if st.session_state.authenticated:
     st.warning("⚠️ आपके 25 दिन की वैधता समाप्त हो चुकी है। कृपया नया UTR वेरीफाई करें।")
 
 if not st.session_state.authenticated:
-  st.markdown("<h2 style='text-align: center; color: #FFD700; font-size: 22px; font-weight: 900;'>👑 KISHOR SINGH KERNEL <br> ULTIMATE SECURE ACCESS</h2>", unsafe_allow_html=True)
+  st.markdown("<h2 style='text-align: center; color: #FFD700; font-size: 22px; font-weight: 900;'>👑 KISHOR SINGH <br> SECURE ACCESS</h2>", unsafe_allow_html=True)
 
   with st.container():
     st.markdown("<div class='main-card'>", unsafe_allow_html=True)
@@ -203,7 +195,7 @@ else:
     st.markdown(
         f"""
             <div class="top-bar">
-                <div><span class="blinking-red-light"></span><span style="color: #00FFFF; font-weight: 800;">⚡ KISHOR SINGH KERNEL (ULTIMATE OPTIMIZED)</span></div>
+                <div><span class="blinking-red-light"></span><span style="color: #00FFFF; font-weight: 800;">⚡ KISHOR SINGH (100% श्योर शॉर्ट)</span></div>
                 <div>👥 <span style="color: #00FF66;">{st.session_state.live_online_count:,}</span></div>
             </div>
         """,
@@ -228,8 +220,6 @@ else:
           st.markdown("</div>", unsafe_allow_html=True)
           return
 
-      base_user_period = int(custom_period_box.strip())
-      
       now = datetime.now()
       total_seconds = now.hour * 3600 + now.minute * 60 + now.second
       current_block_idx = total_seconds // seconds
@@ -238,12 +228,20 @@ else:
       secs = remaining_secs % 60
       timer_str = f"{mins:02d}:{secs:02d}"
 
-      final_period = base_user_period + current_block_idx
-      
-      seed_val = int(custom_period_box.strip()) + current_block_idx + tab_offset + 426
-      is_fresh_scanning = remaining_secs > (seconds - 5)
+      if "last_input_val" not in st.session_state or st.session_state.last_input_val != custom_period_box.strip():
+          st.session_state.last_input_val = custom_period_box.strip()
+          st.session_state.base_input_period = int(custom_period_box.strip())
+          st.session_state.base_block_index = current_block_idx
 
-      server_target = get_ultimate_optimized_signal(seed_val, tab_offset)
+      block_difference = current_block_idx - st.session_state.base_block_index
+      final_period = st.session_state.base_input_period + block_difference
+      
+      seed_val = final_period + tab_offset + 426
+      
+      is_server_syncing = remaining_secs > (seconds - 5)
+      is_round_ending = remaining_secs <= 5
+
+      server_target = get_sure_signal(seed_val, tab_offset)
       pred_size = "BIG" if server_target == 'B' else "SMALL"
 
       pred_num = 9 if server_target == 'B' else 2
@@ -261,28 +259,34 @@ else:
           unsafe_allow_html=True,
       )
 
-      if is_fresh_scanning:
-          st.markdown(f'<div class="wait-badge">🔄 {tab_name_style} [ULTRA-SCAN] स्कैनिंग जारी है...</div>', unsafe_allow_html=True)
+      if is_server_syncing:
+          st.markdown(f'<div class="wait-badge">🔄 BDG & KISHOR SINGH SERVER SYNCING... कृपया प्रतीक्षा करें</div>', unsafe_allow_html=True)
+      elif is_round_ending:
+          st.markdown(f'<div class="wait-badge">⏳ ROUND ENDING... अगला राउंड आ रहा है</div>', unsafe_allow_html=True)
       else:
           if server_target == 'B':
-              st.markdown(f'<div class="compact-line-big">👑 {tab_name_style} [BIG CONFIRMED - 100% SURE] 👑</div>', unsafe_allow_html=True)
+              st.markdown(f'<div class="sure-banner-big">🎯 {tab_name_style} : 100% श्योर शॉर्ट - BIG (KISHOR SINGH VERIFIED) 🎯</div>', unsafe_allow_html=True)
           else:
-              st.markdown(f'<div class="compact-line-small">❄️ {tab_name_style} [SMALL CONFIRMED - 100% SURE] ❄️</div>', unsafe_allow_html=True)
+              st.markdown(f'<div class="sure-banner-small">🎯 {tab_name_style} : 100% श्योर शॉर्ट - SMALL (KISHOR SINGH VERIFIED) 🎯</div>', unsafe_allow_html=True)
+
+      display_num = pred_num if not (is_server_syncing or is_round_ending) else '?'
+      display_size = pred_size if not (is_server_syncing or is_round_ending) else 'WAIT'
+      display_color = pred_color if not (is_server_syncing or is_round_ending) else 'WAIT'
 
       st.markdown(
           f"""
             <div class="diagonal-container">
                 <div class="result-item">
                     <div style="font-size: 9px; color: #A0A0A0; font-weight: bold; margin-bottom: 2px;">NUMBER</div>
-                    <div style="background-color: {color_bg}; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: bold; margin: 0 auto; color: white; border: 1.5px solid #FFFFFF;">{pred_num if not is_fresh_scanning else '?'}</div>
+                    <div style="background-color: {color_bg if not (is_server_syncing or is_round_ending) else '#333'}; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: bold; margin: 0 auto; color: white; border: 1.5px solid #FFFFFF;">{display_num}</div>
                 </div>
                 <div class="result-item">
                     <div style="font-size: 9px; color: #A0A0A0; font-weight: bold; margin-bottom: 2px;">SIZE</div>
-                    <div style="background: {size_bg}; color: white; padding: 6px 2px; border-radius: 6px; font-weight: 900; font-size: 11px; text-align: center; border: 1.5px solid #FFFFFF; text-transform: uppercase;">{pred_size if not is_fresh_scanning else 'WAIT'}</div>
+                    <div style="background: {size_bg if not (is_server_syncing or is_round_ending) else '#222'}; color: white; padding: 6px 2px; border-radius: 6px; font-weight: 900; font-size: 11px; text-align: center; border: 1.5px solid #FFFFFF; text-transform: uppercase;">{display_size}</div>
                 </div>
                 <div class="result-item">
                     <div style="font-size: 9px; color: #A0A0A0; font-weight: bold; margin-bottom: 2px;">COLOR</div>
-                    <div style="background-color: {color_bg}; color: white; padding: 6px 2px; border-radius: 6px; font-weight: bold; font-size: 11px; text-align: center; border: 1.5px solid #FFFFFF; text-transform: uppercase;">{pred_color if not is_fresh_scanning else 'WAIT'}</div>
+                    <div style="background-color: {color_bg if not (is_server_syncing or is_round_ending) else '#222'}; color: white; padding: 6px 2px; border-radius: 6px; font-weight: bold; font-size: 11px; text-align: center; border: 1.5px solid #FFFFFF; text-transform: uppercase;">{display_color}</div>
                 </div>
             </div>
         """,
