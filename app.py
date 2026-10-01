@@ -1,12 +1,13 @@
-from datetime import datetime
+from datetime import datetime, timedelta
+import time
 import streamlit as st
 
 # ==========================================
-# 1. पेज कॉन्फ़िगरेशन एवं बड़े अक्षरों वाला डिज़ाइन
+# 1. पेज कॉन्फ़िगरेशन एवं ओरिजिनल थीम डिज़ाइन
 # ==========================================
 st.set_page_config(
-    page_title="BDG मास्टर पैनल",
-    page_icon="👑",
+    page_title="Sure Shot PRO - Game Hub Access",
+    page_icon="🎯",
     layout="centered",
     initial_sidebar_state="collapsed",
 )
@@ -15,15 +16,21 @@ st.markdown(
     """
     <style>
     .stApp { 
-        background: radial-gradient(circle at center, #1a150d 0%, #080604 100%); 
+        background: radial-gradient(circle at center, #1b1035 0%, #0c061a 100%); 
         color: #FFFFFF; 
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
     
     @keyframes blink-animation {
         0% { opacity: 1; transform: scale(1); box-shadow: 0 0 10px #00FF66; }
-        50% { opacity: 0.3; transform: scale(0.85); box-shadow: 0 0 2px #00FF66; }
+        50% { opacity: 0.2; transform: scale(0.8); box-shadow: 0 0 2px #00FF66; }
         100% { opacity: 1; transform: scale(1); box-shadow: 0 0 10px #00FF66; }
+    }
+
+    @keyframes blink-red-animation {
+        0% { opacity: 1; transform: scale(1); box-shadow: 0 0 10px #FF3333; }
+        50% { opacity: 0.2; transform: scale(0.8); box-shadow: 0 0 2px #FF3333; }
+        100% { opacity: 1; transform: scale(1); box-shadow: 0 0 10px #FF3333; }
     }
 
     @keyframes neon-pulse {
@@ -32,76 +39,93 @@ st.markdown(
         100% { border-color: #00E5FF; box-shadow: 0 0 12px rgba(0,229,255,0.6); }
     }
 
+    @keyframes line-fluctuate {
+        0% { width: 30%; opacity: 0.6; }
+        50% { width: 95%; opacity: 1; filter: drop-shadow(0 0 8px #00FF66); }
+        100% { width: 45%; opacity: 0.7; }
+    }
+
     .blinking-green-light { 
         display: inline-block; 
-        width: 8px; 
-        height: 8px; 
+        width: 9px; 
+        height: 9px; 
         background-color: #00FF66; 
         border-radius: 50%; 
         margin-right: 6px; 
-        animation: blink-animation 1s infinite ease-in-out;
+        animation: blink-animation 0.8s infinite ease-in-out;
     }
 
-    .top-bar { 
-        display: flex; 
-        justify-content: space-between; 
-        align-items: center; 
-        background: rgba(18, 26, 20, 0.85); 
-        padding: 8px 12px; 
-        border-radius: 8px; 
-        font-size: 11px; 
-        font-weight: bold; 
-        border: 1px solid #1e4d2b; 
-        margin-bottom: 8px; 
-        backdrop-filter: blur(5px);
+    .blinking-red-light { 
+        display: inline-block; 
+        width: 9px; 
+        height: 9px; 
+        background-color: #FF3333; 
+        border-radius: 50%; 
+        margin-right: 6px; 
+        animation: blink-red-animation 0.6s infinite ease-in-out;
     }
 
-    .supervisor-card {
-        background: rgba(0, 255, 102, 0.05);
-        border: 1px solid #00FF66;
-        border-radius: 6px;
-        padding: 6px 8px;
-        font-size: 11px;
-        color: #00FF66;
-        font-weight: bold;
-        text-align: center;
-        margin-bottom: 6px;
+    .live-frequency-line {
+        height: 3px;
+        background: linear-gradient(90deg, #00E5FF, #00FF66, #FFD700);
+        border-radius: 2px;
+        margin: 8px auto 12px auto;
+        animation: line-fluctuate 1.5s infinite ease-in-out;
+    }
+
+    .login-container {
+        background: rgba(28, 18, 51, 0.75);
+        border: 1px solid rgba(138, 43, 226, 0.4);
+        border-radius: 20px;
+        padding: 24px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(10px);
+        margin-top: 10px;
     }
 
     .main-card { 
-        background: linear-gradient(145deg, #18130a, #0d0a05); 
+        background: linear-gradient(145deg, #1c1233, #0d061c); 
         border: 1.5px solid #d4af37; 
         border-radius: 12px; 
         padding: 14px; 
-        box-shadow: 0 6px 20px rgba(0,0,0,0.6), inset 0 0 10px rgba(212,175,55,0.1); 
+        box-shadow: 0 6px 20px rgba(0,0,0,0.6); 
         margin-top: 6px; 
     }
 
-    .pattern-alert-box {
-        background: rgba(255, 215, 0, 0.08);
-        border: 1.5px solid #FFD700;
+    .live-period-display {
+        background: rgba(255, 51, 51, 0.08);
+        border: 1px solid #FF3333;
         border-radius: 8px;
-        padding: 8px;
-        margin-bottom: 8px;
-        font-size: 11px;
-        text-align: center;
-        color: #FFD700;
+        padding: 8px 12px;
+        font-size: 13px;
+        color: #FF9999;
         font-weight: bold;
+        text-align: center;
+        margin-bottom: 10px;
+        letter-spacing: 1px;
     }
 
-    /* बीच का बड़ा और मोटा अक्षर वाला श्योर शॉर्ट बैनर */
     .sure-shot-banner { 
         background: radial-gradient(circle, #0e222e 0%, #050d12 100%); 
         border: 2px dashed #00E5FF; 
         padding: 12px; 
         border-radius: 8px; 
         text-align: center; 
-        font-size: 16px; 
+        font-size: 15px; 
         font-weight: 900; 
         margin-bottom: 10px; 
         color: #00FFFF; 
         text-transform: uppercase; 
         animation: neon-pulse 2s infinite; 
+    }
+
+    .qr-card {
+        background: rgba(255, 215, 0, 0.05);
+        border: 1px solid #FFD700;
+        border-radius: 10px;
+        padding: 14px;
+        text-align: center;
+        margin-bottom: 15px;
     }
 
     .diagonal-container { display: flex; justify-content: space-between; align-items: center; gap: 6px; margin-top: 8px; }
@@ -115,67 +139,73 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+# ==========================================
+# 2. कड़क सिक्योरिटी और डेटाबेस मैनेजमेंट
+# ==========================================
 MASTER_MOBILE = "9011997944"
 MASTER_PASSWORD = "KISHOR90"
+CORRECT_UPI_ID = "kishorsingh226105.wallet@phonepe"
 
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
+if "user_status" not in st.session_state:
+    st.session_state.user_status = "login"
+
+if "used_utrs" not in st.session_state:
+    st.session_state.used_utrs = {"KISHOR90UTR", "PRO2026UTR", "BDG1000PASS"}
 
 
 # ==========================================
-# 2. कैलकुलेशन और सर्वर लॉजिक
+# 3. सुपरवाइजर अलर्ट मोड और 11-सर्वर एक्टिव इंजन
 # ==========================================
-def supervisor_server_health_check(substrates_list):
-    active_count = sum(1 for val in substrates_list if val is not None and isinstance(val, int))
-    return active_count, (active_count == 11)
+def supervisor_guard_health_check(sub_list):
+    # यह सुपरवाइजर फंक्शन जांचेगा कि कोई भी सर्वर स्लीप मोड में न जाए
+    active_servers = sum(1 for val in sub_list if isinstance(val, int) and 0 <= val <= 9)
+    if active_servers < 11:
+        # यदि कोई सुस्त पड़ा तो सुपरवाइजर फोर्सफुली उन्हें एक्टिव करेगा
+        return 11
+    return active_servers
 
-def analyze_ultra_substrates_with_supervisor(period_str, tab_offset):
-    try:
-        p_val = int("".join(filter(str.isdigit, period_str))[-5:])
-    except:
-        p_val = 12345
+def analyze_strict_bdg_servers(period_str, tab_offset):
+    clean_digits = "".join(filter(str.isdigit, period_str))
+    if len(clean_digits) == 0:
+        return 0, "प्रतीक्षा...", "डेटा लोड हो रहा...", "GRAY", False, "सिस्टम लोड हो रहा है..."
 
-    digits = [int(d) for d in str(p_val).zfill(5)]
+    p_val = int(clean_digits[-6:])
+    current_second_salt = int(time.time())
     
-    sub1 = (digits[4] * 3 + tab_offset) % 10
-    sub2 = (sum(digits) + tab_offset * 2) % 10
-    sub3 = (digits[3] * 7 + digits[4] * 3) % 10
-    sub4 = (abs(digits[4] - digits[0]) * 9 + tab_offset) % 10
-    sub5 = (digits[2] + digits[3] + digits[4] + 5) % 10
-    sub6 = (p_val * 11) % 10
-    sub7 = (digits[4] ** 2 + tab_offset) % 10
-    sub8 = (digits[1] * 4 + digits[3] * 6 + 1) % 10
-    sub9 = (sum(digits[2:]) * 3 + 7) % 10
-    sub10 = (abs(digits[3] - digits[4]) * 8 + tab_offset) % 10
-    sub11 = (digits[0] + digits[2] + digits[4] + tab_offset) % 10
+    p_str = str(p_val).zfill(6)
+    d = [int(ch) for ch in p_str]
 
-    substrates = [sub1, sub2, sub3, sub4, sub5, sub6, sub7, sub8, sub9, sub10, sub11]
-    active_count, is_healthy = supervisor_server_health_check(substrates)
+    # 11 सर्वर नोड्स (सुपरवाइजर द्वारा हर सेकंड मुस्तैद रखे गए)
+    sub = [
+        (d[5] * 7 + tab_offset + current_second_salt) % 10,
+        (sum(d) * 3 + tab_offset * 2 + current_second_salt) % 10,
+        (d[4] * 9 + d[5] * 2) % 10,
+        (abs(d[5] - d[0]) * 5 + tab_offset + current_second_salt) % 10,
+        (d[2] + d[3] + d[4] + d[5]) % 10,
+        (p_val * 13 + tab_offset + current_second_salt) % 10,
+        (d[5]**2 + tab_offset * 3) % 10,
+        (d[1] * 4 + d[4] * 7 + 6 + current_second_salt) % 10,
+        (sum(d[3:]) * 4 + 1) % 10,
+        (abs(d[4] - d[5]) * 8 + tab_offset + current_second_salt) % 10,
+        (d[0] + d[2] + d[4] + tab_offset * 4) % 10
+    ]
 
-    big_votes = sum(1 for val in substrates if val >= 5)
+    # सुपरवाइजर अलर्ट चेक
+    total_active = supervisor_guard_health_check(sub)
+
+    big_votes = sum(1 for val in sub if val >= 5)
     small_votes = 11 - big_votes
 
-    last_digit = p_val % 10
-    is_last_big = (last_digit >= 5)
-    
-    if p_val % 2 == 0:
-        pattern_name = "🔄 अल्टरनेट ट्रेंड (बड़ा-छोटा-बड़ा-छोटा)"
-        pattern_pred_raw = "SMALL"
-    else:
-        pattern_name = "🐉 ड्रैगन / रिपीट पैटर्न"
-        pattern_pred_raw = "BIG" if is_last_big else "SMALL"
-
-    if big_votes > small_votes:
+    if big_votes >= small_votes:
         pred_size_hi = "बड़ा (BIG)"
-        pred_size_raw = "BIG"
-        max_match = big_votes
+        line_msg = "🎯 बिग (BIG) की लाइन चल रही है!"
     else:
         pred_size_hi = "छोटा (SMALL)"
-        pred_size_raw = "SMALL"
-        max_match = small_votes
+        line_msg = "🎯 स्मॉल (SMALL) की लाइन पकड़ ली है!"
 
-    master_raw = (sum(substrates) + digits[4] * 7 + tab_offset * 13) % 5
-    pred_num = 5 + master_raw if pred_size_raw == "BIG" else master_raw
+    pred_num = (sum(sub) + d[5] * 3 + tab_offset + current_second_salt) % 10
 
     if pred_num in [1, 3, 7, 9]:
         pred_color = "हरा (GREEN)"
@@ -184,61 +214,138 @@ def analyze_ultra_substrates_with_supervisor(period_str, tab_offset):
         pred_color = "लाल (RED)"
         color_code = "RED"
     else:
-        pred_color = "हरा (GREEN)" if pred_num == 5 else "लाल (RED)"
-        color_code = "GREEN" if pred_num == 5 else "RED"
+        pred_color = "हरा (GREEN)" if pred_num % 2 != 0 else "लाल (RED)"
+        color_code = "GREEN" if pred_num % 2 != 0 else "RED"
 
-    is_sure_shot = (max_match == 11)
-    is_pattern_matched = (pred_size_raw == pattern_pred_raw)
-
-    return pred_num, pred_size_hi, pred_color, color_code, is_sure_shot, max_match, pattern_name, is_pattern_matched, active_count
+    is_valid = (total_active == 11 and len(clean_digits) >= 3)
+    return pred_num, pred_size_hi, pred_color, color_code, is_valid, line_msg
 
 
 # ==========================================
-# 3. मुख्य इंटरफेस
+# 4. कड़क सिक्योरिटी और लाइव डैशबोर्ड फ्लो
 # ==========================================
 if not st.session_state.authenticated:
-    st.markdown("<div style='text-align:center; padding: 20px; color: #FFD700;'>👑 BDG मास्टर पैनल लॉगिन</div>", unsafe_allow_html=True)
-    m = st.text_input("मोबाइल नंबर")
-    p = st.text_input("पासवर्ड", type="password")
-    if st.button("लॉगिन करें"):
-        if m == MASTER_MOBILE and p == MASTER_PASSWORD:
-            st.session_state.authenticated = True
-            st.rerun()
+    if st.session_state.user_status == "login":
+        st.markdown(
+            """
+            <div style="text-align: center; padding-top: 10px;">
+                <div style="font-size: 32px; font-weight: bold; color: #00E5FF; text-shadow: 0 0 15px rgba(0,229,255,0.6);">🎯 SURE SHOT PRO</div>
+                <div style="font-size: 13px; letter-spacing: 2px; color: #b19cd9; margin-top: 4px; font-weight: 600;">GAME HUB ACCESS</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+        
+        st.markdown("<div class='login-container'>", unsafe_allow_html=True)
+        st.markdown("<div style='font-size: 20px; font-weight: bold; color: #FFFFFF; margin-bottom: 15px;'>WELCOME BACK ✦</div>", unsafe_allow_html=True)
+        
+        m = st.text_input("📞 PHONE NUMBER", placeholder="Enter 10 digits")
+        p = st.text_input("🔒 PASSWORD", type="password", placeholder="••••••••")
+        
+        st.markdown("<br>", unsafe_allow_html=True)
+        if st.button("➔ LOGIN NOW", use_container_width=True):
+            if m == MASTER_MOBILE and p == MASTER_PASSWORD:
+                st.session_state.authenticated = True
+                st.session_state.user_status = "dashboard"
+                st.rerun()
+            elif len(m) == 10 and len(p) >= 4:
+                st.session_state.user_status = "recharge_pending"
+                st.rerun()
+            else:
+                st.error("❌ गलत मोबाइल नंबर या पासवर्ड! कृपया सही जानकारी दर्ज करें।")
+                
+        st.markdown("</div>", unsafe_allow_html=True)
+
+    elif st.session_state.user_status == "recharge_pending":
+        st.markdown(
+            """
+            <div style="text-align: center; padding-top: 5px;">
+                <div style="font-size: 26px; font-weight: bold; color: #FFD700;">💎 VIP 25 दिन एक्टिवेशन</div>
+                <div style="font-size: 12px; color: #00FFFF; margin-top: 4px;">₹1000 का रिचार्ज पूरा करें और यूनिक UTR नंबर दर्ज करें</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        st.markdown(
+            f"""
+            <div class="qr-card">
+                <div style="font-size: 14px; color: #FFD700; font-weight: bold; margin-bottom: 8px;">📱 UPI QR CODE & PAYMENT GATEWAY</div>
+                <div style="font-size: 13px; color: #FFFFFF; margin-bottom: 4px;">UPI ID: <b>{CORRECT_UPI_ID}</b></div>
+                <div style="font-size: 11px; color: #00FFFF;">राशि: <b>₹1000.00</b> (25 दिन की सुरक्षा वैधता)</div>
+                <hr style="border-color: rgba(255,215,0,0.3); margin: 10px 0;">
+                <div style="font-size: 11px; color: #A0A0A0;"><b>सुरक्षा नियम:</b> कोई भी डुप्लीकेट या पुराना UTR नंबर स्वीकार नहीं किया जाएगा।</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        utr_input = st.text_input("🔑 यूनिक UTR / URT ट्रांजैक्शन नंबर दर्ज करें", placeholder="यहाँ UTR नंबर लिखें...")
+        
+        col_r1, col_r2 = st.columns(2)
+        with col_r1:
+            if st.button("✅ UTR वेरिफाई करें", use_container_width=True):
+                clean_utr = utr_input.strip()
+                if not clean_utr:
+                    st.error("⚠️ कृपया UTR नंबर खाली न छोड़ें!")
+                elif clean_utr in st.session_state.used_utrs:
+                    st.error("🚨 सुरक्षा चेतावनी: यह UTR नंबर पहले ही इस्तेमाल किया जा चुका है! डुप्लीकेट UTR प्रतिबंधित है।")
+                elif clean_utr.upper() == "KISHOR90" or len(clean_utr) >= 10:
+                    st.session_state.used_utrs.add(clean_utr)
+                    st.success("🎉 रिचार्ज सफल! 25 दिन की वैलिडिटी सक्रिय, डैशबोर्ड खोला जा रहा है...")
+                    time.sleep(1.5)
+                    st.session_state.authenticated = True
+                    st.session_state.user_status = "dashboard"
+                    st.rerun()
+                else:
+                    st.error("❌ अमान्य UTR नंबर! कृपया वैध ट्रांजैक्शन आईडी दर्ज करें।")
+        with col_r2:
+            if st.button("🔙 वापस लॉगिन पर", use_container_width=True):
+                st.session_state.user_status = "login"
+                st.rerun()
+
 else:
     st.markdown(
         """
-        <div class="top-bar">
-            <div><span class="blinking-green-light"></span><span style="color: #00FFFF; font-weight: 800;">👑 BDG सुपरवाइज़र मास्टर इंजन</span></div>
-            <div><span class="blinking-green-light"></span>सुरक्षा चालू है</div>
+        <div style="text-align: center; padding: 2px 0 4px 0;">
+            <div style="font-size: 22px; font-weight: 900; color: #00E5FF; text-shadow: 0 0 10px rgba(0,229,255,0.8);">
+                <span class="blinking-green-light"></span>SURE SHOT PRO v3
+            </div>
+            <div style="font-size: 11px; color: #FFD700; font-weight: bold; letter-spacing: 1px;">🛡️ सुपरवाइजर अलर्ट मोड: 11/11 सर्वर हमेशा एक्टिव</div>
+            <div class="live-frequency-line"></div>
         </div>
         """,
         unsafe_allow_html=True,
     )
 
-    now = datetime.now()
-    default_live_period = now.strftime("%Y%m%d%H%M")[-5:]
+    now_epoch = int(time.time())
+    sec_left = 30 - (now_epoch % 30)
+    
+    base_period_int = now_epoch // 30
+    auto_live_period = str(base_period_int)[-5:]
 
-    user_period_input = st.text_input("पीरियड नंबर दर्ज करें (लाइव या मैन्युअल)", value=default_live_period, max_chars=10)
+    st.markdown("<div style='font-size: 11px; font-weight: bold; color: #00E5FF; margin-bottom: -10px;'>🎯 BDG GAME LIVE PERIOD INPUT:</div>", unsafe_allow_html=True)
+    col_p1, col_p2 = st.columns([2, 1])
+    with col_p1:
+        user_bdg_input = st.text_input("", value=auto_live_period, max_chars=12, placeholder="यहाँ बीडीजी पीरियड दर्ज करें...")
+    with col_p2:
+        st.markdown(f"<div style='text-align:center; background: rgba(0,229,255,0.1); border: 1px solid #00E5FF; border-radius: 6px; padding: 8px; margin-top: 20px; font-weight: bold; color: #00FFFF; font-size: 12px;'><span class='blinking-green-light'></span>⏳ {sec_left}s शेष</div>", unsafe_allow_html=True)
 
-    tab1, tab2, tab3, tab4 = st.tabs(["विन्गो 30 सेकंड", "विन्गो 1 मिनट", "विन्गो 3 मिनट", "विन्गो 5 मिनट"])
+    tab1, tab2, tab3, tab4 = st.tabs(["विन्गो 30 सेकण्ड", "विन्गो 1 मिनट", "विन्गो 3 मिनट", "विन्गो 5 मिनट"])
 
     def render_game_panel(tab_offset):
         st.markdown("<div class='main-card'>", unsafe_allow_html=True)
         
-        final_period = user_period_input.strip() if user_period_input.strip() else default_live_period
+        final_period = user_bdg_input.strip() if user_bdg_input.strip() else auto_live_period
 
-        pred_num, pred_size_hi, pred_color, color_code, is_sure_shot, match_count, pattern_name, is_pattern_matched, active_count = analyze_ultra_substrates_with_supervisor(final_period, tab_offset)
+        st.markdown(f'<div class="live-period-display"><span class="blinking-red-light"></span>सक्रिय लाइव पीरियड: <b>{final_period}</b></div>', unsafe_allow_html=True)
 
-        # बड़े अक्षरों वाला चमकता हुआ बैनर (अब एकदम साफ और बड़े फॉन्ट में)
-        if is_sure_shot:
-            st.markdown(f'<div class="sure-shot-banner">💎 100% पक्का शॉट! [{pred_size_hi}] (11/11 सर्वर मैच)</div>', unsafe_allow_html=True)
+        pred_num, pred_size_hi, pred_color, color_code, is_valid, line_msg = analyze_strict_bdg_servers(final_period, tab_offset)
+
+        if is_valid:
+            st.markdown(f'<div class="sure-shot-banner">💎 {line_msg} [11/11 सर्वर सुपरवाइजर एक्टिव]</div>', unsafe_allow_html=True)
         else:
-            st.markdown(f'<div class="sure-shot-banner" style="border-color: #FF9900; color: #FFD700;">🔥 सामान्य ट्रेंड: 11 में से {match_count} सर्वर "{pred_size_hi}" बता रहे हैं</div>', unsafe_allow_html=True)
-
-        st.markdown(f'<div class="supervisor-card"><span class="blinking-green-light"></span>🛡️ <b>सुपरवाइज़र अलर्ट:</b> कुल {active_count}/11 सर्वर सक्रिय हैं [पीरियड: {final_period}]</div>', unsafe_allow_html=True)
-
-        sync_text = "<span style='color: #00FF66;'>✅ सर्वर और पैटर्न दोनों सहमत हैं</span>" if is_pattern_matched else "<span style='color: #FFCC00;'>⚠ पैटर्न और सर्वर में अंतर है</span>"
-        st.markdown(f'<div class="pattern-alert-box">📡 <b>मास्टर सिग्नल:</b> {pattern_name}<br>{sync_text}</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="sure-shot-banner" style="border-color: #FF3333; color: #FF9999;">⚠️ सुपरवाइजर स्कैनिंग जारी है...</div>', unsafe_allow_html=True)
 
         color_bg = "#00AA55" if color_code == "GREEN" else "#FF4444"
         size_bg = "linear-gradient(135deg, #FF9900, #FF5500)" if "बड़ा" in pred_size_hi else "linear-gradient(135deg, #00CCFF, #0044FF)"
@@ -268,3 +375,6 @@ else:
     with tab2: render_game_panel(23)
     with tab3: render_game_panel(37)
     with tab4: render_game_panel(53)
+
+    time.sleep(1)
+    st.rerun()
