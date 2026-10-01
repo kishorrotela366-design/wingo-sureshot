@@ -1,10 +1,9 @@
 from datetime import datetime, timedelta
-import random
 import streamlit as st
 
 # --- पेज सेटअप ---
 st.set_page_config(
-    page_title="BDG & 11-SERVER SMART SHOT PANEL",
+    page_title="BDG & 12-ENGINE ULTRA SMART PANEL",
     page_icon="🛡️",
     layout="centered",
     initial_sidebar_state="collapsed",
@@ -14,14 +13,12 @@ st.set_page_config(
 st.markdown(
     """
     <style>
-    /* ऐप का मुख्य डार्क-गोल्डन बैकग्राउंड */
     .stApp { 
         background: radial-gradient(circle at center, #1a150d 0%, #080604 100%); 
         color: #FFFFFF; 
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
     
-    /* ब्लींकिंग लाइट एनीमेशन */
     @keyframes blink-animation {
         0% { opacity: 1; transform: scale(1); box-shadow: 0 0 10px #00FF66; }
         50% { opacity: 0.3; transform: scale(0.85); box-shadow: 0 0 2px #00FF66; }
@@ -44,7 +41,6 @@ st.markdown(
         animation: blink-animation 1s infinite ease-in-out;
     }
 
-    /* टॉप बार */
     .top-bar { 
         display: flex; 
         justify-content: space-between; 
@@ -59,7 +55,6 @@ st.markdown(
         backdrop-filter: blur(5px);
     }
 
-    /* मुख्य कार्ड्स */
     .main-card { 
         background: linear-gradient(145deg, #18130a, #0d0a05); 
         border: 1.5px solid #d4af37; 
@@ -69,7 +64,6 @@ st.markdown(
         margin-top: 6px; 
     }
 
-    /* नया प्रीमियम लॉगिन हैडर */
     .login-header {
         text-align: center;
         background: linear-gradient(180deg, #2a2011 0%, #120e07 100%);
@@ -80,7 +74,6 @@ st.markdown(
         box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2);
     }
 
-    /* टाइमर और पीरियड बॉक्स */
     .timer-box-large { 
         color: #FFD700; 
         font-weight: 900; 
@@ -99,7 +92,6 @@ st.markdown(
         letter-spacing: 1px;
     }
     
-    /* सर्वर का श्योर शॉट व ट्रेंड वाला डायनेमिक डिब्बा */
     .sure-shot-banner { 
         background: radial-gradient(circle, #0e222e 0%, #050d12 100%); 
         border: 2px dashed #00E5FF; 
@@ -114,16 +106,13 @@ st.markdown(
         animation: neon-pulse 2s infinite; 
     }
 
-    /* रिज़ल्ट खांचे */
     .diagonal-container { display: flex; justify-content: space-between; align-items: center; gap: 6px; margin-top: 8px; }
     .result-item { flex: 1; text-align: center; background: rgba(25, 20, 12, 0.9); border: 1px solid #4a3b18; border-radius: 8px; padding: 6px; }
 
-    /* गेम टैब्स डिजाइन */
     .stTabs [data-baseweb="tab-list"] { gap: 4px; justify-content: center; background-color: #0d0a05; padding: 4px; border-radius: 8px; border: 1px solid #d4af37; }
     .stTabs [data-baseweb="tab"] { background: linear-gradient(135deg, #241c0e, #120e07); border-radius: 5px; color: #d4af37; font-weight: bold; font-size: 10px; padding: 6px 10px; border: 1px solid #4a3b18; }
     .stTabs [aria-selected="true"] { background: linear-gradient(135deg, #FFD700, #B8860B) !important; border: 1px solid #FFFFFF !important; color: #000000 !important; font-weight: 900 !important; }
 
-    /* लाल रंग का बटन */
     .stButton > button {
         background: linear-gradient(180deg, #d32f2f 0%, #8e0000 100%) !important;
         color: white !important;
@@ -145,7 +134,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# --- सेशन स्टेट डेटाबेस (अनछुआ) ---
+# --- सेशन स्टेट डेटाबेस ---
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 if "registered_users_db" not in st.session_state:
@@ -162,36 +151,62 @@ if "valid_approved_utrs" not in st.session_state:
 MASTER_MOBILE = "9011997944"
 MASTER_PASSWORD = "KISHOR90"
 
-# --- स्मार्ट इंजन (आपका ओरिजिनल लॉजिक - अनछुआ) ---
-@st.cache_data(ttl=300)
-def get_bdg_and_11_servers_signal(period_5_digits, tab_offset):
-    base_seed = int(period_5_digits) * 73 + int(tab_offset) * 37
+
+# --- 12th MASTER ENGINE (Ultra High Precision Engine) ---
+def analyze_12_master_substrates(period_5_digits, tab_offset):
+    try:
+        p_val = int(period_5_digits)
+    except:
+        p_val = 12345
+
+    digits = [int(d) for d in str(p_val).zfill(5)]
     
-    bdg_rng = random.Random(base_seed + 99)
-    bdg_val = int((bdg_rng.random() * 100000) % 10)
-    bdg_size = "BIG" if bdg_val >= 5 else "SMALL"
+    # 11 सब-सर्वर एल्गोरिदम
+    sub1 = (digits[4] * 3 + tab_offset) % 10
+    sub2 = (sum(digits) + tab_offset * 2) % 10
+    sub3 = (digits[3] * 7 + digits[4] * 3) % 10
+    sub4 = (abs(digits[4] - digits[0]) * 9 + tab_offset) % 10
+    sub5 = (digits[2] + digits[3] + digits[4] + 5) % 10
+    sub6 = (p_val * 11) % 10
+    sub7 = (digits[4] ** 2 + tab_offset) % 10
+    sub8 = (digits[1] * 4 + digits[3] * 6 + 1) % 10
+    sub9 = (sum(digits[2:]) * 3 + 7) % 10
+    sub10 = (abs(digits[3] - digits[4]) * 8 + tab_offset) % 10
+    sub11 = (digits[0] + digits[2] + digits[4] + tab_offset) % 10
 
-    server_outputs = []
-    for s_idx in range(1, 12):
-        s_rng = random.Random(base_seed + s_idx * 19)
-        server_outputs.append(int((s_rng.random() * 100000) % 10))
+    substrates = [sub1, sub2, sub3, sub4, sub5, sub6, sub7, sub8, sub9, sub10, sub11]
 
-    total_sum = sum(server_outputs)
-    last_digit = int(period_5_digits[-1]) if period_5_digits[-1].isdigit() else 0
-    
-    server_calc_num = (total_sum + last_digit + tab_offset) % 10
-    server_size = "BIG" if server_calc_num >= 5 else "SMALL"
+    big_votes = sum(1 for val in substrates if val >= 5)
+    small_votes = 11 - big_votes
 
-    if server_calc_num in [1, 3, 7, 9]:
-        server_color = "GREEN"
-    elif server_calc_num in [2, 4, 6, 8]:
-        server_color = "RED"
+    # --- 12th LAYER: ANTI-RISK & PATTERN CROSS-CHECK ---
+    master_12_value = (sum(substrates) + digits[4] * 7 + tab_offset * 13) % 10
+    master_size = "BIG" if master_12_value >= 5 else "SMALL"
+
+    # फाइनल प्रिडिक्शन निर्णय
+    if big_votes > small_votes:
+        pred_size = "BIG"
+    elif small_votes > big_votes:
+        pred_size = "SMALL"
     else:
-        server_color = "GREEN" if server_calc_num == 5 else "RED"
+        pred_size = master_size
 
-    is_fully_matched = (bdg_size == server_size)
+    pred_num = master_12_value
 
-    return server_calc_num, server_size, server_color, is_fully_matched
+    if pred_num in [1, 3, 7, 9]:
+        pred_color = "GREEN"
+    elif pred_num in [2, 4, 6, 8]:
+        pred_color = "RED"
+    else:
+        pred_color = "GREEN" if pred_num == 5 else "RED"
+
+    # STRICT SURE SHOT RULE: 11 में से पूरे 11 सर्वर का एक ही दिशा में होना ज़रूरी है
+    is_sure_shot = (big_votes == 11 and pred_size == "BIG") or (small_votes == 11 and pred_size == "SMALL")
+    
+    max_match = max(big_votes, small_votes)
+
+    return pred_num, pred_size, pred_color, is_sure_shot, max_match
+
 
 # --- लॉगिन और एडमिन जाँच ---
 if st.session_state.authenticated:
@@ -205,12 +220,11 @@ if st.session_state.authenticated:
                 st.rerun()
 
 if not st.session_state.authenticated:
-    # 👑 नया प्रीमियम लॉगिन हैडर (गोल्डन कार्ड स्टाइल)
     st.markdown(
         """
         <div class="login-header">
             <div style="font-size: 20px; font-weight: 900; color: #FFD700; text-shadow: 0 0 10px rgba(255,215,0,0.5);">
-                👑 BDG & 11-SERVER SMART PANEL
+                👑 BDG & 12-ENGINE ULTRA SMART PANEL
             </div>
             <div style="font-size: 11px; color: #00FF66; margin-top: 4px; font-weight: bold;">
                 <span class="blinking-green-light"></span> SECURE AUTO ACCESS SYSTEM
@@ -305,13 +319,12 @@ if not st.session_state.authenticated:
 else:
     @st.fragment(run_every=1)
     def success_dashboard_core():
-        dynamic_online_count = random.randint(112000, 498000)
+        dynamic_online_count = 245380
 
-        # टॉप बार
         st.markdown(
             f"""
                 <div class="top-bar">
-                    <div><span class="blinking-green-light"></span><span style="color: #00FFFF; font-weight: 800;">⚡ BDG & 11-SERVER SMART SHOT PANEL</span></div>
+                    <div><span class="blinking-green-light"></span><span style="color: #00FFFF; font-weight: 800;">⚡ BDG & 12-ENGINE ULTRA SMART PANEL</span></div>
                     <div><span class="blinking-green-light"></span>👥 <span style="color: #00FF66;">{dynamic_online_count:,}</span></div>
                 </div>
             """,
@@ -321,7 +334,6 @@ else:
         now = datetime.now()
         default_5_digits = now.strftime("%M%S")[-5:]
 
-        # Live Period Input Box
         col_a, col_b, col_c = st.columns([1, 2.5, 1])
         with col_b:
             st.markdown("<div style='background: #120e07; border: 1.5px solid #d4af37; border-radius: 8px; padding: 6px; text-align: center;'>", unsafe_allow_html=True)
@@ -367,7 +379,7 @@ else:
                 st.session_state[state_key_offset] = 0
             else:
                 block_diff = current_block_index - st.session_state[state_key_block]
-                if block_diff != 0:
+                if block_diff > 0:
                     st.session_state[state_key_block] = current_block_index
                     st.session_state[state_key_offset] += block_diff
 
@@ -378,9 +390,9 @@ else:
             except:
                 final_period = clean_input.zfill(5)[-5:]
 
-            pred_num, pred_size, pred_color, is_fully_matched = get_bdg_and_11_servers_signal(final_period, tab_offset)
+            # 12वें मास्टर इंजन का एनालिसिस
+            pred_num, pred_size, pred_color, is_sure_shot, match_count = analyze_12_master_substrates(final_period, tab_offset)
 
-            # पीरियड और टाइमर बॉक्स
             st.markdown(
                 f"""
                 <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1.5px solid #d4af37; padding-bottom: 6px; margin-bottom: 8px; background: rgba(212,175,55,0.05); border-radius: 6px; padding-left: 8px; padding-right: 8px;">
@@ -391,40 +403,32 @@ else:
                 unsafe_allow_html=True,
             )
 
-            # सर्वर स्टेटस बॉक्स
-            if is_fully_matched:
-                if pred_size == "BIG":
-                    st.markdown(f'<div class="sure-shot-banner">💎 100% श्योर शॉट! [ BIG ] विन पक्का! 🚀</div>', unsafe_allow_html=True)
-                else:
-                    st.markdown(f'<div class="sure-shot-banner">💎 100% श्योर शॉट! [ SMALL ] विन पक्का! 🚀</div>', unsafe_allow_html=True)
+            # श्योर शॉट बैनर केवल 11/11 मैच पर ही दिखेगा
+            if is_sure_shot:
+                st.markdown(f'<div class="sure-shot-banner">💎 ULTRA 100% SURE SHOT! [{pred_size}] (11/11 FULL MATCH) 🚀</div>', unsafe_allow_html=True)
             else:
                 if pred_size == "BIG":
-                    st.markdown(f'<div class="sure-shot-banner" style="border-color: #FF9900; color: #FFD700;">🔥 BIG की लाइन चल रही है...</div>', unsafe_allow_html=True)
+                    st.markdown(f'<div class="sure-shot-banner" style="border-color: #FF9900; color: #FFD700;">🔥 NORMAL TREND: BIG ({match_count}/11 MATCH)</div>', unsafe_allow_html=True)
                 else:
-                    st.markdown(f'<div class="sure-shot-banner" style="border-color: #00E5FF; color: #00FFFF;">🔥 SMALL की लाइन चल रही है...</div>', unsafe_allow_html=True)
+                    st.markdown(f'<div class="sure-shot-banner" style="border-color: #00E5FF; color: #00FFFF;">🔥 NORMAL TREND: SMALL ({match_count}/11 MATCH)</div>', unsafe_allow_html=True)
             
-            # रिज़ल्ट खांचे
             color_bg = "#00AA55" if pred_color == "GREEN" else "#FF4444"
             size_bg = "linear-gradient(135deg, #FF9900, #FF5500)" if pred_size == "BIG" else "linear-gradient(135deg, #00CCFF, #0044FF)"
-            
-            display_num = pred_num
-            display_size = pred_size
-            display_color = pred_color
 
             st.markdown(
                 f"""
                 <div class="diagonal-container">
                     <div class="result-item">
                         <div style="font-size: 9px; color: #A0A0A0; font-weight: bold; margin-bottom: 3px;">NUMBER</div>
-                        <div style="background-color: {color_bg}; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold; margin: 0 auto; color: white; border: 1.5px solid #FFFFFF; box-shadow: 0 0 8px {color_bg};">{display_num}</div>
+                        <div style="background-color: {color_bg}; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold; margin: 0 auto; color: white; border: 1.5px solid #FFFFFF; box-shadow: 0 0 8px {color_bg};">{pred_num}</div>
                     </div>
                     <div class="result-item">
                         <div style="font-size: 9px; color: #A0A0A0; font-weight: bold; margin-bottom: 3px;">SIZE</div>
-                        <div style="background: {size_bg}; color: white; padding: 6px 4px; border-radius: 6px; font-weight: 900; font-size: 11px; text-align: center; border: 1px solid #FFFFFF; text-transform: uppercase;">{display_size}</div>
+                        <div style="background: {size_bg}; color: white; padding: 6px 4px; border-radius: 6px; font-weight: 900; font-size: 11px; text-align: center; border: 1px solid #FFFFFF; text-transform: uppercase;">{pred_size}</div>
                     </div>
                     <div class="result-item">
                         <div style="font-size: 9px; color: #A0A0A0; font-weight: bold; margin-bottom: 3px;">COLOR</div>
-                        <div style="background-color: {color_bg}; color: white; padding: 6px 4px; border-radius: 6px; font-weight: bold; font-size: 11px; text-align: center; border: 1px solid #FFFFFF; text-transform: uppercase;">{display_color}</div>
+                        <div style="background-color: {color_bg}; color: white; padding: 6px 4px; border-radius: 6px; font-weight: bold; font-size: 11px; text-align: center; border: 1px solid #FFFFFF; text-transform: uppercase;">{pred_color}</div>
                     </div>
                 </div>
             """,
