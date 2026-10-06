@@ -38,16 +38,16 @@ st.markdown(
         animation: blink-animation 1s infinite ease-in-out;
     }
 
-    /* पैनल और कार्ड्स का साइज़ बड़ा किया गया है */
-    .top-bar { display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, #0d2216, #040d08); padding: 10px 14px; border-radius: 8px; font-size: 13px; font-weight: bold; border: 1.5px solid #3d9f5a; margin-bottom: 8px; }
+    /* पैनल और टेक्स्ट को और अधिक बोल्ड और बड़ा किया गया है */
+    .top-bar { display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, #0d2216, #040d08); padding: 12px 16px; border-radius: 8px; font-size: 15px; font-weight: 900; border: 1.5px solid #3d9f5a; margin-bottom: 8px; }
     .main-card { background-color: #0b071a; border: 2px solid #FFD700; border-radius: 12px; padding: 14px; box-shadow: 0 0 15px rgba(255,215,0,0.2); margin-top: 8px; }
     
-    .timer-box-large { color: #FF00FF; font-weight: 900; font-size: 14px; text-shadow: 0 0 8px rgba(255,0,255,0.6); }
+    .timer-box-large { color: #FF00FF; font-weight: 900; font-size: 16px; text-shadow: 0 0 8px rgba(255,0,255,0.6); }
     
     .period-badge-small { 
         color: #00FFFF; 
         font-weight: 900; 
-        font-size: 14px; 
+        font-size: 16px; 
         background: rgba(0,255,255,0.1);
         padding: 4px 8px;
         border-radius: 5px;
@@ -55,16 +55,16 @@ st.markdown(
         letter-spacing: 1px;
     }
     
-    .trend-banner-big { background: linear-gradient(135deg, #4d1a00, #260d00); border: 2px solid #FF9900; padding: 10px; border-radius: 8px; text-align: center; font-size: 13px; font-weight: 900; margin: 8px 0; color: #FFD700; text-transform: uppercase; }
-    .trend-banner-small { background: linear-gradient(135deg, #001a33, #000d1a); border: 2px solid #00E5FF; padding: 10px; border-radius: 8px; text-align: center; font-size: 13px; font-weight: 900; margin: 8px 0; color: #00FFFF; text-transform: uppercase; }
+    .trend-banner-big { background: linear-gradient(135deg, #4d1a00, #260d00); border: 2.5px solid #FF9900; padding: 12px; border-radius: 8px; text-align: center; font-size: 15px; font-weight: 900; margin: 8px 0; color: #FFD700; text-transform: uppercase; letter-spacing: 0.5px; }
+    .trend-banner-small { background: linear-gradient(135deg, #001a33, #000d1a); border: 2.5px solid #00E5FF; padding: 12px; border-radius: 8px; text-align: center; font-size: 15px; font-weight: 900; margin: 8px 0; color: #00FFFF; text-transform: uppercase; letter-spacing: 0.5px; }
     
     .sure-shot-banner { 
         background: linear-gradient(135deg, #330033, #1a001a); 
         border: 2.5px dashed #FF00FF; 
-        padding: 12px; 
+        padding: 14px; 
         border-radius: 8px; 
         text-align: center; 
-        font-size: 13px; 
+        font-size: 15px; 
         font-weight: 900; 
         margin: 8px 0; 
         color: #FF66FF; 
@@ -75,9 +75,8 @@ st.markdown(
     .diagonal-container { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 8px; }
     .result-item { flex: 1; text-align: center; background: rgba(25, 18, 50, 0.95); border: 1.5px solid #6644aa; border-radius: 8px; padding: 8px; }
 
-    /* टैब्स की साइज और फॉन्ट बड़े किए गए हैं */
     .stTabs [data-baseweb="tab-list"] { gap: 6px; justify-content: center; background-color: #0b071a; padding: 6px; border-radius: 8px; border: 1.5px solid #FFD700; }
-    .stTabs [data-baseweb="tab"] { background: linear-gradient(135deg, #25184d, #140d2b); border-radius: 6px; color: #FFFFFF; font-weight: bold; font-size: 13px; padding: 8px 14px; border: 1.5px solid #6644aa; }
+    .stTabs [data-baseweb="tab"] { background: linear-gradient(135deg, #25184d, #140d2b); border-radius: 6px; color: #FFFFFF; font-weight: 900; font-size: 14px; padding: 8px 14px; border: 1.5px solid #6644aa; }
     .stTabs [aria-selected="true"] { background: linear-gradient(135deg, #FFD700, #FF8C00) !important; border: 1.5px solid #FFFFFF !important; color: #000000 !important; font-weight: 900 !important; }
 
     .upi-box { background: linear-gradient(135deg, #122a1a, #040d08); border: 1.5px solid #00FF66; padding: 10px; border-radius: 8px; text-align: center; margin-top: 8px; }
@@ -238,12 +237,12 @@ else:
   def success_dashboard_core():
     dynamic_online_count = random.randint(112000, 498000)
 
-    # टॉप बार
+    # टॉप बार - अब अक्षर बड़े और बोल्ड दिखेंगे
     st.markdown(
         f"""
             <div class="top-bar">
-                <div><span class="blinking-red-light"></span><span style="color: #00FFFF; font-weight: 800; font-size: 12px;">⚡ BDG & 11-SERVER SMART SHOT PANEL</span></div>
-                <div><span class="blinking-red-light"></span>👥 <span style="color: #00FF66; font-size: 12px;">{dynamic_online_count:,}</span></div>
+                <div><span class="blinking-red-light"></span><span style="color: #00FFFF; font-weight: 900; font-size: 14px;">⚡ BDG & 11-SERVER SMART SHOT PANEL</span></div>
+                <div><span class="blinking-red-light"></span>👥 <span style="color: #00FF66; font-size: 13px; font-weight: 900;">{dynamic_online_count:,}</span></div>
             </div>
         """,
         unsafe_allow_html=True,
@@ -252,11 +251,11 @@ else:
     now = datetime.now()
     default_5_digits = now.strftime("%M%S")[-5:]
 
-    # 📌 ऊपर लाइव पीरियड इनपुट बॉक्स (बड़ा साइज़)
+    # 📌 ऊपर लाइव पीरियड इनपुट बॉक्स
     col_a, col_b, col_c = st.columns([0.5, 3, 0.5])
     with col_b:
         st.markdown("<div style='background: #0b071a; border: 2px solid #FFD700; border-radius: 8px; padding: 10px; text-align: center; box-shadow: 0 0 12px rgba(255,215,0,0.25);'>", unsafe_allow_html=True)
-        st.markdown("<p style='color: #FFD700; font-size: 12px; font-weight: 900; margin-bottom: 4px; text-transform: uppercase;'>📌 लाइव पीरियड (केवल 5 अंक डालें)</p>", unsafe_allow_html=True)
+        st.markdown("<p style='color: #FFD700; font-size: 13px; font-weight: 900; margin-bottom: 4px; text-transform: uppercase;'>📌 लाइव पीरियड (केवल 5 अंक डालें)</p>", unsafe_allow_html=True)
         manual_period_input = st.text_input(
             "Period Input",
             value=default_5_digits,
@@ -279,12 +278,10 @@ else:
 
       current_block_index = total_seconds // seconds
 
-      # यूजर इनपुट साफ़ करें
       clean_input = "".join(filter(str.isdigit, manual_period_input))
       if not clean_input:
           clean_input = "02003"
 
-      # ऑटोमैटिक पीरियड प्रोग्रेशन
       state_key_input = f"tracked_input_{seconds}"
       state_key_block = f"tracked_block_{seconds}"
       state_key_offset = f"period_offset_{seconds}"
@@ -311,21 +308,20 @@ else:
       except:
           final_period = clean_input.zfill(5)[-5:]
 
-      # 11-सर्वर और बीडीजी गेम इंजन कॉल
       pred_num, pred_size, pred_color, is_fully_matched = get_bdg_and_11_servers_signal(final_period, tab_offset)
 
-      # पीरियड बॉक्स डिस्प्ले (बड़ा साइज़)
+      # पीरियड बॉक्स डिस्प्ले
       st.markdown(
           f"""
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #FFD700; padding-bottom: 6px; margin-bottom: 8px; background: rgba(255,215,0,0.06); border-radius: 6px; padding-left: 8px; padding-right: 8px;">
-                <span style="display: flex; align-items: center;"><span class="blinking-red-light"></span><span style="font-size: 12px; color: #FFD700; font-weight: bold; margin-right: 6px;">PERIOD:</span><span class="period-badge-small">{final_period}</span></span>
+                <span style="display: flex; align-items: center;"><span class="blinking-red-light"></span><span style="font-size: 13px; color: #FFD700; font-weight: 900; margin-right: 6px;">PERIOD:</span><span class="period-badge-small">{final_period}</span></span>
                 <span class="timer-box-large">⏰ {timer_str}</span>
             </div>
         """,
           unsafe_allow_html=True,
       )
 
-      # 📌 श्योर शॉट बैनर और ट्रेंड बैनर (बड़ी साइज में)
+      # 📌 श्योर शॉट बैनर और ट्रेंड बैनर (अब यह बहुत मोटे और स्पष्ट दिखेंगे)
       if is_fully_matched:
           if pred_size == "BIG":
               st.markdown(f'<div class="sure-shot-banner">💎 100% श्योर शॉट! [ BIG ] विन पक्का! 🚀</div>', unsafe_allow_html=True)
@@ -337,7 +333,6 @@ else:
           else:
               st.markdown(f'<div class="trend-banner-small">📉 स्मॉल (SMALL) की लाइन चल रही है...</div>', unsafe_allow_html=True)
       
-      # 📌 नीचे के तीनों खांचे (Number, Size, Color) - बड़े और स्पष्ट रूप में
       color_bg = "#00AA55" if pred_color == "GREEN" else "#FF4444"
       size_bg = "linear-gradient(135deg, #FF9900, #FF5500)" if pred_size == "BIG" else "linear-gradient(135deg, #00CCFF, #0044FF)"
       
@@ -349,16 +344,16 @@ else:
           f"""
             <div class="diagonal-container">
                 <div class="result-item">
-                    <div style="font-size: 9px; color: #CCCCCC; font-weight: bold; margin-bottom: 4px; text-transform: uppercase;">NUMBER</div>
-                    <div style="background-color: {color_bg}; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 900; margin: 0 auto; color: white; border: 2px solid #FFFFFF;">{display_num}</div>
+                    <div style="font-size: 10px; color: #FFFFFF; font-weight: 900; margin-bottom: 4px; text-transform: uppercase;">NUMBER</div>
+                    <div style="background-color: {color_bg}; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 900; margin: 0 auto; color: white; border: 2px solid #FFFFFF;">{display_num}</div>
                 </div>
                 <div class="result-item">
-                    <div style="font-size: 9px; color: #CCCCCC; font-weight: bold; margin-bottom: 4px; text-transform: uppercase;">SIZE</div>
-                    <div style="background: {size_bg}; color: white; padding: 8px 4px; border-radius: 6px; font-weight: 900; font-size: 12px; text-align: center; border: 2px solid #FFFFFF; text-transform: uppercase;">{display_size}</div>
+                    <div style="font-size: 10px; color: #FFFFFF; font-weight: 900; margin-bottom: 4px; text-transform: uppercase;">SIZE</div>
+                    <div style="background: {size_bg}; color: white; padding: 10px 4px; border-radius: 6px; font-weight: 900; font-size: 13px; text-align: center; border: 2px solid #FFFFFF; text-transform: uppercase;">{display_size}</div>
                 </div>
                 <div class="result-item">
-                    <div style="font-size: 9px; color: #CCCCCC; font-weight: bold; margin-bottom: 4px; text-transform: uppercase;">COLOR</div>
-                    <div style="background-color: {color_bg}; color: white; padding: 8px 4px; border-radius: 6px; font-weight: 900; font-size: 12px; text-align: center; border: 2px solid #FFFFFF; text-transform: uppercase;">{display_color}</div>
+                    <div style="font-size: 10px; color: #FFFFFF; font-weight: 900; margin-bottom: 4px; text-transform: uppercase;">COLOR</div>
+                    <div style="background-color: {color_bg}; color: white; padding: 10px 4px; border-radius: 6px; font-weight: 900; font-size: 13px; text-align: center; border: 2px solid #FFFFFF; text-transform: uppercase;">{display_color}</div>
                 </div>
             </div>
         """,
