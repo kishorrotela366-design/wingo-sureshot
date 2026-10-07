@@ -15,6 +15,13 @@ st.markdown(
     <style>
     .stApp { background-color: #020104; color: #FFFFFF; }
     
+    /* Streamlit के डिफ़ॉल्ट फुटर, हेडर, मेन्यू और ब्रांडिंग को छिपाने के लिए */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    .stAppDeployButton {display: none;}
+    [data-testid="stStatusWidget"] {visibility: hidden;}
+    
     @keyframes blink-animation {
         0% { opacity: 1; transform: scale(1); box-shadow: 0 0 12px #FF0055; }
         50% { opacity: 0.2; transform: scale(0.85); box-shadow: 0 0 3px #FF0055; }
@@ -181,7 +188,7 @@ if not st.session_state.authenticated:
           else:
             st.error("❌ गलत पासवर्ड!")
         else:
-          st.info("ℹ️ नया उपयोगकर्ता। कृपया ₹1000 का भुगतान करें।")
+          st.info("ℹ️ नया उपयोगकर्ता। कृपया ₹1500 का भुगतान करें।")
           st.session_state.require_recharge = True
           st.session_state.target_mobile = mobile_input
           st.session_state.target_password = password_input
@@ -192,14 +199,14 @@ if not st.session_state.authenticated:
     st.markdown(
         """
         <div class="upi-box">
-            <p style="color: #FFD700; font-weight: bold; font-size: 14px;">💳 Pay ₹1000 (25 Days Validity)</p>
+            <p style="color: #FFD700; font-weight: bold; font-size: 14px;">💳 Pay ₹1500 (25 Days Validity)</p>
             <p style="color: #00FF66; font-size: 12px; font-weight: bold; background: #020104; padding: 5px; border-radius: 4px; border: 1px dashed #00FF66; user-select: all;">kishorsingh226105.wallet@phonepe</p>
         </div>
         """,
         unsafe_allow_html=True,
     )
 
-    upi_str = "upi://pay?pa=kishorsingh226105.wallet@phonepe&pn=Kishor%20Singh%20Rautela&am=1000&cu=INR"
+    upi_str = "upi://pay?pa=kishorsingh226105.wallet@phonepe&pn=Kishor%20Singh%20Rautela&am=1500&cu=INR"
     qr_url = f"https://api.qrserver.com/v1/create-qr-code/?size=140x140&data={upi_str}"
     
     col1, col2, col3 = st.columns([1, 2, 1])
@@ -321,7 +328,7 @@ else:
           unsafe_allow_html=True,
       )
 
-      # 📌 श्योर शॉट बैनर और ट्रेंड बैनर (अब यह बहुत मोटे और स्पष्ट दिखेंगे)
+      # 📌 श्योर शॉट बैनर और ट्रेंड बैनर
       if is_fully_matched:
           if pred_size == "BIG":
               st.markdown(f'<div class="sure-shot-banner">💎 100% श्योर शॉट! [ BIG ] विन पक्का! 🚀</div>', unsafe_allow_html=True)
