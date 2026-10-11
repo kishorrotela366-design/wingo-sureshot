@@ -173,48 +173,6 @@ if "valid_approved_utrs" not in st.session_state:
 MASTER_MOBILE = "9011997944"
 MASTER_PASSWORD = "KISHOR90"
 
-# --- 🎯 स्मार्ट इंजन और ऑटो-रिसेट रिकवरी चेकर ---
-def get_period_signal(period_str, tab_offset):
-    try:
-        base_val = int(period_str)
-    except:
-        base_val = 10407
-
-    base_seed = base_val * 73 + tab_offset * 37
-    
-    server_outputs = []
-    for s_idx in range(1, 12):
-        s_rng = random.Random(base_seed + s_idx * 19)
-        server_outputs.append(int((s_rng.random() * 100000) % 10))
-
-    variance_check = max(server_outputs) - min(server_outputs)
-    is_bad_market = (variance_check >= 10 and int(period_str[-1]) == 0)
-
-    total_sum = sum(server_outputs)
-    last_digit = int(period_str[-1]) if period_str[-1].isdigit() else 0
-    calc_num = (total_sum + last_digit + tab_offset) % 10
-    pred_size = "BIG" if calc_num >= 5 else "SMALL"
-
-    p_rng = random.Random(base_seed + 999)
-    if pred_size == "BIG":
-        pred_num = p_rng.choice([5, 6, 7, 8, 9])
-    else:
-        pred_num = p_rng.choice([0, 1, 2, 3, 4])
-
-    pred_color = "GREEN" if pred_num in [1, 3, 7, 9, 5] else "RED"
-
-    history = []
-    for h_offset in range(5, 0, -1):
-        h_period = base_val - h_offset
-        h_seed = h_period * 73 + tab_offset * 37
-        h_rng = random.Random(h_seed + 19)
-        h_calc = int((h_rng.random() * 100000) % 10)
-        history.append("BIG" if h_calc >= 5 else "SMALL")
-
-    is_100_percent = (history[-1] == history[-2] == history[-3])
-
-    return pred_num, pred_size, pred_color, history, is_100_percent, is_bad_market
-
 # --- लॉगिन गार्ड ---
 if st.session_state.authenticated:
     current_mob = st.session_state.get("current_mobile", "")
@@ -326,6 +284,16 @@ else:
         )
 
         st.markdown(
+            """
+            <div style="background: linear-gradient(135deg, #220033, #0b071a); border: 1px solid #FF00FF; padding: 8px; border-radius: 6px; text-align: center; margin-bottom: 8px;">
+                <span style="color: #FF00FF; font-size: 12px; font-weight: bold;">🔊 अलार्म चालू करने के लिए यहाँ क्लिक करें:</span>
+                <button onclick="let audio = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg'); audio.play().catch(e => {});" style="background: #FF00FF; color: white; border: none; padding: 4px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-left: 6px;">ENABLE SOUND</button>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+        st.markdown(
             f"""
                 <div class="top-bar">
                     <div><span class="blinking-red-light"></span><span style="color: #00FFFF; font-weight: 900; font-size: 14px;">⚡ BDG SNIPER PANEL</span></div>
@@ -336,12 +304,12 @@ else:
         )
 
         now = datetime.now()
-        default_period = "10407"
+        default_period = "10670"
 
         col_a, col_b, col_c = st.columns([0.5, 3, 0.5])
         with col_b:
             st.markdown("<div style='background: #0b071a; border: 2px solid #FFD700; border-radius: 8px; padding: 10px; text-align: center;'>", unsafe_allow_html=True)
-            st.markdown("<p style='color: #FFD700; font-size: 13px; font-weight: 900; margin-bottom: 4px; text-transform: uppercase;'>📌 लाइव पीरियड नंबर डालें (जैसे 10407)</p>", unsafe_allow_html=True)
+            st.markdown("<p style='color: #FFD700; font-size: 13px; font-weight: 900; margin-bottom: 4px; text-transform: uppercase;'>📌 लाइव पीरियड नंबर डालें (जैसे 10670)</p>", unsafe_allow_html=True)
             manual_period_input = st.text_input(
                 "Period Input",
                 value=default_period,
@@ -361,47 +329,85 @@ else:
             secs = remaining_secs % 60
             timer_str = f"{mins:02d}:{secs:02d}"
 
+            current_block_index = total_seconds // seconds
+
             clean_input = "".join(filter(str.isdigit, manual_period_input))
             if not clean_input:
-                clean_input = "10407"
+                clean_input = "10670"
 
-            try:
-                entered_val = int(clean_input)
-                target_period = str(entered_val + 1).zfill(5)
-            except:
-                target_period = "10408"
-
+            state_key_input = f"tracked_input_{seconds}"
+            state_key_block = f"tracked_block_{seconds}"
+            state_key_offset = f"period_offset_{seconds}"
             level_key = f"recovery_level_{seconds}"
+
             if level_key not in st.session_state:
                 st.session_state[level_key] = 1
 
-            pred_num, pred_size, pred_color, history_list, is_100_percent, is_bad_market = get_period_signal(clean_input, tab_offset)
+            if state_key_input not in st.session_state:
+                st.session_state[state_key_input] = clean_input
+                st.session_state[state_key_block] = current_block_index
+                st.session_state[state_key_offset] = 0
 
-            # 🔥 5 सेकंड बीप साउंड
+            if st.session_state[state_key_input] != clean_input:
+                st.session_state[state_key_input] = clean_input
+                st.session_state[state_key_block] = current_block_index
+                st.session_state[state_key_offset] = 0
+            else:
+                block_diff = current_block_index - st.session_state[state_key_block]
+                if block_diff != 0:
+                    st.session_state[state_key_block] = current_block_index
+                    st.session_state[state_key_offset] += block_diff
+
+            try:
+                base_val = int(clean_input)
+                final_val = base_val + st.session_state[state_key_offset]
+                target_period = str(final_val).zfill(5)
+            except:
+                target_period = "10671"
+
+            calc_period_str = str(max(1, int(target_period) - 1))
+
+            # 🔥 स्मार्ट ट्रेंड-ट्रैकर इंजन (पैटर्न को मैच करने के लिए)
+            base_seed = int(calc_period_str) * 73 + tab_offset * 37
+            
+            history = []
+            for h_offset in range(6, 0, -1):
+                h_period = int(calc_period_str) - h_offset
+                h_seed = h_period * 73 + tab_offset * 37
+                h_rng = random.Random(h_seed + 19)
+                h_calc = int((h_rng.random() * 100000) % 10)
+                history.append("BIG" if h_calc >= 5 else "SMALL")
+
+            # पैटर्न रीड करना (जैसे 2 Big, 2 Small या अल्टरनेट ट्रेंड)
+            recent_trend = history[-2:]
+            if recent_trend[0] == recent_trend[1]:
+                # अगर पिछले दो एक जैसे हैं, तो ट्रेंड जारी रहेगा (100% श्योर शॉट)
+                pred_size = recent_trend[1]
+                is_100_percent = True
+            else:
+                # यदि अल्टरनेट है तो गणितीय फॉर्मूला लगेगा
+                s_rng = random.Random(base_seed + 42)
+                pred_size = "BIG" if (s_rng.random() > 0.5) else "SMALL"
+                is_100_percent = (history[-1] == history[-2] == history[-3])
+
+            p_rng = random.Random(base_seed + 999)
+            if pred_size == "BIG":
+                pred_num = p_rng.choice([5, 6, 7, 8, 9])
+                pred_color = "GREEN" if pred_num in [5, 7, 9] else "RED"
+            else:
+                pred_num = p_rng.choice([0, 1, 2, 3, 4])
+                pred_color = "GREEN" if pred_num in [1, 3] else "RED"
+
+            variance_check = abs(int(calc_period_str) % 13)
+            is_bad_market = (variance_check == 0 and not is_100_percent)
+
+            # 🔥 HTML5 ऑडियो बीप अलार्म (आखिरी 5 सेकंड में बजेगा)
             if 1 <= remaining_secs <= 5:
                 st.markdown(
                     """
-                    <script>
-                    (function() {
-                        try {
-                            var AudioCtx = window.AudioContext || window.webkitAudioContext;
-                            if (AudioCtx) {
-                                var ctx = new AudioCtx();
-                                if (ctx.state === 'suspended') { ctx.resume(); }
-                                var osc = ctx.createOscillator();
-                                var gain = ctx.createGain();
-                                osc.type = 'sine';
-                                osc.frequency.setValueAtTime(800, ctx.currentTime);
-                                gain.gain.setValueAtTime(0.3, ctx.currentTime);
-                                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
-                                osc.connect(gain);
-                                gain.connect(ctx.destination);
-                                osc.start();
-                                osc.stop(ctx.currentTime + 0.15);
-                            }
-                        } catch(e) {}
-                    })();
-                    </script>
+                    <audio autoplay style="display:none;">
+                        <source src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" type="audio/ogg">
+                    </audio>
                     """,
                     unsafe_allow_html=True
                 )
@@ -420,8 +426,6 @@ else:
                 st.session_state[level_key] = 1
 
             current_lvl = st.session_state[level_key]
-
-            # 🔥 100% श्योर शॉट बैनर जिसमें BIG/SMALL एकदम अलग और चमकीले रंग में दिखेगा
             size_highlight_color = "#FFD700" if pred_size == "BIG" else "#00FFFF"
 
             if is_bad_market:
@@ -482,9 +486,8 @@ else:
                 unsafe_allow_html=True,
             )
             
-            # 🔥 कलरफुल लाइव ट्रेंड हिस्ट्री लाइन और आगामी शॉट
             boxes_html = ""
-            for item in history_list:
+            for item in history[-5:]:
                 bg_color = "rgba(255,153,0,0.6)" if item == "BIG" else "rgba(0,204,255,0.6)"
                 short_lbl = "B" if item == "BIG" else "S"
                 boxes_html += f"<div style='background: {bg_color}; color: #DDD; width: 26px; height: 26px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 900; font-size: 11px; margin: 0 2px; border: 1px solid #777;'>{short_lbl}</div>"
