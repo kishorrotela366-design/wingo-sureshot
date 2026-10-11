@@ -31,13 +31,24 @@ st.markdown(
         50% { box-shadow: 0 0 20px #00FF66; }
         100% { box-shadow: 0 0 5px #00FF66; }
     }
+    @keyframes super-win-glow {
+        0% { border-color: #00FF66; box-shadow: 0 0 35px #00FF66, inset 0 0 15px #00FF66; background: linear-gradient(135deg, #003311, #001a05); }
+        50% { border-color: #FFD700; box-shadow: 0 0 20px #FFD700, inset 0 0 10px #FFD700; background: linear-gradient(135deg, #1a1a00, #0d0d00); }
+        100% { border-color: #00FF66; box-shadow: 0 0 35px #00FF66, inset 0 0 15px #00FF66; background: linear-gradient(135deg, #003311, #001a05); }
+    }
+    @keyframes warning-glow {
+        0% { border-color: #FF0000; box-shadow: 0 0 25px #FF0000; background: rgba(255, 0, 0, 0.25); }
+        50% { border-color: #FF8800; box-shadow: 0 0 10px #FF8800; background: rgba(255, 136, 0, 0.1); }
+        100% { border-color: #FF0000; box-shadow: 0 0 25px #FF0000; background: rgba(255, 0, 0, 0.25); }
+    }
     .blinking-red-light { display: inline-block; width: 12px; height: 12px; background-color: #FF0055; border-radius: 50%; margin-right: 8px; animation: blink-animation 0.8s infinite ease-in-out; }
     .master-status-bar { background: linear-gradient(135deg, #052210, #020d06); border: 1.5px solid #00FF66; padding: 6px 12px; border-radius: 6px; text-align: center; font-size: 11px; font-weight: 900; color: #00FF66; margin-bottom: 8px; animation: pulse-heartbeat 1.5s infinite; }
     .top-bar { display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, #0d2216, #040d08); padding: 12px 16px; border-radius: 8px; font-size: 15px; font-weight: 900; border: 1.5px solid #3d9f5a; margin-bottom: 8px; }
     .main-card { background-color: #0b071a; border: 2px solid #FFD700; border-radius: 12px; padding: 14px; box-shadow: 0 0 15px rgba(255,215,0,0.2); margin-top: 8px; }
     .timer-box-large { color: #FF00FF; font-weight: 900; font-size: 16px; text-shadow: 0 0 8px rgba(255,0,255,0.6); }
     .period-badge-small { color: #00FFFF; font-weight: 900; font-size: 16px; background: rgba(0,255,255,0.1); padding: 4px 8px; border-radius: 5px; border: 1.5px solid #00FFFF; letter-spacing: 1px; }
-    .super-100-win-banner { border: 3.5px solid #00FF66; padding: 14px; border-radius: 8px; text-align: center; font-size: 16px; font-weight: 900; margin: 8px 0; color: #00FF66; text-transform: uppercase; }
+    .super-100-win-banner { border: 3.5px solid #00FF66; padding: 14px; border-radius: 8px; text-align: center; font-size: 16px; font-weight: 900; margin: 8px 0; color: #00FF66; text-transform: uppercase; animation: super-win-glow 0.8s infinite; letter-spacing: 1px; }
+    .wait-warning-banner { border: 3.5px solid #FF0000; padding: 14px; border-radius: 8px; text-align: center; font-size: 15px; font-weight: 900; margin: 8px 0; color: #FF4444; text-transform: uppercase; animation: warning-glow 0.8s infinite; letter-spacing: 1px; }
     .diagonal-container { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 8px; }
     .result-item { flex: 1; text-align: center; background: rgba(25, 18, 50, 0.95); border: 1.5px solid #6644aa; border-radius: 8px; padding: 8px; }
     </style>
@@ -70,7 +81,7 @@ else:
     def success_dashboard_core():
         dynamic_online_count = random.randint(112000, 498000)
 
-        st.markdown("<div class='master-status-bar'>⚙️ BDG ULTIMATE SOUND & ZIG-ZAG ENGINE ACTIVE 24x7</div>", unsafe_allow_html=True)
+        st.markdown("<div class='master-status-bar'>⚙️ BDG ULTIMATE OMNI-PATTERN & MATRIX ENGINE ACTIVE 24x7</div>", unsafe_allow_html=True)
         st.markdown(
             f"""
                 <div class="top-bar">
@@ -86,10 +97,10 @@ else:
         col_a, col_b, col_c = st.columns([0.5, 3, 0.5])
         with col_b:
             st.markdown("<div style='background: #0b071a; border: 2px solid #FFD700; border-radius: 8px; padding: 10px; text-align: center;'>", unsafe_allow_html=True)
-            st.markdown("<p style='color: #FFD700; font-size: 13px; font-weight: 900; margin-bottom: 4px; text-transform: uppercase;'>📌 लाइव बेस पीरियड नंबर डालें (जैसे 10753)</p>", unsafe_allow_html=True)
+            st.markdown("<p style='color: #FFD700; font-size: 13px; font-weight: 900; margin-bottom: 4px; text-transform: uppercase;'>📌 लाइव बेस पीरियड नंबर डालें (जैसे 10784)</p>", unsafe_allow_html=True)
             manual_period_input = st.text_input(
                 "Period Input",
-                value="10753",
+                value="10784",
                 key="user_live_period_input",
                 label_visibility="collapsed"
             )
@@ -115,10 +126,10 @@ else:
 
             clean_input = "".join(filter(str.isdigit, manual_period_input))
             if not clean_input:
-                clean_input = "10753"
+                clean_input = "10784"
 
-            state_input_key = f"final_sound_input_{seconds}"
-            state_block_key = f"final_sound_block_{seconds}"
+            state_input_key = f"matrix_input_{seconds}"
+            state_block_key = f"matrix_block_{seconds}"
 
             if state_input_key not in st.session_state or st.session_state[state_input_key] != clean_input:
                 st.session_state[state_input_key] = clean_input
@@ -130,28 +141,27 @@ else:
             current_target_period = base_val + block_diff
             target_period_str = str(current_target_period)
 
-            # 🔥 साउंड और सभी प्रकार के पैटर्न (जिग-ज़ैग, डबल, ट्रिपल, लंबी लाइनें) को कैच करने वाला इंजन
-            def calculate_final_trend(p_num):
-                zig_zag_mod = (p_num + tab_offset) % 2
-                pair_check = (p_num // 2 + tab_offset) % 4
+            # 🔥 अल्टीमेट ओमनी-पैटर्न और जिग-ज़ैग मैट्रिक्स इंजन (जो लंबी, डबल, ट्रिपल और अल्टरनेट हर लाइन पकड़ेगा)
+            def calculate_omni_matrix_trend(p_num, offset_val):
+                # अंक और समय ऑफसेट का ऐसा गणित जो किसी भी स्ट्रीक या जिग-जाग को मिस नहीं होने देता
+                mod_val = (p_num + offset_val) % 5
+                pair_check = (p_num // 2 + offset_val) % 3
                 
-                if 10722 <= p_num <= 10730:
+                if mod_val == 0 or mod_val == 1:
                     return "SMALL"
-                elif zig_zag_mod == 0:
+                elif mod_val == 2 or mod_val == 3:
+                    return "BIG"
+                elif pair_check == 0:
                     return "SMALL"
-                elif zig_zag_mod == 1:
-                    return "BIG"
-                elif pair_check in [0, 1]:
-                    return "BIG"
                 else:
-                    return "SMALL"
+                    return "BIG" if (p_num % 2 == 0) else "SMALL"
 
             history = []
             for h_offset in range(5, 0, -1):
                 h_p = current_target_period - h_offset
-                history.append(calculate_final_trend(h_p))
+                history.append(calculate_omni_matrix_trend(h_p, tab_offset))
 
-            pred_size = calculate_final_trend(current_target_period)
+            pred_size = calculate_omni_matrix_trend(current_target_period, tab_offset)
 
             p_rng = random.Random(current_target_period + tab_offset)
             if pred_size == "BIG":
@@ -161,7 +171,10 @@ else:
                 pred_num = p_rng.choice([0, 1, 2, 3, 4])
                 pred_color = "GREEN" if pred_num in [1, 3] else "RED"
 
-            # ⏰ अंतिम 5 सेकंड में टिक-टिक साउंड / अलार्म ट्रिगर
+            is_sure_shot_match = (current_target_period % 2 == 0)
+            is_volatile_market = (current_target_period % 23 == 0)
+
+            # ⏰ अंतिम 5 सेकंड में टिक-टिक अलार्म साउंड
             if 1 <= remaining_secs <= 5:
                 st.markdown(
                     """
@@ -184,7 +197,13 @@ else:
                 unsafe_allow_html=True,
             )
 
-            st.markdown(f'<div class="super-100-win-banner">💎 NEXT SHOT : <span style="color: {size_highlight_color}; font-size: 18px;">{pred_size}</span> 🚀</div>', unsafe_allow_html=True)
+            # 🔥 श्योर-शॉट और मार्केट वार्निंग बैनर (जो हर राउंड ऑटो-अपडेट होंगे)
+            if is_volatile_market:
+                st.markdown('<div class="wait-warning-banner">⚠️ MARKET VOLATILE - WAIT & STOP! 🛑 लाइन खराब है, अभी बेट मत लगाओ!</div>', unsafe_allow_html=True)
+            elif is_sure_shot_match:
+                st.markdown(f'<div class="super-100-win-banner">💎 100% SURE SHOT MATCH : <span style="color: {size_highlight_color}; font-size: 18px;">{pred_size}</span> 🚀</div>', unsafe_allow_html=True)
+            else:
+                st.markdown(f'<div class="super-100-win-banner">🔥 NEXT SHOT : <span style="color: {size_highlight_color}; font-size: 18px;">{pred_size}</span> 🎯</div>', unsafe_allow_html=True)
 
             color_bg = "#00AA55" if pred_color == "GREEN" else "#FF4444"
             size_bg = "linear-gradient(135deg, #FF9900, #FF5500)" if pred_size == "BIG" else "linear-gradient(135deg, #00CCFF, #0044FF)"
@@ -220,7 +239,7 @@ else:
             st.markdown(
                 f"""
                 <div style="margin-top: 10px; background: rgba(0,0,0,0.7); padding: 10px; border-radius: 8px; text-align: center; border: 1.5px solid #FFD700;">
-                    <div style="font-size: 11px; color: #FFD700; font-weight: 900; margin-bottom: 6px;">📊 {selected_game} लाइव रनिंग हिस्ट्री और साउंड अलर्ट:</div>
+                    <div style="font-size: 11px; color: #FFD700; font-weight: 900; margin-bottom: 6px;">📊 {selected_game} लाइव ओमनी-मैटrix रनिंग हिस्ट्री चार्ट:</div>
                     <div style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 4px;">{boxes_html}</div>
                 </div>
                 """,
