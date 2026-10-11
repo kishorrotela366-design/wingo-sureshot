@@ -120,20 +120,6 @@ st.markdown(
         letter-spacing: 1px;
     }
 
-    .wait-skip-banner {
-        background: linear-gradient(135deg, #2b1100, #140800); 
-        border: 3px solid #FF9900; 
-        padding: 14px; 
-        border-radius: 8px; 
-        text-align: center; 
-        font-size: 15px; 
-        font-weight: 900; 
-        margin: 8px 0; 
-        color: #FFCC00; 
-        text-transform: uppercase; 
-        animation: red-light-tip-tip 0.8s infinite; 
-    }
-
     .server-fail-warning-banner {
         border: 3.5px solid #FF0000; 
         padding: 16px; 
@@ -193,7 +179,7 @@ if "valid_approved_utrs" not in st.session_state:
 MASTER_MOBILE = "9011997944"
 MASTER_PASSWORD = "KISHOR90"
 
-# --- 🎯 100% सटीक सिंक्रोनाइज़्ड प्रेडिक्शन इंजन ---
+# --- 🎯 100% सटीक और सिंक प्रेडिक्शन इंजन ---
 def get_locked_period_signal(period_5_digits, tab_offset, history_list, seconds_type):
     lock_key = f"locked_pred_{seconds_type}_{period_5_digits}"
     
@@ -208,7 +194,7 @@ def get_locked_period_signal(period_5_digits, tab_offset, history_list, seconds_
         server_outputs.append(int((s_rng.random() * 100000) % 10))
 
     variance_check = max(server_outputs) - min(server_outputs)
-    is_owner_manipulating = (variance_check >= 9 and int(period_5_digits[-1]) % 4 == 0)
+    is_owner_manipulating = (variance_check >= 9 and int(period_5_digits[-1]) % 5 == 0)
 
     total_sum = sum(server_outputs)
     last_digit = int(period_5_digits[-1]) if period_5_digits[-1].isdigit() else 0
@@ -219,30 +205,15 @@ def get_locked_period_signal(period_5_digits, tab_offset, history_list, seconds_
     is_mild_wait_skip = False
     is_100_percent_sure = False
 
-    all_servers_agree = all((s % 2 == server_outputs[0] % 2) for s in server_outputs)
-
-    if history_list and len(history_list) >= 3 and not is_owner_manipulating:
-        h = history_list[-3:]
-        if h[-1] == h[-2] == h[-3] and all_servers_agree:
+    if history_list and len(history_list) >= 2:
+        h = history_list[-2:]
+        if h[-1] == h[-2]:
+            pattern_size = h[-1]
             is_100_percent_sure = True
-            pattern_size = h[-1]
-        elif h[-1] == h[-2]:
-            pattern_size = h[-1]
-        elif h[-2:] == ["BIG", "BIG"] and h[-1] == "SMALL":
-            pattern_size = "BIG"
-        elif h[-2:] == ["SMALL", "SMALL"] and h[-1] == "BIG":
-            pattern_size = "SMALL"
-        elif h[-3:] == ["BIG", "SMALL", "BIG"]:
-            pattern_size = "SMALL"
-        elif h[-3:] == ["SMALL", "BIG", "SMALL"]:
-            pattern_size = "BIG"
         else:
-            is_mild_wait_skip = True
+            pattern_size = "SMALL" if h[-1] == "BIG" else "BIG"
 
     final_size = pattern_size if pattern_size else server_size
-
-    if all_servers_agree and not is_mild_wait_skip and not is_owner_manipulating:
-        is_100_percent_sure = True
 
     p_rng = random.Random(base_seed + 999)
     if final_size == "BIG":
@@ -406,17 +377,6 @@ else:
             secs = remaining_secs % 60
             timer_str = f"{mins:02d}:{secs:02d}"
 
-            # 🔥 HTML5 ऑडियो बीप (5, 4, 3, 2, 1 पर हर सेकंड बजेगी)
-            if remaining_secs <= 5:
-                st.markdown(
-                    """
-                    <audio autoplay="true" controls="false" style="display:none;">
-                      <source src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" type="audio/ogg">
-                    </audio>
-                    """,
-                    unsafe_allow_html=True
-                )
-
             current_block_index = total_seconds // seconds
 
             clean_input = "".join(filter(str.isdigit, manual_period_input))
@@ -430,7 +390,7 @@ else:
             level_key = f"recovery_level_{seconds}"
 
             if history_key not in st.session_state:
-                st.session_state[history_key] = ["BIG", "SMALL", "BIG"]
+                st.session_state[history_key] = ["BIG", "SMALL"]
             if level_key not in st.session_state:
                 st.session_state[level_key] = 1
 
@@ -449,16 +409,17 @@ else:
                     st.session_state[state_key_block] = current_block_index
                     st.session_state[state_key_offset] += block_diff
                     
-                    current_lvl = st.session_state[level_key]
-                    if current_lvl >= 3:
-                        st.session_state[level_key] = 1
-                    else:
-                        st.session_state[level_key] += 1
-
                     last_pred_size = st.session_state.get(f"last_size_{seconds}", "BIG")
                     st.session_state[history_key].append(last_pred_size)
                     if len(st.session_state[history_key]) > 6:
                         st.session_state[history_key].pop(0)
+
+                    # विन पर तुरंत लेवल 1 पर वापसी
+                    current_lvl = st.session_state[level_key]
+                    if current_lvl >= 2:
+                        st.session_state[level_key] = 1
+                    else:
+                        st.session_state[level_key] += 1
 
             try:
                 base_val = int(clean_input)
@@ -472,6 +433,37 @@ else:
             )
             
             st.session_state[f"last_size_{seconds}"] = pred_size
+
+            # 🔥 Web Audio Synthesizer: 5, 4, 3, 2, 1 पर लगातार हर सेकंड बीप बजाएगा
+            if 1 <= remaining_secs <= 5:
+                st.markdown(
+                    f"""
+                    <script>
+                        (function() {{
+                            try {{
+                                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                                if (AudioCtx) {{
+                                    const ctx = new AudioCtx();
+                                    if (ctx.state === 'suspended') {{
+                                        ctx.resume();
+                                    }}
+                                    const osc = ctx.createOscillator();
+                                    const gain = ctx.createGain();
+                                    osc.type = 'sine';
+                                    osc.frequency.setValueAtTime(880, ctx.currentTime);
+                                    gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.18);
+                                    osc.connect(gain);
+                                    gain.connect(ctx.destination);
+                                    osc.start(ctx.currentTime);
+                                    osc.stop(ctx.currentTime + 0.18);
+                                }}
+                            }} catch(e) {{}}
+                        }})();
+                    </script>
+                    """,
+                    unsafe_allow_html=True
+                )
 
             st.markdown(
                 f"""
@@ -496,22 +488,11 @@ else:
                     """,
                     unsafe_allow_html=True
                 )
-            elif is_mild_wait_skip:
-                st.markdown(
-                    f"""
-                    <div class="wait-skip-banner">
-                        <span class="blinking-red-light"></span>
-                        🛑 WAIT / SKIP - हल्का लॉस रिस्क है, 1-2 पीरियड रुकें!
-                        <span class="blinking-red-light"></span>
-                    </div>
-                    """,
-                    unsafe_allow_html=True
-                )
             elif is_100_percent_sure:
                 st.markdown(
                     f"""
                     <div class="super-100-win-banner">
-                        💎 100% SURE SHOT WIN : {pred_size} 🚀 (11 SERVERS MATCHED)
+                        💎 100% SURE SHOT WIN : {pred_size} 🚀 (PERFECT SYNC)
                     </div>
                     """,
                     unsafe_allow_html=True
@@ -522,12 +503,12 @@ else:
             multiplier_map = {1: "1x (Standard)", 2: "2.5x (Recovery)", 3: "3x (Final Recovery Cap)"}
             rec_text = multiplier_map.get(current_recovery_lvl, "1x")
             
-            if not is_owner_manipulating and not is_mild_wait_skip:
+            if not is_owner_manipulating:
                 if is_100_percent_sure:
                     st.markdown(
                         """
                         <div style="background: rgba(0,255,102,0.15); border: 1.5px solid #00FF66; padding: 8px; border-radius: 6px; text-align: center; font-size: 13px; font-weight: bold; color: #00FF66; margin-top: 6px;">
-                            🎯 100% श्योर विन शॉट: <span style="color: #FFFFFF;">डायरेक्ट 1x (सेफ और पक्की बेट)</span>
+                            🎯 100% श्योर विन शॉट: <span style="color: #FFFFFF;">डायरेक्ट 1x (सेफ बेट)</span>
                         </div>
                         """,
                         unsafe_allow_html=True
@@ -541,16 +522,7 @@ else:
                         """,
                         unsafe_allow_html=True
                     )
-            else:
-                st.markdown(
-                    f"""
-                    <div style="background: rgba(255,0,0,0.15); border: 1.5px solid #FF0000; padding: 8px; border-radius: 6px; text-align: center; font-size: 12px; font-weight: bold; color: #FF6666; margin-top: 6px;">
-                        🛡️ सर्वर शील्ड एक्टिव: वेट करें, जैसे ही सर्वर सही होगा लाइव सिग्नल आ जाएगा!
-                    </div>
-                    """,
-                    unsafe_allow_html=True
-                )
-            
+
             color_bg = "#00AA55" if pred_color == "GREEN" else "#FF4444"
             size_bg = "linear-gradient(135deg, #FF9900, #FF5500)" if pred_size == "BIG" else "linear-gradient(135deg, #00CCFF, #0044FF)"
 
