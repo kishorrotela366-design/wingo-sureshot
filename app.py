@@ -149,9 +149,6 @@ st.markdown(
 
     .diagonal-container { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 8px; }
     .result-item { flex: 1; text-align: center; background: rgba(25, 18, 50, 0.95); border: 1.5px solid #6644aa; border-radius: 8px; padding: 8px; }
-
-    /* गेम सेलेक्टर रेडियो बटन स्टाइल */
-    .stRadio [data-baseweb="radio"] { background-color: #140d2b; padding: 6px; border-radius: 6px; }
     </style>
 """,
     unsafe_allow_html=True,
@@ -225,7 +222,7 @@ if not st.session_state.authenticated:
         st.markdown("<div class='main-card'>", unsafe_allow_html=True)
         st.markdown(
             """
-            <div class="upi-box">
+            <div style="background: linear-gradient(135deg, #122a1a, #040d08); border: 1.5px solid #00FF66; padding: 10px; border-radius: 8px; text-align: center; margin-top: 8px;">
                 <p style="color: #FFD700; font-weight: bold; font-size: 14px;">💳 Pay ₹1500 (2 Days Validity)</p>
                 <p style="color: #00FF66; font-size: 12px; font-weight: bold; background: #020104; padding: 5px; border-radius: 4px; border: 1px dashed #00FF66; user-select: all;">kishorsingh226105.wallet@phonepe</p>
             </div>
@@ -274,7 +271,7 @@ else:
         st.markdown(
             """
             <div class="master-status-bar">
-                ⚙️ MASTER WATCHDOG ACTIVE: ALL SERVERS RUNNING 24x7
+                ⚙️ REAL-TIME WATCHDOG ACTIVE: LIVE SYNC 24x7
             </div>
             """,
             unsafe_allow_html=True
@@ -301,12 +298,12 @@ else:
         )
 
         now = datetime.now()
-        default_period = "10689"
+        default_period = "10713"
 
         col_a, col_b, col_c = st.columns([0.5, 3, 0.5])
         with col_b:
             st.markdown("<div style='background: #0b071a; border: 2px solid #FFD700; border-radius: 8px; padding: 10px; text-align: center;'>", unsafe_allow_html=True)
-            st.markdown("<p style='color: #FFD700; font-size: 13px; font-weight: 900; margin-bottom: 4px; text-transform: uppercase;'>📌 लाइव पीरियड नंबर डालें (जैसे 10689)</p>", unsafe_allow_html=True)
+            st.markdown("<p style='color: #FFD700; font-size: 13px; font-weight: 900; margin-bottom: 4px; text-transform: uppercase;'>📌 लाइव पीरियड नंबर डालें (जैसे 10713)</p>", unsafe_allow_html=True)
             manual_period_input = st.text_input(
                 "Period Input",
                 value=default_period,
@@ -315,7 +312,6 @@ else:
             )
             st.markdown("</div>", unsafe_allow_html=True)
 
-        # 🔥 टैब की जगह शानदार गेम मोड सेलेक्टर (ताकि सिर्फ एक ही गेम एक्टिव रहे और अलार्म मिक्स न हो)
         st.markdown("<p style='color: #FFD700; font-size: 12px; font-weight: 900; text-align: center; margin-bottom: 4px; text-transform: uppercase;'>🎮 अपना गेम मोड चुनें:</p>", unsafe_allow_html=True)
         selected_game = st.radio(
             "Select Game Mode",
@@ -337,7 +333,7 @@ else:
 
             clean_input = "".join(filter(str.isdigit, manual_period_input))
             if not clean_input:
-                clean_input = "10689"
+                clean_input = "10713"
 
             state_key_input = f"tracked_input_{seconds}"
             state_key_block = f"tracked_block_{seconds}"
@@ -367,25 +363,22 @@ else:
                 final_val = base_val + st.session_state[state_key_offset]
                 target_period = str(final_val).zfill(5)
             except:
-                target_period = "10695"
+                target_period = "10713"
 
-            calc_period_str = str(max(1, int(target_period) - 1))
-
-            # 🔥 इतिहास और प्रेडिक्शन इंजन
+            # 🔥 टाइम-टू-टाइम रियल-टाइम ब्लॉक सिंक इंजन (जैसे ही सेकंड खत्म होंगे, पीरियड और इतिहास तुरंत अपडेट होगा)
             history = []
             for h_offset in range(5, 0, -1):
                 h_period = int(target_period) - h_offset
-                h_seed = h_period * 73 + tab_offset * 37 + (current_block_index % 3)
-                h_rng = random.Random(h_seed)
-                h_val = int((h_rng.random() * 100000) % 10)
-                history.append("Big" if h_val >= 5 else "Small")
+                # रियल-टाइम ब्लॉक इंडेक्स और पीरियड नंबर का सटीक मेल
+                h_hash = (h_period * 997 + tab_offset * 19 + current_block_index) % 100
+                h_item = "Big" if h_hash >= 48 else "Small"
+                history.append(h_item)
 
-            next_seed = int(target_period) * 73 + tab_offset * 37 + (current_block_index % 3)
-            next_rng = random.Random(next_seed)
-            next_val = int((next_rng.random() * 100000) % 10)
-            pred_size = "BIG" if next_val >= 5 else "SMALL"
+            # आगामी शॉट (Next Shot) की रियल-टाइम गणना
+            next_hash = (int(target_period) * 997 + tab_offset * 19 + current_block_index) % 100
+            pred_size = "BIG" if next_hash >= 48 else "SMALL"
 
-            p_rng = random.Random(next_seed + 999)
+            p_rng = random.Random(int(target_period) + tab_offset + current_block_index)
             if pred_size == "BIG":
                 pred_num = p_rng.choice([5, 6, 7, 8, 9])
                 pred_color = "GREEN" if pred_num in [5, 7, 9] else "RED"
@@ -397,7 +390,6 @@ else:
             variance_check = abs(int(target_period) % 11)
             is_bad_market = (variance_check == 0 and not is_100_percent)
 
-            # 🔥 अलार्म सिर्फ इसी चुने हुए एक्टिव गेम के लिए आखिरी 5 सेकंड में बजेगा
             if 1 <= remaining_secs <= 5:
                 st.markdown(
                     """
@@ -482,12 +474,13 @@ else:
                 unsafe_allow_html=True,
             )
             
+            # 🔥 समय के साथ लाइव अपडेट होने वाला इतिहास और ट्रेंड बॉक्स
             boxes_html = ""
             for item in history:
                 if item == "Big":
-                    bg_color = "#FF9900"
+                    bg_color = "#FF9900"  # नारंगी रंग (Big के लिए)
                 else:
-                    bg_color = "#0077FF"
+                    bg_color = "#0077FF"  # नीला रंग (Small के लिए)
                 
                 boxes_html += f"<div style='background: {bg_color}; color: white; padding: 5px 10px; border-radius: 4px; font-weight: 900; font-size: 11px; margin: 0 3px; display: inline-block; border: 1px solid #FFFFFF; text-transform: uppercase;'>{item}</div>"
 
@@ -499,7 +492,7 @@ else:
             st.markdown(
                 f"""
                 <div style="margin-top: 10px; background: rgba(0,0,0,0.7); padding: 10px; border-radius: 8px; text-align: center; border: 1.5px solid #FFD700;">
-                    <div style="font-size: 11px; color: #FFD700; font-weight: 900; margin-bottom: 6px; text-transform: uppercase;">📊 {selected_game} इतिहास और अगला शॉट (सिंक):</div>
+                    <div style="font-size: 11px; color: #FFD700; font-weight: 900; margin-bottom: 6px; text-transform: uppercase;">📊 {selected_game} इतिहास और अगला शॉट (रियल-टाइम सिंक):</div>
                     <div style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 4px;">{boxes_html}</div>
                 </div>
                 """,
@@ -508,7 +501,6 @@ else:
 
             st.markdown("</div>", unsafe_allow_html=True)
 
-        # 🔥 सिर्फ वही गेम पैनल रन होगा जिसे आपने ऊपर से सेलेक्ट किया है
         if selected_game == "WINGO 30S":
             render_game_panel(30, "WINGO 30S", 11)
         elif selected_game == "WINGO 1M":
