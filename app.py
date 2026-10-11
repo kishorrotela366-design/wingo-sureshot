@@ -40,6 +40,12 @@ st.markdown(
         100% { border-color: #FF0055; box-shadow: 0 0 25px #FF0055; background: rgba(255, 0, 85, 0.3); }
     }
 
+    @keyframes super-win-glow {
+        0% { border-color: #00FF66; box-shadow: 0 0 30px #00FF66, inset 0 0 15px #00FF66; background: linear-gradient(135deg, #003311, #001a05); }
+        50% { border-color: #FFD700; box-shadow: 0 0 15px #FFD700, inset 0 0 8px #FFD700; background: linear-gradient(135deg, #1a1a00, #0d0d00); }
+        100% { border-color: #00FF66; box-shadow: 0 0 30px #00FF66, inset 0 0 15px #00FF66; background: linear-gradient(135deg, #003311, #001a05); }
+    }
+
     @keyframes critical-warning-glow {
         0% { border-color: #FF0000; box-shadow: 0 0 25px #FF0000, inset 0 0 10px #FF3300; background: linear-gradient(135deg, #4a0000, #2b0000); }
         50% { border-color: #FFCC00; box-shadow: 0 0 12px #FFCC00, inset 0 0 5px #FF9900; background: linear-gradient(135deg, #2b0000, #140000); }
@@ -98,6 +104,20 @@ st.markdown(
         color: #FF3366; 
         text-transform: uppercase; 
         animation: red-light-tip-tip 0.9s infinite; 
+    }
+
+    .super-100-win-banner { 
+        border: 3.5px solid #00FF66; 
+        padding: 14px; 
+        border-radius: 8px; 
+        text-align: center; 
+        font-size: 16px; 
+        font-weight: 900; 
+        margin: 8px 0; 
+        color: #00FF66; 
+        text-transform: uppercase; 
+        animation: super-win-glow 0.8s infinite; 
+        letter-spacing: 1px;
     }
 
     .wait-skip-banner {
@@ -197,10 +217,16 @@ def get_locked_period_signal(period_5_digits, tab_offset, history_list, seconds_
 
     pattern_size = None
     is_mild_wait_skip = False
+    is_100_percent_sure = False
+
+    all_servers_agree = all((s % 2 == server_outputs[0] % 2) for s in server_outputs)
 
     if history_list and len(history_list) >= 3 and not is_owner_manipulating:
         h = history_list[-3:]
-        if h[-1] == h[-2]:
+        if h[-1] == h[-2] == h[-3] and all_servers_agree:
+            is_100_percent_sure = True
+            pattern_size = h[-1]
+        elif h[-1] == h[-2]:
             pattern_size = h[-1]
         elif h[-2:] == ["BIG", "BIG"] and h[-1] == "SMALL":
             pattern_size = "BIG"
@@ -215,6 +241,9 @@ def get_locked_period_signal(period_5_digits, tab_offset, history_list, seconds_
 
     final_size = pattern_size if pattern_size else server_size
 
+    if all_servers_agree and not is_mild_wait_skip and not is_owner_manipulating:
+        is_100_percent_sure = True
+
     p_rng = random.Random(base_seed + 999)
     if final_size == "BIG":
         pred_num = p_rng.choice([5, 6, 7, 8, 9])
@@ -226,7 +255,7 @@ def get_locked_period_signal(period_5_digits, tab_offset, history_list, seconds_
     else:
         pred_color = "RED"
 
-    result_tuple = (pred_num, final_size, pred_color, is_mild_wait_skip, is_owner_manipulating)
+    result_tuple = (pred_num, final_size, pred_color, is_mild_wait_skip, is_owner_manipulating, is_100_percent_sure)
     st.session_state[lock_key] = result_tuple
     return result_tuple
 
@@ -377,25 +406,13 @@ else:
             secs = remaining_secs % 60
             timer_str = f"{mins:02d}:{secs:02d}"
 
-            # 🔥 जावास्क्रिप्ट ऑडियो बीप (5, 4, 3, 2, 1 पर हर सेकंड बजेगी)
+            # 🔥 HTML5 ऑडियो बीप (5, 4, 3, 2, 1 पर हर सेकंड बजेगी)
             if remaining_secs <= 5:
                 st.markdown(
-                    f"""
-                    <script>
-                        try {{
-                            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                            const osc = audioCtx.createOscillator();
-                            const gainNode = audioCtx.createGain();
-                            osc.type = 'sine';
-                            osc.frequency.setValueAtTime(880, audioCtx.currentTime);
-                            gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
-                            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
-                            osc.connect(gainNode);
-                            gainNode.connect(audioCtx.destination);
-                            osc.start();
-                            osc.stop(audioCtx.currentTime + 0.15);
-                        }} catch(e) {{}}
-                    </script>
+                    """
+                    <audio autoplay="true" controls="false" style="display:none;">
+                      <source src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" type="audio/ogg">
+                    </audio>
                     """,
                     unsafe_allow_html=True
                 )
@@ -450,7 +467,7 @@ else:
             except:
                 final_period = clean_input.zfill(5)[-5:]
 
-            pred_num, pred_size, pred_color, is_mild_wait_skip, is_owner_manipulating = get_locked_period_signal(
+            pred_num, pred_size, pred_color, is_mild_wait_skip, is_owner_manipulating, is_100_percent_sure = get_locked_period_signal(
                 final_period, tab_offset, st.session_state[history_key], seconds
             )
             
@@ -490,6 +507,15 @@ else:
                     """,
                     unsafe_allow_html=True
                 )
+            elif is_100_percent_sure:
+                st.markdown(
+                    f"""
+                    <div class="super-100-win-banner">
+                        💎 100% SURE SHOT WIN : {pred_size} 🚀 (11 SERVERS MATCHED)
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
             else:
                 st.markdown(f'<div class="sure-shot-banner"><span class="blinking-red-light"></span>💎 RECOVERY SHOT [ LEVEL {current_recovery_lvl} ] : {pred_size} 🚀 <span class="blinking-red-light"></span></div>', unsafe_allow_html=True)
 
@@ -497,14 +523,24 @@ else:
             rec_text = multiplier_map.get(current_recovery_lvl, "1x")
             
             if not is_owner_manipulating and not is_mild_wait_skip:
-                st.markdown(
-                    f"""
-                    <div class="recovery-badge">
-                        🎯 सुझावित बैट मल्टीप्लायर: <span style="color: #00FF66;">{rec_text}</span> (मैक्सिमम कैप: 3 लेवल)
-                    </div>
-                    """,
-                    unsafe_allow_html=True
-                )
+                if is_100_percent_sure:
+                    st.markdown(
+                        """
+                        <div style="background: rgba(0,255,102,0.15); border: 1.5px solid #00FF66; padding: 8px; border-radius: 6px; text-align: center; font-size: 13px; font-weight: bold; color: #00FF66; margin-top: 6px;">
+                            🎯 100% श्योर विन शॉट: <span style="color: #FFFFFF;">डायरेक्ट 1x (सेफ और पक्की बेट)</span>
+                        </div>
+                        """,
+                        unsafe_allow_html=True
+                    )
+                else:
+                    st.markdown(
+                        f"""
+                        <div class="recovery-badge">
+                            🎯 सुझावित बैट मल्टीप्लायर: <span style="color: #00FF66;">{rec_text}</span> (मैक्सिमम कैप: 3 लेवल)
+                        </div>
+                        """,
+                        unsafe_allow_html=True
+                    )
             else:
                 st.markdown(
                     f"""
