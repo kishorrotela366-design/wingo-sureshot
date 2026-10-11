@@ -359,7 +359,7 @@ else:
             st.markdown("<p style='color: #FFD700; font-size: 13px; font-weight: 900; margin-bottom: 4px; text-transform: uppercase;'>📌 लाइव पीरियड (केवल 5 अंक डालें)</p>", unsafe_allow_html=True)
             manual_period_input = st.text_input(
                 "Period Input",
-                value=default_5_digits,
+                value=default_5,
                 max_chars=5,
                 key="user_live_period_input",
                 label_visibility="collapsed"
@@ -377,13 +377,25 @@ else:
             secs = remaining_secs % 60
             timer_str = f"{mins:02d}:{secs:02d}"
 
-            # 🔥 केवल साउंड अलर्ट (बिना वाइब्रेशन के) - आखिरी 5 सेकंड में टन-टन घंटी बजेगी
+            # 🔥 जावास्क्रिप्ट ऑडियो सिंथसाइज़र (जो 5, 4, 3, 2, 1 — हर सेकंड लगातार 'टिंक-टिंक' आवाज़ बजाएगा)
             if remaining_secs <= 5:
                 st.markdown(
-                    """
-                    <audio autoplay>
-                      <source src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" type="audio/ogg">
-                    </audio>
+                    f"""
+                    <script>
+                        try {
+                            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                            const osc = audioCtx.createOscillator();
+                            const gainNode = audioCtx.createGain();
+                            osc.type = 'sine';
+                            osc.frequency.setValueAtTime(880, audioCtx.currentTime); // हाई पिच्ड टिन-टिन आवाज़
+                            gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+                            osc.connect(gainNode);
+                            gainNode.connect(audioCtx.destination);
+                            osc.start();
+                            osc.stop(audioCtx.currentTime + 0.15);
+                        } catch(e) {}
+                    </script>
                     """,
                     unsafe_allow_html=True
                 )
@@ -439,7 +451,7 @@ else:
                 final_period = clean_input.zfill(5)[-5:]
 
             pred_num, pred_size, pred_color, is_mild_wait_skip, is_owner_manipulating = get_locked_period_signal(
-                final_period, tab_offset, st.session_state[history_key], seconds
+                final_period, tab_offset, st.session_state[history_, seconds
             )
             
             st.session_state[f"last_size_{seconds}"] = pred_size
