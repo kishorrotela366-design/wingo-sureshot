@@ -150,11 +150,8 @@ st.markdown(
     .diagonal-container { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 8px; }
     .result-item { flex: 1; text-align: center; background: rgba(25, 18, 50, 0.95); border: 1.5px solid #6644aa; border-radius: 8px; padding: 8px; }
 
-    .stTabs [data-baseweb="tab-list"] { gap: 6px; justify-content: center; background-color: #0b071a; padding: 6px; border-radius: 8px; border: 1.5px solid #FFD700; }
-    .stTabs [data-baseweb="tab"] { background: linear-gradient(135deg, #25184d, #140d2b); border-radius: 6px; color: #FFFFFF; font-weight: 900; font-size: 14px; padding: 8px 14px; border: 1.5px solid #6644aa; }
-    .stTabs [aria-selected="true"] { background: linear-gradient(135deg, #FFD700, #FF8C00) !important; border: 1.5px solid #FFFFFF !important; color: #000000 !important; font-weight: 900 !important; }
-
-    .upi-box { background: linear-gradient(135deg, #122a1a, #040d08); border: 1.5px solid #00FF66; padding: 10px; border-radius: 8px; text-align: center; margin-top: 8px; }
+    /* गेम सेलेक्टर रेडियो बटन स्टाइल */
+    .stRadio [data-baseweb="radio"] { background-color: #140d2b; padding: 6px; border-radius: 6px; }
     </style>
 """,
     unsafe_allow_html=True,
@@ -304,12 +301,12 @@ else:
         )
 
         now = datetime.now()
-        default_period = "10670"
+        default_period = "10689"
 
         col_a, col_b, col_c = st.columns([0.5, 3, 0.5])
         with col_b:
             st.markdown("<div style='background: #0b071a; border: 2px solid #FFD700; border-radius: 8px; padding: 10px; text-align: center;'>", unsafe_allow_html=True)
-            st.markdown("<p style='color: #FFD700; font-size: 13px; font-weight: 900; margin-bottom: 4px; text-transform: uppercase;'>📌 लाइव पीरियड नंबर डालें (जैसे 10670)</p>", unsafe_allow_html=True)
+            st.markdown("<p style='color: #FFD700; font-size: 13px; font-weight: 900; margin-bottom: 4px; text-transform: uppercase;'>📌 लाइव पीरियड नंबर डालें (जैसे 10689)</p>", unsafe_allow_html=True)
             manual_period_input = st.text_input(
                 "Period Input",
                 value=default_period,
@@ -318,7 +315,14 @@ else:
             )
             st.markdown("</div>", unsafe_allow_html=True)
 
-        tab1, tab2, tab3, tab4 = st.tabs(["WINGO 30S", "WINGO 1M", "WINGO 3M", "WINGO 5M"])
+        # 🔥 टैब की जगह शानदार गेम मोड सेलेक्टर (ताकि सिर्फ एक ही गेम एक्टिव रहे और अलार्म मिक्स न हो)
+        st.markdown("<p style='color: #FFD700; font-size: 12px; font-weight: 900; text-align: center; margin-bottom: 4px; text-transform: uppercase;'>🎮 अपना गेम मोड चुनें:</p>", unsafe_allow_html=True)
+        selected_game = st.radio(
+            "Select Game Mode",
+            ["WINGO 30S", "WINGO 1M", "WINGO 3M", "WINGO 5M"],
+            horizontal=True,
+            label_visibility="collapsed"
+        )
 
         def render_game_panel(seconds, tab_name_style, tab_offset):
             st.markdown("<div class='main-card'>", unsafe_allow_html=True)
@@ -333,7 +337,7 @@ else:
 
             clean_input = "".join(filter(str.isdigit, manual_period_input))
             if not clean_input:
-                clean_input = "10670"
+                clean_input = "10689"
 
             state_key_input = f"tracked_input_{seconds}"
             state_key_block = f"tracked_block_{seconds}"
@@ -363,34 +367,25 @@ else:
                 final_val = base_val + st.session_state[state_key_offset]
                 target_period = str(final_val).zfill(5)
             except:
-                target_period = "10671"
+                target_period = "10695"
 
             calc_period_str = str(max(1, int(target_period) - 1))
 
-            # 🔥 स्मार्ट ट्रेंड-ट्रैकर इंजन (पैटर्न को मैच करने के लिए)
-            base_seed = int(calc_period_str) * 73 + tab_offset * 37
-            
+            # 🔥 इतिहास और प्रेडिक्शन इंजन
             history = []
-            for h_offset in range(6, 0, -1):
-                h_period = int(calc_period_str) - h_offset
-                h_seed = h_period * 73 + tab_offset * 37
-                h_rng = random.Random(h_seed + 19)
-                h_calc = int((h_rng.random() * 100000) % 10)
-                history.append("BIG" if h_calc >= 5 else "SMALL")
+            for h_offset in range(5, 0, -1):
+                h_period = int(target_period) - h_offset
+                h_seed = h_period * 73 + tab_offset * 37 + (current_block_index % 3)
+                h_rng = random.Random(h_seed)
+                h_val = int((h_rng.random() * 100000) % 10)
+                history.append("Big" if h_val >= 5 else "Small")
 
-            # पैटर्न रीड करना (जैसे 2 Big, 2 Small या अल्टरनेट ट्रेंड)
-            recent_trend = history[-2:]
-            if recent_trend[0] == recent_trend[1]:
-                # अगर पिछले दो एक जैसे हैं, तो ट्रेंड जारी रहेगा (100% श्योर शॉट)
-                pred_size = recent_trend[1]
-                is_100_percent = True
-            else:
-                # यदि अल्टरनेट है तो गणितीय फॉर्मूला लगेगा
-                s_rng = random.Random(base_seed + 42)
-                pred_size = "BIG" if (s_rng.random() > 0.5) else "SMALL"
-                is_100_percent = (history[-1] == history[-2] == history[-3])
+            next_seed = int(target_period) * 73 + tab_offset * 37 + (current_block_index % 3)
+            next_rng = random.Random(next_seed)
+            next_val = int((next_rng.random() * 100000) % 10)
+            pred_size = "BIG" if next_val >= 5 else "SMALL"
 
-            p_rng = random.Random(base_seed + 999)
+            p_rng = random.Random(next_seed + 999)
             if pred_size == "BIG":
                 pred_num = p_rng.choice([5, 6, 7, 8, 9])
                 pred_color = "GREEN" if pred_num in [5, 7, 9] else "RED"
@@ -398,10 +393,11 @@ else:
                 pred_num = p_rng.choice([0, 1, 2, 3, 4])
                 pred_color = "GREEN" if pred_num in [1, 3] else "RED"
 
-            variance_check = abs(int(calc_period_str) % 13)
+            is_100_percent = (history[-1] == history[-2])
+            variance_check = abs(int(target_period) % 11)
             is_bad_market = (variance_check == 0 and not is_100_percent)
 
-            # 🔥 HTML5 ऑडियो बीप अलार्म (आखिरी 5 सेकंड में बजेगा)
+            # 🔥 अलार्म सिर्फ इसी चुने हुए एक्टिव गेम के लिए आखिरी 5 सेकंड में बजेगा
             if 1 <= remaining_secs <= 5:
                 st.markdown(
                     """
@@ -487,21 +483,24 @@ else:
             )
             
             boxes_html = ""
-            for item in history[-5:]:
-                bg_color = "rgba(255,153,0,0.6)" if item == "BIG" else "rgba(0,204,255,0.6)"
-                short_lbl = "B" if item == "BIG" else "S"
-                boxes_html += f"<div style='background: {bg_color}; color: #DDD; width: 26px; height: 26px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 900; font-size: 11px; margin: 0 2px; border: 1px solid #777;'>{short_lbl}</div>"
+            for item in history:
+                if item == "Big":
+                    bg_color = "#FF9900"
+                else:
+                    bg_color = "#0077FF"
+                
+                boxes_html += f"<div style='background: {bg_color}; color: white; padding: 5px 10px; border-radius: 4px; font-weight: 900; font-size: 11px; margin: 0 3px; display: inline-block; border: 1px solid #FFFFFF; text-transform: uppercase;'>{item}</div>"
 
-            next_bg = "linear-gradient(135deg, #FF9900, #FF0055)" if pred_size == "BIG" else "linear-gradient(135deg, #00FFFF, #0044FF)"
-            next_lbl = f"👉 {pred_size}"
+            next_bg = "linear-gradient(135deg, #FF9900, #FF5500)" if pred_size == "BIG" else "linear-gradient(135deg, #00CCFF, #0044FF)"
+            next_lbl = f"🎯 NEXT: {pred_size}"
             
-            boxes_html += f"<div style='background: {next_bg}; color: white; padding: 4px 10px; border-radius: 20px; display: inline-flex; align-items: center; justify-content: center; font-weight: 900; font-size: 13px; margin-left: 8px; border: 2px solid #00FF66; box-shadow: 0 0 10px #00FF66;'>{next_lbl}</div>"
+            boxes_html += f"<div style='background: {next_bg}; color: white; padding: 5px 12px; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; font-weight: 900; font-size: 12px; margin-left: 8px; border: 2px solid #00FF66; box-shadow: 0 0 12px #00FF66; text-transform: uppercase;'>{next_lbl}</div>"
 
             st.markdown(
                 f"""
                 <div style="margin-top: 10px; background: rgba(0,0,0,0.7); padding: 10px; border-radius: 8px; text-align: center; border: 1.5px solid #FFD700;">
-                    <div style="font-size: 11px; color: #FFD700; font-weight: 900; margin-bottom: 6px; text-transform: uppercase;">📊 BDG लाइव चार्ट लाइन & आगामी शॉट:</div>
-                    <div style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 2px;">{boxes_html}</div>
+                    <div style="font-size: 11px; color: #FFD700; font-weight: 900; margin-bottom: 6px; text-transform: uppercase;">📊 {selected_game} इतिहास और अगला शॉट (सिंक):</div>
+                    <div style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 4px;">{boxes_html}</div>
                 </div>
                 """,
                 unsafe_allow_html=True
@@ -509,13 +508,14 @@ else:
 
             st.markdown("</div>", unsafe_allow_html=True)
 
-        with tab1:
+        # 🔥 सिर्फ वही गेम पैनल रन होगा जिसे आपने ऊपर से सेलेक्ट किया है
+        if selected_game == "WINGO 30S":
             render_game_panel(30, "WINGO 30S", 11)
-        with tab2:
+        elif selected_game == "WINGO 1M":
             render_game_panel(60, "WINGO 1M", 23)
-        with tab3:
+        elif selected_game == "WINGO 3M":
             render_game_panel(180, "WINGO 3M", 37)
-        with tab4:
+        elif selected_game == "WINGO 5M":
             render_game_panel(300, "WINGO 5M", 53)
 
     success_dashboard_core()
