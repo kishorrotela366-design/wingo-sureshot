@@ -5,7 +5,7 @@ import streamlit as st
 
 # --- पेज सेटअप और डार्क थीम ---
 st.set_page_config(
-    page_title="BDG MASTER HEARTBEAT SNIPER PANEL",
+    page_title="BDG MASTER SNIPER PANEL",
     page_icon="🛡️",
     layout="centered",
     initial_sidebar_state="collapsed",
@@ -160,12 +160,6 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# --- 👑 मास्टर वॉचडॉग ---
-def master_watchdog_heartbeat():
-    st.session_state["master_heartbeat_timestamp"] = time.time()
-
-master_watchdog_heartbeat()
-
 # --- सेशन स्टेट डेटाबेस ---
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
@@ -179,14 +173,14 @@ if "valid_approved_utrs" not in st.session_state:
 MASTER_MOBILE = "9011997944"
 MASTER_PASSWORD = "KISHOR90"
 
-# --- 🎯 100% सटीक और पैटर्न-मैचिंग इंजन ---
-def get_locked_period_signal(period_5_digits, tab_offset, history_list, seconds_type):
-    lock_key = f"locked_pred_{seconds_type}_{period_5_digits}"
-    
-    if lock_key in st.session_state:
-        return st.session_state[lock_key]
+# --- 🎯 स्मार्ट इंजन और ऑटो-रिसेट रिकवरी चेकर ---
+def get_period_signal(period_str, tab_offset):
+    try:
+        base_val = int(period_str)
+    except:
+        base_val = 10407
 
-    base_seed = int(period_5_digits) * 73 + int(tab_offset) * 37
+    base_seed = base_val * 73 + tab_offset * 37
     
     server_outputs = []
     for s_idx in range(1, 12):
@@ -194,43 +188,32 @@ def get_locked_period_signal(period_5_digits, tab_offset, history_list, seconds_
         server_outputs.append(int((s_rng.random() * 100000) % 10))
 
     variance_check = max(server_outputs) - min(server_outputs)
-    is_owner_manipulating = (variance_check >= 9 and int(period_5_digits[-1]) % 7 == 0)
+    is_bad_market = (variance_check >= 10 and int(period_str[-1]) == 0)
 
     total_sum = sum(server_outputs)
-    last_digit = int(period_5_digits[-1]) if period_5_digits[-1].isdigit() else 0
-    server_calc_num = (total_sum + last_digit + tab_offset) % 10
-    server_size = "BIG" if server_calc_num >= 5 else "SMALL"
-
-    pattern_size = None
-    is_100_percent_sure = False
-
-    # 🎯 बेहतरीन पैटर्न कैचिंग लॉजिक (Zig-Zag और వరుస लाइन दोनों पकड़ेगा)
-    if history_list and len(history_list) >= 2:
-        h = history_list[-2:]
-        if h[-1] == h[-2]:
-            pattern_size = h[-1]
-            is_100_percent_sure = True
-        else:
-            # अल्टरनेटिंग ट्रेंड (जैसे Big के बाद Small, या Small के बाद Big)
-            pattern_size = "SMALL" if h[-1] == "BIG" else "BIG"
-            is_100_percent_sure = True
-
-    final_size = pattern_size if pattern_size else server_size
+    last_digit = int(period_str[-1]) if period_str[-1].isdigit() else 0
+    calc_num = (total_sum + last_digit + tab_offset) % 10
+    pred_size = "BIG" if calc_num >= 5 else "SMALL"
 
     p_rng = random.Random(base_seed + 999)
-    if final_size == "BIG":
+    if pred_size == "BIG":
         pred_num = p_rng.choice([5, 6, 7, 8, 9])
     else:
         pred_num = p_rng.choice([0, 1, 2, 3, 4])
 
-    if pred_num in [1, 3, 7, 9, 5]:
-        pred_color = "GREEN"
-    else:
-        pred_color = "RED"
+    pred_color = "GREEN" if pred_num in [1, 3, 7, 9, 5] else "RED"
 
-    result_tuple = (pred_num, final_size, pred_color, is_owner_manipulating, is_100_percent_sure)
-    st.session_state[lock_key] = result_tuple
-    return result_tuple
+    history = []
+    for h_offset in range(5, 0, -1):
+        h_period = base_val - h_offset
+        h_seed = h_period * 73 + tab_offset * 37
+        h_rng = random.Random(h_seed + 19)
+        h_calc = int((h_rng.random() * 100000) % 10)
+        history.append("BIG" if h_calc >= 5 else "SMALL")
+
+    is_100_percent = (history[-1] == history[-2] == history[-3])
+
+    return pred_num, pred_size, pred_color, history, is_100_percent, is_bad_market
 
 # --- लॉगिन गार्ड ---
 if st.session_state.authenticated:
@@ -240,7 +223,7 @@ if st.session_state.authenticated:
             record = st.session_state.registered_users_db[current_mob]
             if datetime.now() > record["expiry_date"]:
                 st.session_state.authenticated = False
-                st.warning("⚠️ आपके 2 दिन की वैधता समाप्त हो चुकी है। कृपया नया UTR वेरीफाई करें।")
+                st.warning("⚠️ वैधता समाप्त हो चुकी है।")
                 st.rerun()
 
 if not st.session_state.authenticated:
@@ -277,7 +260,7 @@ if not st.session_state.authenticated:
                     else:
                         st.error("❌ गलत पासवर्ड!")
                 else:
-                    st.info("ℹ️ नया उपयोगकर्ता। कृपया ₹1500 का भुगतान करें (2 दिन की वैधता)।")
+                    st.info("ℹ️ नया उपयोगकर्ता। कृपया ₹1500 का भुगतान करें।")
                     st.session_state.require_recharge = True
                     st.session_state.target_mobile = mobile_input
                     st.session_state.target_password = password_input
@@ -324,7 +307,7 @@ if not st.session_state.authenticated:
                 }
                 st.session_state.authenticated = True
                 st.session_state.current_mobile = t_mobile
-                st.success("✅ सफलता! (2 दिन की वैधता एक्टिव)")
+                st.success("✅ सफलता!")
                 st.rerun()
         st.markdown("</div>", unsafe_allow_html=True)
 
@@ -336,7 +319,7 @@ else:
         st.markdown(
             """
             <div class="master-status-bar">
-                ⚙️ MASTER WATCHDOG ACTIVE: ALL 11 SERVERS RUNNING 24x7 (NO SLEEP ENFORCED)
+                ⚙️ MASTER WATCHDOG ACTIVE: ALL SERVERS RUNNING 24x7
             </div>
             """,
             unsafe_allow_html=True
@@ -345,7 +328,7 @@ else:
         st.markdown(
             f"""
                 <div class="top-bar">
-                    <div><span class="blinking-red-light"></span><span style="color: #00FFFF; font-weight: 900; font-size: 14px;">⚡ BDG DUAL WARN PANEL</span></div>
+                    <div><span class="blinking-red-light"></span><span style="color: #00FFFF; font-weight: 900; font-size: 14px;">⚡ BDG SNIPER PANEL</span></div>
                     <div><span class="blinking-red-light"></span>👥 <span style="color: #00FF66; font-size: 13px; font-weight: 900;">{dynamic_online_count:,}</span></div>
                 </div>
             """,
@@ -353,16 +336,15 @@ else:
         )
 
         now = datetime.now()
-        default_5_digits = now.strftime("%M%S")[-5:]
+        default_period = "10407"
 
         col_a, col_b, col_c = st.columns([0.5, 3, 0.5])
         with col_b:
-            st.markdown("<div style='background: #0b071a; border: 2px solid #FFD700; border-radius: 8px; padding: 10px; text-align: center; box-shadow: 0 0 12px rgba(255,215,0,0.25);'>", unsafe_allow_html=True)
-            st.markdown("<p style='color: #FFD700; font-size: 13px; font-weight: 900; margin-bottom: 4px; text-transform: uppercase;'>📌 लाइव पीरियड (केवल 5 अंक डालें)</p>", unsafe_allow_html=True)
+            st.markdown("<div style='background: #0b071a; border: 2px solid #FFD700; border-radius: 8px; padding: 10px; text-align: center;'>", unsafe_allow_html=True)
+            st.markdown("<p style='color: #FFD700; font-size: 13px; font-weight: 900; margin-bottom: 4px; text-transform: uppercase;'>📌 लाइव पीरियड नंबर डालें (जैसे 10407)</p>", unsafe_allow_html=True)
             manual_period_input = st.text_input(
                 "Period Input",
-                value=default_5_digits,
-                max_chars=5,
+                value=default_period,
                 key="user_live_period_input",
                 label_visibility="collapsed"
             )
@@ -379,89 +361,46 @@ else:
             secs = remaining_secs % 60
             timer_str = f"{mins:02d}:{secs:02d}"
 
-            current_block_index = total_seconds // seconds
-
             clean_input = "".join(filter(str.isdigit, manual_period_input))
             if not clean_input:
-                clean_input = "02003"
+                clean_input = "10407"
 
-            state_key_input = f"tracked_input_{seconds}"
-            state_key_block = f"tracked_block_{seconds}"
-            state_key_offset = f"period_offset_{seconds}"
-            history_key = f"history_list_{seconds}"
+            try:
+                entered_val = int(clean_input)
+                target_period = str(entered_val + 1).zfill(5)
+            except:
+                target_period = "10408"
+
             level_key = f"recovery_level_{seconds}"
-
-            if history_key not in st.session_state:
-                st.session_state[history_key] = ["BIG", "SMALL"]
             if level_key not in st.session_state:
                 st.session_state[level_key] = 1
 
-            if state_key_input not in st.session_state:
-                st.session_state[state_key_input] = clean_input
-                st.session_state[state_key_block] = current_block_index
-                st.session_state[state_key_offset] = 0
+            pred_num, pred_size, pred_color, history_list, is_100_percent, is_bad_market = get_period_signal(clean_input, tab_offset)
 
-            if st.session_state[state_key_input] != clean_input:
-                st.session_state[state_key_input] = clean_input
-                st.session_state[state_key_block] = current_block_index
-                st.session_state[state_key_offset] = 0
-            else:
-                block_diff = current_block_index - st.session_state[state_key_block]
-                if block_diff != 0:
-                    st.session_state[state_key_block] = current_block_index
-                    st.session_state[state_key_offset] += block_diff
-                    
-                    last_pred_size = st.session_state.get(f"last_size_{seconds}", "BIG")
-                    st.session_state[history_key].append(last_pred_size)
-                    if len(st.session_state[history_key]) > 6:
-                        st.session_state[history_key].pop(0)
-
-                    # विन होने पर तुरंत लेवल 1 पर वापसी
-                    current_lvl = st.session_state[level_key]
-                    if current_lvl >= 2:
-                        st.session_state[level_key] = 1
-                    else:
-                        st.session_state[level_key] += 1
-
-            try:
-                base_val = int(clean_input)
-                final_val = base_val + st.session_state[state_key_offset]
-                final_period = str(final_val).zfill(5)[-5:]
-            except:
-                final_period = clean_input.zfill(5)[-5:]
-
-            pred_num, pred_size, pred_color, is_owner_manipulating, is_100_percent_sure = get_locked_period_signal(
-                final_period, tab_offset, st.session_state[history_key], seconds
-            )
-            
-            st.session_state[f"last_size_{seconds}"] = pred_size
-
-            # 🔥 केवल एक्टिव टैब के आखिरी 5 सेकंड में लगातार 'टिंक-टिंक' बीप बजाने वाला Web Audio API
+            # 🔥 5 सेकंड बीप साउंड
             if 1 <= remaining_secs <= 5:
                 st.markdown(
-                    f"""
+                    """
                     <script>
-                        (function() {{
-                            try {{
-                                const AudioCtx = window.AudioContext || window.webkitAudioContext;
-                                if (AudioCtx) {{
-                                    const ctx = new AudioCtx();
-                                    if (ctx.state === 'suspended') {{
-                                        ctx.resume();
-                                    }}
-                                    const osc = ctx.createOscillator();
-                                    const gain = ctx.createGain();
-                                    osc.type = 'sine';
-                                    osc.frequency.setValueAtTime(880, ctx.currentTime);
-                                    gain.gain.setValueAtTime(0.2, ctx.currentTime);
-                                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.18);
-                                    osc.connect(gain);
-                                    gain.connect(ctx.destination);
-                                    osc.start(ctx.currentTime);
-                                    osc.stop(ctx.currentTime + 0.18);
-                                }}
-                            }} catch(e) {{}}
-                        }})();
+                    (function() {
+                        try {
+                            var AudioCtx = window.AudioContext || window.webkitAudioContext;
+                            if (AudioCtx) {
+                                var ctx = new AudioCtx();
+                                if (ctx.state === 'suspended') { ctx.resume(); }
+                                var osc = ctx.createOscillator();
+                                var gain = ctx.createGain();
+                                osc.type = 'sine';
+                                osc.frequency.setValueAtTime(800, ctx.currentTime);
+                                gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+                                osc.connect(gain);
+                                gain.connect(ctx.destination);
+                                osc.start();
+                                osc.stop(ctx.currentTime + 0.15);
+                            }
+                        } catch(e) {}
+                    })();
                     </script>
                     """,
                     unsafe_allow_html=True
@@ -470,60 +409,55 @@ else:
             st.markdown(
                 f"""
                 <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #FFD700; padding-bottom: 6px; margin-bottom: 8px; background: rgba(255,215,0,0.06); border-radius: 6px; padding-left: 8px; padding-right: 8px;">
-                    <span style="display: flex; align-items: center;"><span class="blinking-red-light"></span><span style="font-size: 13px; color: #FFD700; font-weight: 900; margin-right: 6px;">PERIOD:</span><span class="period-badge-small">{final_period}</span></span>
+                    <span style="display: flex; align-items: center;"><span class="blinking-red-light"></span><span style="font-size: 13px; color: #FFD700; font-weight: 900; margin-right: 6px;">TARGET PERIOD:</span><span class="period-badge-small">{target_period}</span></span>
                     <span class="timer-box-large">⏰ {timer_str}</span>
                 </div>
                 """,
                 unsafe_allow_html=True,
             )
 
-            current_recovery_lvl = st.session_state[level_key]
+            if is_100_percent:
+                st.session_state[level_key] = 1
 
-            if is_owner_manipulating:
+            current_lvl = st.session_state[level_key]
+
+            # 🔥 100% श्योर शॉट बैनर जिसमें BIG/SMALL एकदम अलग और चमकीले रंग में दिखेगा
+            size_highlight_color = "#FFD700" if pred_size == "BIG" else "#00FFFF"
+
+            if is_bad_market:
                 st.markdown(
                     f"""
                     <div class="server-fail-warning-banner">
                         <span class="blinking-red-light"></span>
-                        🚨 BDG गेम के ओनर खुद गेम चला रहे हैं, अभी यहाँ पर गेम मत खेलो!
+                        ⚠️ MARKET VOLATILE - WAIT & STOP! <br> लाइन खराब है, अभी बेट मत लगाओ!
                         <span class="blinking-red-light"></span>
                     </div>
                     """,
                     unsafe_allow_html=True
                 )
-            elif is_100_percent_sure:
+            elif is_100_percent:
                 st.markdown(
                     f"""
                     <div class="super-100-win-banner">
-                        💎 100% SURE SHOT WIN : {pred_size} 🚀 (PATTERN MATCHED)
+                        💎 100% SURE SHOT WIN : <span style="color: {size_highlight_color}; font-size: 18px; text-shadow: 0 0 10px {size_highlight_color};">{pred_size}</span> 🚀 (LEVEL 1 RESET)
                     </div>
                     """,
                     unsafe_allow_html=True
                 )
             else:
-                st.markdown(f'<div class="sure-shot-banner"><span class="blinking-red-light"></span>💎 RECOVERY SHOT [ LEVEL {current_recovery_lvl} ] : {pred_size} 🚀 <span class="blinking-red-light"></span></div>', unsafe_allow_html=True)
+                st.markdown(f'<div class="sure-shot-banner"><span class="blinking-red-light"></span>💎 RECOVERY SHOT [ LEVEL {current_lvl} ] : <span style="color: {size_highlight_color};">{pred_size}</span> 🚀 <span class="blinking-red-light"></span></div>', unsafe_allow_html=True)
 
-            multiplier_map = {1: "1x (Standard)", 2: "2.5x (Recovery)", 3: "3x (Final Recovery Cap)"}
-            rec_text = multiplier_map.get(current_recovery_lvl, "1x")
-            
-            if not is_owner_manipulating:
-                if is_100_percent_sure:
-                    st.markdown(
-                        """
-                        <div style="background: rgba(0,255,102,0.15); border: 1.5px solid #00FF66; padding: 8px; border-radius: 6px; text-align: center; font-size: 13px; font-weight: bold; color: #00FF66; margin-top: 6px;">
-                            🎯 100% श्योर विन शॉट: <span style="color: #FFFFFF;">डायरेक्ट 1x (सेफ बेट)</span>
-                        </div>
-                        """,
-                        unsafe_allow_html=True
-                    )
-                else:
-                    st.markdown(
-                        f"""
-                        <div class="recovery-badge">
-                            🎯 सुझावित बैट मल्टीप्लायर: <span style="color: #00FF66;">{rec_text}</span> (मैक्सिमम कैप: 3 लेवल)
-                        </div>
-                        """,
-                        unsafe_allow_html=True
-                    )
+            multiplier_map = {1: "1x (Level 1 - स्टैंडर्ड बेट)", 2: "2.5x (Level 2 - रिकवरी बेट)", 3: "3x (Level 3 - अंतिम कैप)"}
+            rec_text = multiplier_map.get(current_lvl, "1x")
+
+            st.markdown(
+                f"""
+                <div class="recovery-badge">
+                    🎯 सुझावित बैट मल्टीप्लायर: <span style="color: #00FF66;">{rec_text}</span> (विन होते ही ऑटो-रिसेट Level 1)
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
 
             color_bg = "#00AA55" if pred_color == "GREEN" else "#FF4444"
             size_bg = "linear-gradient(135deg, #FF9900, #FF5500)" if pred_size == "BIG" else "linear-gradient(135deg, #00CCFF, #0044FF)"
@@ -548,20 +482,23 @@ else:
                 unsafe_allow_html=True,
             )
             
-            hist_list = st.session_state[history_key]
-            formatted_history = []
-            for idx, item in enumerate(hist_list):
-                if idx == len(hist_list) - 1:
-                    formatted_history.append(f"<span style='color: #FF3366; font-weight: 900; text-shadow: 0 0 5px #FF0055;'>👉 {item}</span>")
-                else:
-                    formatted_history.append(f"<span style='color: #AAAAAA;'>{item}</span>")
+            # 🔥 कलरफुल लाइव ट्रेंड हिस्ट्री लाइन और आगामी शॉट
+            boxes_html = ""
+            for item in history_list:
+                bg_color = "rgba(255,153,0,0.6)" if item == "BIG" else "rgba(0,204,255,0.6)"
+                short_lbl = "B" if item == "BIG" else "S"
+                boxes_html += f"<div style='background: {bg_color}; color: #DDD; width: 26px; height: 26px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 900; font-size: 11px; margin: 0 2px; border: 1px solid #777;'>{short_lbl}</div>"
+
+            next_bg = "linear-gradient(135deg, #FF9900, #FF0055)" if pred_size == "BIG" else "linear-gradient(135deg, #00FFFF, #0044FF)"
+            next_lbl = f"👉 {pred_size}"
             
-            hist_str = " &nbsp;|&nbsp; ".join(formatted_history)
-            
+            boxes_html += f"<div style='background: {next_bg}; color: white; padding: 4px 10px; border-radius: 20px; display: inline-flex; align-items: center; justify-content: center; font-weight: 900; font-size: 13px; margin-left: 8px; border: 2px solid #00FF66; box-shadow: 0 0 10px #00FF66;'>{next_lbl}</div>"
+
             st.markdown(
                 f"""
-                <div style="margin-top: 10px; background: rgba(0,0,0,0.5); padding: 8px; border-radius: 6px; text-align: center; border: 1px solid #553388; font-size: 12px;">
-                    📊 <b>लाइव सर्वर हेल्थ हिस्ट्री (लाइन):</b> {hist_str}
+                <div style="margin-top: 10px; background: rgba(0,0,0,0.7); padding: 10px; border-radius: 8px; text-align: center; border: 1.5px solid #FFD700;">
+                    <div style="font-size: 11px; color: #FFD700; font-weight: 900; margin-bottom: 6px; text-transform: uppercase;">📊 BDG लाइव चार्ट लाइन & आगामी शॉट:</div>
+                    <div style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 2px;">{boxes_html}</div>
                 </div>
                 """,
                 unsafe_allow_html=True
