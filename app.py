@@ -21,10 +21,11 @@ st.markdown(
     .stAppDeployButton {display: none;}
     [data-testid="stStatusWidget"] {visibility: hidden;}
     
-    @keyframes fast-blink {
-        0% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 12px #FF0055; }
-        50% { opacity: 0.15; transform: scale(0.8); box-shadow: 0 0 2px #FF0055; }
-        100% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 12px #FF0055; }
+    /* 🚨 निरंतर और सुपर-फास्ट टिप-टिप करने वाली लाइव लाइट */
+    @keyframes super-fast-blink {
+        0% { opacity: 1; transform: scale(1.3); box-shadow: 0 0 15px #FF0055, 0 0 25px #FF0055; }
+        50% { opacity: 0.1; transform: scale(0.7); box-shadow: 0 0 2px #FF0055; }
+        100% { opacity: 1; transform: scale(1.3); box-shadow: 0 0 15px #FF0055, 0 0 25px #FF0055; }
     }
     
     @keyframes super-win-glow-small {
@@ -47,12 +48,12 @@ st.markdown(
 
     .blinking-red-light {
         display: inline-block;
-        width: 10px;
-        height: 10px;
+        width: 11px;
+        height: 11px;
         background-color: #FF0055;
         border-radius: 50%;
         margin-right: 6px;
-        animation: fast-blink 0.6s infinite ease-in-out;
+        animation: super-fast-blink 0.5s infinite linear;
     }
     
     .master-single-box {
@@ -264,19 +265,21 @@ else:
         random.seed()
 
         st.markdown("<p style='color: #FFD700; font-weight: 900; font-size: 13px; margin-bottom: 4px;'>⚡ गेम मोड चुनें:</p>", unsafe_allow_html=True)
+        
+        # 🎨 रंगीन बटन्स (लाइन से सजे हुए)
         col_b1, col_b2, col_b3, col_b4 = st.columns(4)
         
         with col_b1:
-            if st.button("WINGO 30S", use_container_width=True):
+            if st.button("🔴 WINGO 30S", use_container_width=True):
                 st.session_state.active_game_mode = "WINGO 30S"
         with col_b2:
-            if st.button("WINGO 1M", use_container_width=True):
+            if st.button("🟡 WINGO 1M", use_container_width=True):
                 st.session_state.active_game_mode = "WINGO 1M"
         with col_b3:
-            if st.button("WINGO 3M", use_container_width=True):
+            if st.button("🟢 WINGO 3M", use_container_width=True):
                 st.session_state.active_game_mode = "WINGO 3M"
         with col_b4:
-            if st.button("WINGO 5M", use_container_width=True):
+            if st.button("🔵 WINGO 5M", use_container_width=True):
                 st.session_state.active_game_mode = "WINGO 5M"
 
         current_game = st.session_state.active_game_mode
@@ -288,7 +291,7 @@ else:
         with col_l:
             st.markdown(f'<div style="color: #00FFFF; font-size: 10px; font-weight: 900; white-space: nowrap;"><span class="blinking-red-light"></span>⚡ {current_game}</div>', unsafe_allow_html=True)
         with col_m:
-            manual_period_input = st.text_input("Period Input", value="", placeholder="यहाँ लाइव पीरियड नंबर डालें", max_chars=15, key="user_live_period_input_main", label_visibility="collapsed")
+            manual_period_input = st.text_input("Period Input", value="", placeholder="लाइव पीरियड नंबर डालें", max_chars=15, key="user_live_period_input_main", label_visibility="collapsed")
         with col_r:
             st.markdown(f'<div style="color: #00FF66; font-size: 10px; font-weight: 900; white-space: nowrap; text-align: right;"><span class="blinking-red-light"></span>👥 {dynamic_online_count:,}</div>', unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
@@ -309,8 +312,8 @@ else:
                     <div class="target-period-box">
                         <div style="display: flex; align-items: center;">
                             <span class="blinking-red-light"></span>
-                            <span style="color: #FFD700; font-size: 13px; font-weight: 900; margin-right: 6px;">TARGET PERIOD:</span>
-                            <span style="color: #FF4444; font-size: 13px; font-weight: 900;">⚠️ कृपया Wingo गेम का लाइव पीरियड नंबर दर्ज करें</span>
+                            <span style="color: #FFD700; font-size: 13px; font-weight: 900; margin-right: 6px;">LIVE PERIOD:</span>
+                            <span style="color: #FF4444; font-size: 13px; font-weight: 900;">⚠️ कृपया लाइव पीरियड नंबर दर्ज करें</span>
                         </div>
                         <div class="timer-box-large">⏰ {timer_str}</div>
                     </div>
@@ -319,11 +322,13 @@ else:
                 st.markdown("</div>", unsafe_allow_html=True)
                 return
 
-            base_val = int(clean_input)
+            try:
+                base_val = int(clean_input)
+            except:
+                base_val = 51251
+
             current_block_index = total_seconds // seconds
-            
-            # 🔄 यहाँ सुनिश्चित किया गया है कि जैसे ही ब्लॉक/राउंड बदलेगा, टारगेट पीरियड और प्रेडिक्शन तुरंत बदल जाएगा
-            target_period_num = base_val + current_block_index
+            target_period_num = base_val + (current_block_index % 1000)
             target_period_str = str(target_period_num)
 
             def calculate_strict_syndicate_trend(p_num, offset_val):
@@ -344,11 +349,12 @@ else:
 
             is_bad_market = (target_period_num % 17 == 0) or (target_period_num % 7 == 3)
 
+            # 🟢 यहाँ लाइव पीरियड लाइट और टेक्स्ट पूरी तरह से निरंतर ब्लिंक करेगा
             st.markdown(f"""
                 <div class="target-period-box">
                     <div style="display: flex; align-items: center;">
                         <span class="blinking-red-light"></span>
-                        <span style="color: #FFD700; font-size: 13px; font-weight: 900; margin-right: 6px;">TARGET PERIOD:</span>
+                        <span style="color: #FFD700; font-size: 13px; font-weight: 900; margin-right: 6px;">LIVE PERIOD:</span>
                         <span style="color: #00FFFF; font-size: 15px; font-weight: 900; background: rgba(0,255,255,0.1); padding: 2px 8px; border-radius: 4px; border: 1px solid #00FFFF;">{target_period_str}</span>
                     </div>
                     <div class="timer-box-large">⏰ {timer_str}</div>
