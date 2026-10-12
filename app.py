@@ -21,49 +21,40 @@ st.markdown(
     .stAppDeployButton {display: none;}
     [data-testid="stStatusWidget"] {visibility: hidden;}
     
-    @keyframes blink-animation {
-        0% { opacity: 1; transform: scale(1.1); box-shadow: 0 0 15px #FF0055; }
-        50% { opacity: 0.1; transform: scale(0.85); box-shadow: 0 0 2px #FF0055; }
-        100% { opacity: 1; transform: scale(1.1); box-shadow: 0 0 15px #FF0055; }
+    @keyframes fast-blink {
+        0% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 12px #FF0055; }
+        50% { opacity: 0.15; transform: scale(0.8); box-shadow: 0 0 2px #FF0055; }
+        100% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 12px #FF0055; }
     }
+    
     @keyframes super-win-glow-small {
-        0% { border-color: #00CCFF; box-shadow: 0 0 25px #00CCFF, inset 0 0 10px #00CCFF; background: #000000; }
-        50% { border-color: #0055FF; box-shadow: 0 0 15px #0055FF, inset 0 0 5px #0055FF; background: #000000; }
-        100% { border-color: #00CCFF; box-shadow: 0 0 25px #00CCFF, inset 0 0 10px #00CCFF; background: #000000; }
+        0% { border-color: #00FFFF; box-shadow: 0 0 25px #00FFFF, inset 0 0 10px #00FFFF; background: #000000; }
+        50% { border-color: #0088FF; box-shadow: 0 0 15px #0088FF, inset 0 0 5px #0088FF; background: #000000; }
+        100% { border-color: #00FFFF; box-shadow: 0 0 25px #00FFFF, inset 0 0 10px #00FFFF; background: #000000; }
     }
+    
     @keyframes super-win-glow-big {
-        0% { border-color: #FF9900; box-shadow: 0 0 25px #FF9900, inset 0 0 10px #FF9900; background: #000000; }
+        0% { border-color: #FFB700; box-shadow: 0 0 25px #FFB700, inset 0 0 10px #FFB700; background: #000000; }
         50% { border-color: #FF5500; box-shadow: 0 0 15px #FF5500, inset 0 0 5px #FF5500; background: #000000; }
-        100% { border-color: #FF9900; box-shadow: 0 0 25px #FF9900, inset 0 0 10px #FF9900; background: #000000; }
+        100% { border-color: #FFB700; box-shadow: 0 0 25px #FFB700, inset 0 0 10px #FFB700; background: #000000; }
     }
+
     @keyframes warning-glow {
         0% { border-color: #FF0000; box-shadow: 0 0 25px #FF0000; background: rgba(255, 0, 0, 0.25); }
         50% { border-color: #FF8800; box-shadow: 0 0 10px #FF8800; background: rgba(255, 136, 0, 0.1); }
         100% { border-color: #FF0000; box-shadow: 0 0 25px #FF0000; background: rgba(255, 0, 0, 0.25); }
     }
-    .blinking-red-light { display: inline-block; width: 12px; height: 12px; background-color: #FF0055; border-radius: 50%; margin-right: 6px; animation: blink-animation 0.8s infinite ease-in-out; }
-    
-    /* --- यहाँ WINGO 30S, 1M आदि के टेक्स्ट को चमकीला रंग दिया गया है ताकि वे साफ दिखें --- */
-    div.row-widget.stRadio > div {
-        flex-direction: row;
-        align-items: center;
-        gap: 12px;
-        background: rgba(20, 20, 20, 0.8);
-        padding: 8px;
-        border-radius: 8px;
-        border: 1px solid #333333;
-    }
-    div.row-widget.stRadio label {
-        color: #00FFFF !important;
-        font-weight: 900 !important;
-        font-size: 13px !important;
-        text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);
-    }
-    div.row-widget.stRadio div[data-baseweb="radio"] label:nth-child(1) { color: #00FFFF !important; }
-    div.row-widget.stRadio div[data-baseweb="radio"] label:nth-child(2) { color: #FF00FF !important; }
-    div.row-widget.stRadio div[data-baseweb="radio"] label:nth-child(3) { color: #FFD700 !important; }
-    div.row-widget.stRadio div[data-baseweb="radio"] label:nth-child(4) { color: #00FF66 !important; }
 
+    .blinking-red-light {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        background-color: #FF0055;
+        border-radius: 50%;
+        margin-right: 6px;
+        animation: fast-blink 0.6s infinite ease-in-out;
+    }
+    
     .master-single-box {
         background: #000000;
         border: 1.5px solid #00FF66;
@@ -104,9 +95,9 @@ st.markdown(
     .main-card { background-color: #000000; border: none; padding: 0px; margin-top: 4px; }
     .timer-box-large { color: #FF00FF; font-weight: 900; font-size: 16px; text-shadow: 0 0 8px rgba(255,0,255,0.6); display: flex; align-items: center; gap: 6px; }
     
-    .super-banner-small { border: 3px solid #00CCFF; padding: 12px; border-radius: 10px; text-align: center; font-size: 15px; font-weight: 900; margin: 8px 0; color: #00CCFF; text-transform: uppercase; animation: super-win-glow-small 0.8s infinite; letter-spacing: 1px; background: #000000; box-shadow: 0 0 25px rgba(0,204,255,0.4); }
+    .super-banner-small { border: 3px solid #00FFFF; padding: 12px; border-radius: 10px; text-align: center; font-size: 15px; font-weight: 900; margin: 8px 0; color: #00FFFF; text-transform: uppercase; animation: super-win-glow-small 0.8s infinite; letter-spacing: 1px; background: #000000; box-shadow: 0 0 25px rgba(0,255,255,0.4); }
     .super-banner-big { border: 3px solid #FF9900; padding: 12px; border-radius: 10px; text-align: center; font-size: 15px; font-weight: 900; margin: 8px 0; color: #FF9900; text-transform: uppercase; animation: super-win-glow-big 0.8s infinite; letter-spacing: 1px; background: #000000; box-shadow: 0 0 25px rgba(255,153,0,0.4); }
-    .wait-warning-banner { border: 3px solid #FF0000; padding: 12px; border-radius: 10px; text-align: center; font-size: 13px; font-weight: 900; margin: 8px 0; color: #FF4444; text-transform: uppercase; animation: warning-glow 0.8s infinite; letter-spacing: 1px; background: #000000; box-shadow: 0 0 25px rgba(255,0,0,0.4); }
+    .wait-warning-banner { border: 3px solid #FF0000; padding: 12px; border-radius: 10px; text-align: center; font-size: 14px; font-weight: 900; margin: 8px 0; color: #FF4444; text-transform: uppercase; animation: warning-glow 0.8s infinite; letter-spacing: 1px; background: #000000; box-shadow: 0 0 25px rgba(255,0,0,0.4); }
     
     .diagonal-container { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 8px; }
     .result-item { flex: 1; text-align: center; background: #0b071a; border: 2px solid #5533aa; border-radius: 12px; padding: 12px 6px; box-shadow: 0 0 10px rgba(85,51,170,0.3); }
@@ -128,6 +119,9 @@ if "utr_requests" not in st.session_state:
 
 if "used_utrs_list" not in st.session_state:
     st.session_state.used_utrs_list = []
+
+if "active_game_mode" not in st.session_state:
+    st.session_state.active_game_mode = "WINGO 30S"
 
 MASTER_MOBILE = "9011997944"
 MASTER_PASSWORD = "KISHOR90"
@@ -176,7 +170,6 @@ if not st.session_state.authenticated:
             st.error("❌ यह मोबाइल नंबर रजिस्टर्ड नहीं है! कृपया नीचे नया UTR दर्ज करें।")
 
     st.markdown("---")
-    
     st.markdown("<h3 style='color: #FFD700; font-weight: 900; text-align: center; font-size: 15px; margin-bottom: 5px;'>⚡ 1500 ₹ QR स्कैन और नया UTR दर्ज करें</h3>", unsafe_allow_html=True)
     
     renew_mob = st.text_input("📱 रजिस्टर्ड मोबाइल नंबर", placeholder="Enter mobile", key="renew_mob_input")
@@ -266,30 +259,38 @@ else:
     @st.fragment(run_every=1)
     def success_dashboard_core():
         current_time_epoch = int(time.time())
-        random.seed(current_time_epoch // 90)
-        dynamic_online_count = random.randint(340000, 370000)
+        random.seed(current_time_epoch // 8)
+        dynamic_online_count = random.randint(358000, 368000)
         random.seed()
 
-        selected_game = st.radio(
-            "Select Game Mode",
-            ["WINGO 30S", "WINGO 1M", "WINGO 3M", "WINGO 5M"],
-            horizontal=True,
-            label_visibility="collapsed",
-            key="main_radio_mode"
-        )
+        st.markdown("<p style='color: #FFD700; font-weight: 900; font-size: 13px; margin-bottom: 4px;'>⚡ गेम मोड चुनें:</p>", unsafe_allow_html=True)
+        col_b1, col_b2, col_b3, col_b4 = st.columns(4)
         
-        current_game = selected_game
+        with col_b1:
+            if st.button("WINGO 30S", use_container_width=True):
+                st.session_state.active_game_mode = "WINGO 30S"
+        with col_b2:
+            if st.button("WINGO 1M", use_container_width=True):
+                st.session_state.active_game_mode = "WINGO 1M"
+        with col_b3:
+            if st.button("WINGO 3M", use_container_width=True):
+                st.session_state.active_game_mode = "WINGO 3M"
+        with col_b4:
+            if st.button("WINGO 5M", use_container_width=True):
+                st.session_state.active_game_mode = "WINGO 5M"
+
+        current_game = st.session_state.active_game_mode
         now = datetime.now()
         
         st.markdown('<div class="master-single-box">', unsafe_allow_html=True)
         col_l, col_m, col_r = st.columns([1.1, 1.2, 1.1])
         
         with col_l:
-            st.markdown('<div style="color: #00FFFF; font-size: 11px; font-weight: 900; white-space: nowrap; display: flex; align-items: center;"><span class="blinking-red-light"></span>⚡ BDG SNIPER PANEL</div>', unsafe_allow_html=True)
+            st.markdown(f'<div style="color: #00FFFF; font-size: 10px; font-weight: 900; white-space: nowrap;"><span class="blinking-red-light"></span>⚡ {current_game}</div>', unsafe_allow_html=True)
         with col_m:
-            manual_period_input = st.text_input("Period Input", value="51251", max_chars=6, key="user_live_period_input_main", label_visibility="collapsed")
+            manual_period_input = st.text_input("Period Input", value="", placeholder="यहाँ लाइव पीरियड नंबर डालें", max_chars=15, key="user_live_period_input_main", label_visibility="collapsed")
         with col_r:
-            st.markdown(f'<div style="color: #00FF66; font-size: 11px; font-weight: 900; white-space: nowrap; display: flex; align-items: center; justify-content: flex-end;"><span class="blinking-red-light"></span>👥 {dynamic_online_count:,}</div>', unsafe_allow_html=True)
+            st.markdown(f'<div style="color: #00FF66; font-size: 10px; font-weight: 900; white-space: nowrap; text-align: right;"><span class="blinking-red-light"></span>👥 {dynamic_online_count:,}</div>', unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
 
         def render_game_panel(seconds, tab_offset, mode_name):
@@ -301,30 +302,39 @@ else:
             secs = remaining_secs % 60
             timer_str = f"{mins:02d}:{secs:02d}"
 
-            current_block_index = total_seconds // seconds
-            clean_input = "".join(filter(str.isdigit, manual_period_input)) or "51251"
+            clean_input = "".join(filter(str.isdigit, manual_period_input))
 
-            state_input_key = f"matrix_input_{seconds}"
-            state_block_key = f"matrix_block_{seconds}"
+            if not clean_input:
+                st.markdown(f"""
+                    <div class="target-period-box">
+                        <div style="display: flex; align-items: center;">
+                            <span class="blinking-red-light"></span>
+                            <span style="color: #FFD700; font-size: 13px; font-weight: 900; margin-right: 6px;">TARGET PERIOD:</span>
+                            <span style="color: #FF4444; font-size: 13px; font-weight: 900;">⚠️ कृपया Wingo गेम का लाइव पीरियड नंबर दर्ज करें</span>
+                        </div>
+                        <div class="timer-box-large">⏰ {timer_str}</div>
+                    </div>
+                """, unsafe_allow_html=True)
+                st.markdown('<div class="wait-warning-banner">🛑 STOP: बिना लाइव पीरियड नंबर के डेटा नहीं चलेगा!</div>', unsafe_allow_html=True)
+                st.markdown("</div>", unsafe_allow_html=True)
+                return
 
-            if state_input_key not in st.session_state or st.session_state[state_input_key] != clean_input:
-                st.session_state[state_input_key] = clean_input
-                st.session_state[state_block_key] = current_block_index
-
-            block_diff = current_block_index - st.session_state.get(state_block_key, current_block_index)
             base_val = int(clean_input)
-            target_period_str = str(base_val + block_diff)
+            current_block_index = total_seconds // seconds
+            
+            # 🔄 यहाँ सुनिश्चित किया गया है कि जैसे ही ब्लॉक/राउंड बदलेगा, टारगेट पीरियड और प्रेडिक्शन तुरंत बदल जाएगा
+            target_period_num = base_val + current_block_index
+            target_period_str = str(target_period_num)
 
-            def calculate_ultra_syndicate_trend(p_num, offset_val):
-                server_sum = sum([(p_num * i + offset_val) % 5 for i in range(1, 12)])
-                zigzag_toggle = p_num % 2
-                pattern_mod = (p_num ^ offset_val + server_sum + zigzag_toggle) % 8
-                return "SMALL" if pattern_mod in [0, 1, 3] else "BIG"
+            def calculate_strict_syndicate_trend(p_num, offset_val):
+                server_sum = sum([(p_num * i + offset_val) % 7 for i in range(1, 12)])
+                strict_mod = (p_num + server_sum + (p_num % 3)) % 4
+                return "SMALL" if strict_mod in [0, 1] else "BIG"
 
-            history = [calculate_ultra_syndicate_trend(int(target_period_str) - h, tab_offset) for h in range(5, 0, -1)]
-            pred_size = calculate_ultra_syndicate_trend(int(target_period_str), tab_offset)
+            history = [calculate_strict_syndicate_trend(target_period_num - h, tab_offset) for h in range(5, 0, -1)]
+            pred_size = calculate_strict_syndicate_trend(target_period_num, tab_offset)
 
-            p_rng = random.Random(int(target_period_str) + tab_offset)
+            p_rng = random.Random(target_period_num + tab_offset)
             if pred_size == "BIG":
                 pred_num = p_rng.choice([5, 6, 7, 8, 9])
                 pred_color = "GREEN" if pred_num in [5, 7, 9] else "RED"
@@ -332,7 +342,7 @@ else:
                 pred_num = p_rng.choice([0, 1, 2, 3, 4])
                 pred_color = "GREEN" if pred_num in [1, 3] else "RED"
 
-            is_bad_market = (int(target_period_str) % 17 == 0) or (int(target_period_str) % 7 == 3)
+            is_bad_market = (target_period_num % 17 == 0) or (target_period_num % 7 == 3)
 
             st.markdown(f"""
                 <div class="target-period-box">
@@ -345,15 +355,25 @@ else:
                 </div>
             """, unsafe_allow_html=True)
 
-            if is_bad_market:
-                st.markdown('<div class="wait-warning-banner">🛑 STOP / WAITING: लाइन खराब है, 11 सर्वर्स से मैच नहीं हो रहा! ⚠️</div>', unsafe_allow_html=True)
+            if remaining_secs <= 3:
+                st.markdown('<div class="wait-warning-banner">🛑 STOP / WAITING...</div>', unsafe_allow_html=True)
+            elif is_bad_market:
+                st.markdown('<div class="wait-warning-banner">🛑 STOP</div>', unsafe_allow_html=True)
             else:
-                banner_class = "super-banner-small" if pred_size == "SMALL" else "super-banner-big"
-                banner_color = "#00CCFF" if pred_size == "SMALL" else "#FF9900"
-                st.markdown(f'<div class="{banner_class}">💎 100% SURE SHOT MATCH : <span style="color: {banner_color}; font-size: 18px;">{pred_size}</span> 🚀</div>', unsafe_allow_html=True)
+                if pred_size == "SMALL":
+                    banner_class = "super-banner-small"
+                    text_color = "#00FFFF"
+                    size_bg = "linear-gradient(135deg, #00FFFF, #0077FF)"
+                else:
+                    banner_class = "super-banner-big"
+                    text_color = "#FF9900"
+                    size_bg = "linear-gradient(135deg, #FFB700, #FF4400)"
+
+                st.markdown(f'<div class="{banner_class}">💎 100% SURE SHOT MATCH : <span style="color: {text_color}; font-size: 19px; font-weight: 900; text-shadow: 0 0 10px {text_color};">{pred_size}</span> 🚀</div>', unsafe_allow_html=True)
 
             color_bg = "#FF4444" if pred_color == "RED" else "#00AA55"
-            size_bg = "linear-gradient(135deg, #00CCFF, #0044FF)" if pred_size == "SMALL" else "linear-gradient(135deg, #FF9900, #FF5500)"
+            if 'size_bg' not in locals():
+                size_bg = "linear-gradient(135deg, #00FFFF, #0077FF)" if pred_size == "SMALL" else "linear-gradient(135deg, #FFB700, #FF4400)"
 
             st.markdown(f"""
                 <div class="diagonal-container">
@@ -372,7 +392,7 @@ else:
                 </div>
             """, unsafe_allow_html=True)
 
-            boxes_html = "".join([f"<div style='background: {'#0077FF' if item == 'SMALL' else '#FF9900'}; color: white; padding: 6px 12px; border-radius: 6px; font-weight: 900; font-size: 12px; margin: 0 3px; display: inline-block;'>{item}</div>" for item in history])
+            boxes_html = "".join([f"<div style='background: {'#0088FF' if item == 'SMALL' else '#FF9900'}; color: white; padding: 6px 12px; border-radius: 6px; font-weight: 900; font-size: 12px; margin: 0 3px; display: inline-block;'>{item}</div>" for item in history])
             st.markdown(f"""
                 <div style="margin-top: 10px; background: #000000; padding: 12px; border-radius: 12px; text-align: center; border: 1.5px solid #FFD700;">
                     <div style="font-size: 11px; color: #FFD700; font-weight: 900; margin-bottom: 8px;">📊 {current_game} 11-सर्वर सिंडिकेट रनिंग हिस्ट्री चार्ट:</div>
