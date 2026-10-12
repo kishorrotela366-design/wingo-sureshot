@@ -21,7 +21,6 @@ st.markdown(
     .stAppDeployButton {display: none;}
     [data-testid="stStatusWidget"] {visibility: hidden;}
     
-    /* 🚨 निरंतर और सुपर-फास्ट टिप-टिप करने वाली लाइव लाइट */
     @keyframes super-fast-blink {
         0% { opacity: 1; transform: scale(1.3); box-shadow: 0 0 15px #FF0055, 0 0 25px #FF0055; }
         50% { opacity: 0.1; transform: scale(0.7); box-shadow: 0 0 2px #FF0055; }
@@ -264,21 +263,18 @@ else:
         dynamic_online_count = random.randint(358000, 368000)
         random.seed()
 
-        st.markdown("<p style='color: #FFD700; font-weight: 900; font-size: 13px; margin-bottom: 4px;'>⚡ गेम मोड चुनें:</p>", unsafe_allow_html=True)
+        st.markdown("<p style='color: #FFD700; font-weight: 900; font-size: 12px; margin-bottom: 4px;'>⚡ गेम मोड चुनें:</p>", unsafe_allow_html=True)
         
-        # 🎨 रंगीन बटन्स (लाइन से सजे हुए)
-        col_b1, col_b2, col_b3, col_b4 = st.columns(4)
-        
-        with col_b1:
+        # 🎨 इमेज के अनुसार चारों गेम मोड तिरछी/क्रॉस (2x2 ग्रिड) लाइनों में सेट हैं
+        c1, c2 = st.columns(2)
+        with c1:
             if st.button("🔴 WINGO 30S", use_container_width=True):
                 st.session_state.active_game_mode = "WINGO 30S"
-        with col_b2:
-            if st.button("🟡 WINGO 1M", use_container_width=True):
-                st.session_state.active_game_mode = "WINGO 1M"
-        with col_b3:
             if st.button("🟢 WINGO 3M", use_container_width=True):
                 st.session_state.active_game_mode = "WINGO 3M"
-        with col_b4:
+        with c2:
+            if st.button("🟡 WINGO 1M", use_container_width=True):
+                st.session_state.active_game_mode = "WINGO 1M"
             if st.button("🔵 WINGO 5M", use_container_width=True):
                 st.session_state.active_game_mode = "WINGO 5M"
 
@@ -291,7 +287,7 @@ else:
         with col_l:
             st.markdown(f'<div style="color: #00FFFF; font-size: 10px; font-weight: 900; white-space: nowrap;"><span class="blinking-red-light"></span>⚡ {current_game}</div>', unsafe_allow_html=True)
         with col_m:
-            manual_period_input = st.text_input("Period Input", value="", placeholder="लाइव पीरियड नंबर डालें", max_chars=15, key="user_live_period_input_main", label_visibility="collapsed")
+            manual_period_input = st.text_input("Period Input", value="", placeholder="यहाँ लाइव पीरियड डालें", max_chars=15, key="user_live_period_input_main", label_visibility="collapsed")
         with col_r:
             st.markdown(f'<div style="color: #00FF66; font-size: 10px; font-weight: 900; white-space: nowrap; text-align: right;"><span class="blinking-red-light"></span>👥 {dynamic_online_count:,}</div>', unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
@@ -313,7 +309,7 @@ else:
                         <div style="display: flex; align-items: center;">
                             <span class="blinking-red-light"></span>
                             <span style="color: #FFD700; font-size: 13px; font-weight: 900; margin-right: 6px;">LIVE PERIOD:</span>
-                            <span style="color: #FF4444; font-size: 13px; font-weight: 900;">⚠️ कृपया लाइव पीरियड नंबर दर्ज करें</span>
+                            <span style="color: #FF4444; font-size: 13px; font-weight: 900;">⚠️ ऊपर लाइव पीरियड नंबर डालें</span>
                         </div>
                         <div class="timer-box-large">⏰ {timer_str}</div>
                     </div>
@@ -322,13 +318,14 @@ else:
                 st.markdown("</div>", unsafe_allow_html=True)
                 return
 
+            # 🎯 यहाँ यूज़र द्वारा डाला गया बेस नंबर लिया जाएगा और जैसे ही टाइमर खत्म होगा (हर नए ब्लॉक पर), यह ऑटोमैटिक आगे बढ़ जाएगा
             try:
                 base_val = int(clean_input)
             except:
-                base_val = 51251
+                base_val = 10451
 
             current_block_index = total_seconds // seconds
-            target_period_num = base_val + (current_block_index % 1000)
+            target_period_num = base_val + current_block_index
             target_period_str = str(target_period_num)
 
             def calculate_strict_syndicate_trend(p_num, offset_val):
@@ -349,7 +346,7 @@ else:
 
             is_bad_market = (target_period_num % 17 == 0) or (target_period_num % 7 == 3)
 
-            # 🟢 यहाँ लाइव पीरियड लाइट और टेक्स्ट पूरी तरह से निरंतर ब्लिंक करेगा
+            # 🟢 लाइव पीरियड डिस्प्ले बॉक्स (जो समय खत्म होने पर ऑटोमैटिक आगे बढ़ेगा)
             st.markdown(f"""
                 <div class="target-period-box">
                     <div style="display: flex; align-items: center;">
@@ -375,7 +372,7 @@ else:
                     text_color = "#FF9900"
                     size_bg = "linear-gradient(135deg, #FFB700, #FF4400)"
 
-                st.markdown(f'<div class="{banner_class}">💎 100% SURE SHOT MATCH : <span style="color: {text_color}; font-size: 19px; font-weight: 900; text-shadow: 0 0 10px {text_color};">{pred_size}</span> 🚀</div>', unsafe_allow_html=True)
+                st.markdown(f'<div class="{banner_class}">🔥 NEXT SHOT : <span style="color: {text_color}; font-size: 19px; font-weight: 900; text-shadow: 0 0 10px {text_color};">{pred_size}</span> 🎯</div>', unsafe_allow_html=True)
 
             color_bg = "#FF4444" if pred_color == "RED" else "#00AA55"
             if 'size_bg' not in locals():
@@ -401,7 +398,7 @@ else:
             boxes_html = "".join([f"<div style='background: {'#0088FF' if item == 'SMALL' else '#FF9900'}; color: white; padding: 6px 12px; border-radius: 6px; font-weight: 900; font-size: 12px; margin: 0 3px; display: inline-block;'>{item}</div>" for item in history])
             st.markdown(f"""
                 <div style="margin-top: 10px; background: #000000; padding: 12px; border-radius: 12px; text-align: center; border: 1.5px solid #FFD700;">
-                    <div style="font-size: 11px; color: #FFD700; font-weight: 900; margin-bottom: 8px;">📊 {current_game} 11-सर्वर सिंडिकेट रनिंग हिस्ट्री चार्ट:</div>
+                    <div style="font-size: 11px; color: #FFD700; font-weight: 900; margin-bottom: 8px;">📊 {current_game} लाइव ओमनी-मैट्रिक्स रनिंग हिस्ट्री चार्ट:</div>
                     <div style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 4px; margin-bottom: 10px;">{boxes_html}</div>
                     <div style="display: inline-block; background: {size_bg}; color: white; padding: 8px 20px; border-radius: 20px; font-weight: 900; font-size: 13px; border: 2px solid #00FF66;">🎯 NEXT: {pred_size}</div>
                 </div>
