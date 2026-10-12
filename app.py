@@ -11,7 +11,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# --- 100% पिक्सेल-परफेक्ट CSS लेआउट (जो बिल्कुल नहीं हिलेगा) ---
+# --- 100% स्क्रीनशॉट जैसा सटीक CSS (बिना किसी व्हाइट पट्टी के, पूरी तरह डार्क) ---
 st.markdown("""
     <style>
     .stApp { background-color: #05050a; color: #FFFFFF; }
@@ -43,6 +43,7 @@ st.markdown("""
         vertical-align: middle;
     }
     
+    /* गेम मोड लिस्ट शैली (स्क्रीनशॉट जैसी) */
     .exact-modes-box {
         background: #05050a;
         padding: 4px 0 10px 0;
@@ -50,7 +51,7 @@ st.markdown("""
     .mode-row-flex {
         display: flex;
         justify-content: flex-start;
-        gap: 30px;
+        gap: 25px;
         margin-bottom: 6px;
     }
     .mode-item-flex {
@@ -74,7 +75,7 @@ st.markdown("""
         box-shadow: 0 0 8px #FF0055;
     }
 
-    /* स्क्रीनशॉट जैसा मास्टर ग्रीन बॉक्स */
+    /* 🔥 स्क्रीनशॉट जैसा सिंगल लाइन मास्टर ग्रीन बॉक्स */
     .master-green-box {
         background: #090e14;
         border: 2px solid #00FF66;
@@ -82,6 +83,10 @@ st.markdown("""
         padding: 8px;
         box-shadow: 0 0 15px rgba(0, 255, 102, 0.3);
         margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 6px;
     }
     
     .sub-box-left {
@@ -94,7 +99,6 @@ st.markdown("""
         font-weight: 900;
         display: flex;
         align-items: center;
-        height: 100%;
         white-space: nowrap;
     }
     .sub-box-right {
@@ -107,10 +111,23 @@ st.markdown("""
         font-weight: 900;
         display: flex;
         align-items: center;
-        justify-content: flex-end;
-        height: 100%;
         white-space: nowrap;
     }
+
+    /* Streamlit इनपुट बॉक्स को पूरी तरह डार्क, डैश्ड और स्क्रीनशॉट जैसा बनाना */
+    .stTextInput input {
+        background-color: #0d141e !important;
+        color: #00FFFF !important;
+        border: 1.5px dashed #00FFFF !important;
+        border-radius: 6px !important;
+        font-weight: 900 !important;
+        text-align: center !important;
+        letter-spacing: 2px !important;
+        padding: 4px !important;
+    }
+    /* Streamlit के फालतू लेबिल और स्पेस को छुपाना */
+    .stTextInput > label { display: none !important; }
+    div[data-baseweb="input"] { background: transparent !important; }
 
     /* टारगेट पीरियड और टाइमर कार्ड */
     .target-time-card {
@@ -198,12 +215,19 @@ if not st.session_state.authenticated:
         st.markdown("</div>", unsafe_allow_html=True)
 else:
     if "online_count" not in st.session_state:
-        st.session_state.online_count = 350078
+        st.session_state.online_count = random.randint(350000, 380000)
+        st.session_state.last_count_update = time.time()
+
+    current_time_epoch = time.time()
+    if current_time_epoch - st.session_state.last_count_update > 90:
+        change_amount = random.randint(-1200, 1500)
+        st.session_state.online_count = max(320000, min(410000, st.session_state.online_count + change_amount))
+        st.session_state.last_count_update = current_time_epoch
 
     if "active_game_mode" not in st.session_state:
         st.session_state.active_game_mode = "WINGO 1M"
 
-    # गुप्त गेम मोड बटन बार
+    # गुप्त गेम मोड बटन बार (मोड बदलने के लिए)
     b1, b2, b3, b4 = st.columns(4)
     with b1:
         if st.button("30S", use_container_width=True): st.session_state.active_game_mode = "WINGO 30S"
@@ -242,123 +266,127 @@ else:
         </div>
     """, unsafe_allow_html=True)
 
-    # 🔥 मास्टर ग्रीन बॉक्स (जिसमें बीच में XXXXX वाला इनपुट बॉक्स है जो नंबर डालते ही बदल जाएगा)
-    st.markdown('<div class="master-green-box">', unsafe_allow_html=True)
-    col_l, col_c, col_r = st.columns([1.2, 1, 1.1])
-    
-    with col_l:
+    @st.fragment(run_every=1)
+    def live_dashboard_core():
+        now = datetime.now()
+
+        # 🔥 स्क्रीनशॉट जैसा सिंगल लाइन मास्टर ग्रीन बॉक्स (एक ही लाइन में तीनों: पैनल नाम, XXXXX इनपुट खाचा, यूजरकाउंट)
+        st.markdown('<div class="master-green-box">', unsafe_allow_html=True)
+        col_l, col_c, col_r = st.columns([1.2, 0.9, 1.1])
+        
+        with col_l:
+            st.markdown(
+                '<div class="sub-box-left"><span class="blinking-dot"></span>⚡ BDG SNIPER PANEL</div>',
+                unsafe_allow_html=True
+            )
+        with col_c:
+            # यह वही बीच वाला डैश्ड खाचा है जिसमें XXXXX दिखेगा और नंबर डालते ही पीरियड बदल जाएगा
+            manual_period_input = st.text_input(
+                "Period Input",
+                value="XXXXX",
+                max_chars=5,
+                key="live_period_box",
+                label_visibility="collapsed"
+            )
+        with col_r:
+            st.markdown(
+                f'<div class="sub-box-right"><span class="blinking-dot"></span>👥 {st.session_state.online_count:,}</div>',
+                unsafe_allow_html=True
+            )
+        st.markdown('</div>', unsafe_allow_html=True)
+
+        # --- गेम का लाइव टाइमर और पीरियड लॉजिक ---
+        seconds_map = {"WINGO 30S": 30, "WINGO 1M": 60, "WINGO 3M": 180, "WINGO 5M": 300}
+        sec_val = seconds_map.get(selected_game, 60)
+
+        total_seconds = now.hour * 3600 + now.minute * 60 + now.second
+        remaining_secs = sec_val - (total_seconds % sec_val)
+        mins = remaining_secs // 60
+        secs_rem = remaining_secs % 60
+        timer_str = f"{mins:02d}:{secs_rem:02d}"
+
+        current_block_index = total_seconds // sec_val
+        
+        clean_input = "".join(filter(str.isdigit, manual_period_input))
+        if not clean_input:
+            base_val = 10313
+        else:
+            base_val = int(clean_input)
+        
+        target_period = base_val + current_block_index
+
+        def get_trend(p):
+            return "SMALL" if (p % 2 != 0) else "BIG"
+
+        history = [get_trend(target_period - i) for i in range(5, 0, -1)]
+        pred_size = get_trend(target_period)
+        
+        rng = random.Random(target_period)
+        pred_num = rng.choice([0, 1, 3, 5, 7, 9]) if pred_size == "SMALL" else rng.choice([2, 4, 6, 8])
+        pred_color = "RED" if pred_num in [0, 2, 4, 6, 8] else "GREEN"
+
+        # --- टारगेट पीरियड और टाइमर कार्ड ---
         st.markdown(
-            '<div class="sub-box-left"><span class="blinking-dot"></span>⚡ BDG SNIPER PANEL</div>',
+            f"""
+            <div class="target-time-card">
+                <div style="display: flex; align-items: center;">
+                    <span class="blinking-dot"></span>
+                    <span style="font-size: 13px; color: #FFD700; font-weight: 900;">TARGET PERIOD:</span>
+                    <span class="target-badge">{target_period}</span>
+                </div>
+                <div style="color: #FF00FF; font-weight: 900; font-size: 16px;">⏰ {timer_str}</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        # --- नेक्स्ट शॉट बैनर ---
+        st.markdown(
+            f'<div class="next-shot-banner">🔥 NEXT SHOT : <span style="color: #00FFFF; font-size: 20px;">{pred_size}</span> 🎯</div>',
             unsafe_allow_html=True
         )
-    with col_c:
-        # यहाँ डिफ़ॉल्ट रूप से XXXXX दिखेगा, और जब आप नंबर डालेंगे तो वह तुरंत काम करेगा
-        manual_period_input = st.text_input(
-            "Period Input",
-            value="XXXXX",
-            max_chars=5,
-            key="live_period_box",
-            label_visibility="collapsed"
-        )
-    with col_r:
+
+        # --- नंबर, साइज़ और कलर बॉक्स ---
         st.markdown(
-            f'<div class="sub-box-right"><span class="blinking-dot"></span>👥 {st.session_state.online_count:,}</div>',
+            f"""
+            <div class="result-grid">
+                <div class="result-card-box">
+                    <div style="font-size: 11px; color: #FFFFFF; font-weight: 900; margin-bottom: 6px;">NUMBER</div>
+                    <div style="background-color: #FF3344; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 900; margin: 0 auto; color: white;">{pred_num}</div>
+                </div>
+                <div class="result-card-box">
+                    <div style="font-size: 11px; color: #FFFFFF; font-weight: 900; margin-bottom: 6px;">SIZE</div>
+                    <div style="background: #0088FF; color: white; padding: 10px 4px; border-radius: 6px; font-weight: 900; font-size: 14px; text-align: center;">{pred_size}</div>
+                </div>
+                <div class="result-card-box">
+                    <div style="font-size: 11px; color: #FFFFFF; font-weight: 900; margin-bottom: 6px;">COLOR</div>
+                    <div style="background-color: #FF3344; color: white; padding: 10px 4px; border-radius: 6px; font-weight: 900; font-size: 14px; text-align: center;">{pred_color}</div>
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        # --- रनिंग हिस्ट्री चार्ट ---
+        boxes_html = ""
+        for item in history:
+            bg_col = "#FF9900" if item == "BIG" else "#0077FF"
+            boxes_html += f"<div style='background: {bg_col}; color: white; padding: 5px 10px; border-radius: 4px; font-weight: 900; font-size: 11px; margin: 0 2px;'>{item}</div>"
+
+        next_bg_col = "#0077FF" if pred_size == "SMALL" else "#FF9900"
+        boxes_html += f"<div style='background: {next_bg_col}; color: white; padding: 5px 10px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; font-weight: 900; font-size: 11px; border: 2px solid #00FF66; margin-left: 4px;'>🎯 NEXT: {pred_size}</div>"
+
+        st.markdown(
+            f"""
+            <div class="history-card">
+                <div style="font-size: 11px; color: #FFD700; font-weight: 900; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+                    <span>📊 {selected_game} लाइव ओमनी-मैटrix रनिंग हिस्ट्री चार्ट:</span>
+                    <span><span class="blinking-dot" style="margin-right: 0px;"></span> <span style="font-size: 9px; color: #00FF66; vertical-align: middle;">LIVE</span></span>
+                </div>
+                <div style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 4px;">{boxes_html}</div>
+            </div>
+            """,
             unsafe_allow_html=True
         )
-    st.markdown('</div>', unsafe_allow_html=True)
 
-    # --- गेम का लाइव लॉजिक और डेटा ---
-    now = datetime.now()
-    seconds_map = {"WINGO 30S": 30, "WINGO 1M": 60, "WINGO 3M": 180, "WINGO 5M": 300}
-    sec_val = seconds_map.get(selected_game, 60)
-
-    total_seconds = now.hour * 3600 + now.minute * 60 + now.second
-    remaining_secs = sec_val - (total_seconds % sec_val)
-    mins = remaining_secs // 60
-    secs_rem = remaining_secs % 60
-    timer_str = f"{mins:02d}:{secs_rem:02d}"
-
-    current_block_index = total_seconds // sec_val
-    
-    # यदि बॉक्स में XXXXX है या खाली है, तो डिफ़ॉल्ट बेस 10313 काम करेगा; जैसे ही नंबर डालेंगे, नया पीरियड सेट हो जाएगा
-    clean_input = "".join(filter(str.isdigit, manual_period_input))
-    if not clean_input:
-        base_val = 10313
-    else:
-        base_val = int(clean_input)
-    
-    target_period = base_val + current_block_index
-
-    def get_trend(p):
-        return "SMALL" if (p % 2 != 0) else "BIG"
-
-    history = [get_trend(target_period - i) for i in range(5, 0, -1)]
-    pred_size = get_trend(target_period)
-    
-    rng = random.Random(target_period)
-    pred_num = rng.choice([0, 1, 3, 5, 7, 9]) if pred_size == "SMALL" else rng.choice([2, 4, 6, 8])
-    pred_color = "RED" if pred_num in [0, 2, 4, 6, 8] else "GREEN"
-
-    # --- टारगेट पीरियड और टाइमर कार्ड ---
-    st.markdown(
-        f"""
-        <div class="target-time-card">
-            <div style="display: flex; align-items: center;">
-                <span class="blinking-dot"></span>
-                <span style="font-size: 13px; color: #FFD700; font-weight: 900;">TARGET PERIOD:</span>
-                <span class="target-badge">{target_period}</span>
-            </div>
-            <div style="color: #FF00FF; font-weight: 900; font-size: 16px;">⏰ {timer_str}</div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-    # --- नेक्स्ट शॉट बैनर ---
-    st.markdown(
-        f'<div class="next-shot-banner">🔥 NEXT SHOT : <span style="color: #00FFFF; font-size: 20px;">{pred_size}</span> 🎯</div>',
-        unsafe_allow_html=True
-    )
-
-    # --- नंबर, साइज़ और कलर बॉक्स ---
-    st.markdown(
-        f"""
-        <div class="result-grid">
-            <div class="result-card-box">
-                <div style="font-size: 11px; color: #FFFFFF; font-weight: 900; margin-bottom: 6px;">NUMBER</div>
-                <div style="background-color: #FF3344; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 900; margin: 0 auto; color: white;">{pred_num}</div>
-            </div>
-            <div class="result-card-box">
-                <div style="font-size: 11px; color: #FFFFFF; font-weight: 900; margin-bottom: 6px;">SIZE</div>
-                <div style="background: #0088FF; color: white; padding: 10px 4px; border-radius: 6px; font-weight: 900; font-size: 14px; text-align: center;">{pred_size}</div>
-            </div>
-            <div class="result-card-box">
-                <div style="font-size: 11px; color: #FFFFFF; font-weight: 900; margin-bottom: 6px;">COLOR</div>
-                <div style="background-color: #FF3344; color: white; padding: 10px 4px; border-radius: 6px; font-weight: 900; font-size: 14px; text-align: center;">{pred_color}</div>
-            </div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-    # --- रनिंग हिस्ट्री चार्ट ---
-    boxes_html = ""
-    for item in history:
-        bg_col = "#FF9900" if item == "BIG" else "#0077FF"
-        boxes_html += f"<div style='background: {bg_col}; color: white; padding: 5px 10px; border-radius: 4px; font-weight: 900; font-size: 11px; margin: 0 2px;'>{item}</div>"
-
-    next_bg_col = "#0077FF" if pred_size == "SMALL" else "#FF9900"
-    boxes_html += f"<div style='background: {next_bg_col}; color: white; padding: 5px 10px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; font-weight: 900; font-size: 11px; border: 2px solid #00FF66; margin-left: 4px;'>🎯 NEXT: {pred_size}</div>"
-
-    st.markdown(
-        f"""
-        <div class="history-card">
-            <div style="font-size: 11px; color: #FFD700; font-weight: 900; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
-                <span>📊 {selected_game} लाइव ओमनी-मैटrix रनिंग हिस्ट्री चार्ट:</span>
-                <span><span class="blinking-dot" style="margin-right: 0px;"></span> <span style="font-size: 9px; color: #00FF66; vertical-align: middle;">LIVE</span></span>
-            </div>
-            <div style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 4px;">{boxes_html}</div>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+    live_dashboard_core()
