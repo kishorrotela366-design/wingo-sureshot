@@ -21,27 +21,36 @@ st.markdown(
     .stAppDeployButton {display: none;}
     [data-testid="stStatusWidget"] {visibility: hidden;}
     
-    /* Animations */
-    @keyframes blink-animation {
-        0% { opacity: 1; transform: scale(1.1); box-shadow: 0 0 10px #FF0055; }
-        50% { opacity: 0.2; transform: scale(0.85); }
-        100% { opacity: 1; transform: scale(1.1); box-shadow: 0 0 10px #FF0055; }
+    /* Super Fast Blinking Live Light Animation */
+    @keyframes super-blink {
+        0% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 12px #FF0033, 0 0 20px #FF0033; }
+        50% { opacity: 0.1; transform: scale(0.8); box-shadow: 0 0 2px #FF0033; }
+        100% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 12px #FF0033, 0 0 20px #FF0033; }
     }
+    
     @keyframes green-glow-pulse {
         0% { box-shadow: 0 0 8px #00FF66, inset 0 0 5px #00FF66; }
         50% { box-shadow: 0 0 20px #00FF66, inset 0 0 10px #00FF66; }
         100% { box-shadow: 0 0 8px #00FF66, inset 0 0 5px #00FF66; }
     }
     
-    .blinking-red-light { display: inline-block; width: 10px; height: 10px; background-color: #FF0055; border-radius: 50%; margin-right: 6px; animation: blink-animation 0.8s infinite ease-in-out; }
+    .blinking-red-light { 
+        display: inline-block; 
+        width: 10px; 
+        height: 10px; 
+        background-color: #FF0033; 
+        border-radius: 50%; 
+        margin-right: 6px; 
+        animation: super-blink 0.6s infinite ease-in-out; 
+    }
     
     .combined-header-box {
         background: #090e14;
         border: 2px solid #00FF66;
         border-radius: 10px;
-        padding: 10px;
+        padding: 8px 10px;
         box-shadow: 0 0 15px rgba(0, 255, 102, 0.3);
-        margin-bottom: 12px;
+        margin-bottom: 10px;
     }
     
     .target-time-card {
@@ -107,23 +116,11 @@ st.markdown(
         box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
     }
 
-    /* Single Row Layout with Exact ScreenShot Colors */
-    div[row-widget="stRadio"] > div {
-        flex-direction: row !important;
-        justify-content: space-between !important;
-        flex-wrap: nowrap !important;
-    }
-
-    div[row-widget="stRadio"] label {
-        margin-right: 0px !important;
-        padding: 2px 4px !important;
-    }
-
-    /* Exact Color Styling for Each Mode Matching Screenshot */
-    div[row-widget="stRadio"] label:nth-child(1) p { color: #00FFFF !important; font-weight: 900 !important; font-size: 11px !important; }
-    div[row-widget="stRadio"] label:nth-child(2) p { color: #FF007F !important; font-weight: 900 !important; font-size: 11px !important; }
-    div[row-widget="stRadio"] label:nth-child(3) p { color: #FFD700 !important; font-weight: 900 !important; font-size: 11px !important; }
-    div[row-widget="stRadio"] label:nth-child(4) p { color: #00FF66 !important; font-weight: 900 !important; font-size: 11px !important; }
+    /* Screenshot Matching Game Mode Colors */
+    .w30s { color: #00FFFF !important; font-weight: 900 !important; font-size: 12px !important; margin-bottom: 2px; }
+    .w1m  { color: #FF007F !important; font-weight: 900 !important; font-size: 12px !important; margin-bottom: 2px; }
+    .w3m  { color: #FFD700 !important; font-weight: 900 !important; font-size: 12px !important; margin-bottom: 2px; }
+    .w5m  { color: #00FF66 !important; font-weight: 900 !important; font-size: 12px !important; margin-bottom: 2px; }
     </style>
 """,
     unsafe_allow_html=True,
@@ -164,23 +161,37 @@ else:
     def success_dashboard_core():
         now = datetime.now()
 
-        # 1️⃣ एक सीधी लाइन में कलरफुल गेम मोड सेलेक्टर
-        selected_game = st.radio(
-            "Select Game Mode",
-            ["WINGO 30S", "WINGO 1M", "WINGO 3M", "WINGO 5M"],
-            horizontal=True,
-            label_visibility="collapsed",
-            key="single_line_game_mode"
-        )
+        # स्क्रीनशॉट जैसा लेआउट: ऊपर तीन मोड, नीचे चौथा मोड (WINGO 5M)
+        col_g1, col_g2 = st.columns(2)
+        with col_g1:
+            st.markdown('<p class="w30s">WINGO 30S</p>', unsafe_allow_html=True)
+            r1 = st.radio("R1", ["Mode_30S", "Mode_3M"], key="sel_r1", label_visibility="collapsed", horizontal=True)
+            
+            st.markdown('<p class="w5m" style="margin-top: 10px;">WINGO 5M</p>', unsafe_allow_html=True)
+            
+        with col_g2:
+            st.markdown('<p class="w1m">WINGO 1M</p>', unsafe_allow_html=True)
+            r2 = st.radio("R2", ["Mode_1M", "Mode_5M"], key="sel_r2", label_visibility="collapsed", horizontal=True)
+            
+            st.markdown('<p class="w3m" style="margin-top: 10px;">WINGO 3M</p>', unsafe_allow_html=True)
 
-        # 2️⃣ एक ही ग्रीन बॉर्डर वाले बॉक्स के अंदर पैनल नाम, इनपुट और यूजरकाउंट[span_2](start_span)[span_2](end_span)[span_3](start_span)[span_3](end_span)
+        if st.session_state.get("sel_r1") == "Mode_30S":
+            selected_game = "WINGO 30S"
+        elif st.session_state.get("sel_r1") == "Mode_3M":
+            selected_game = "WINGO 3M"
+        elif st.session_state.get("sel_r2") == "Mode_1M":
+            selected_game = "WINGO 1M"
+        else:
+            selected_game = "WINGO 5M"
+
+        # स्क्रीनशॉट जैसा बिल्कुल सटीक कंबाइंड हेडर बॉक्स
         st.markdown('<div class="combined-header-box">', unsafe_allow_html=True)
-        ch_1, ch_2, ch_3 = st.columns([1.2, 1, 1])
+        ch_1, ch_2, ch_3 = st.columns([1.3, 0.9, 1.1])
         
         with ch_1:
             st.markdown(
                 f"""
-                <div style="font-size: 12px; font-weight: 900; color: #00FFFF; padding-top: 6px;">
+                <div style="font-size: 11px; font-weight: 900; color: #00FFFF; padding-top: 8px; white-space: nowrap;">
                     <span class="blinking-red-light"></span>⚡ BDG SNIPER PANEL
                 </div>
                 """,
@@ -189,14 +200,15 @@ else:
         with ch_2:
             manual_period_input = st.text_input(
                 "Base Period",
-                value="20261012100010370",
+                value="10313",
+                max_chars=5,
                 key="user_live_period_input",
                 label_visibility="collapsed"
             )
         with ch_3:
             st.markdown(
                 f"""
-                <div style="font-size: 12px; font-weight: 900; color: #FFFFFF; text-align: right; padding-top: 6px;">
+                <div style="font-size: 11px; font-weight: 900; color: #FFFFFF; text-align: right; padding-top: 8px; white-space: nowrap;">
                     <span class="blinking-red-light"></span>👥 {st.session_state.online_count:,}
                 </div>
                 """,
@@ -215,7 +227,7 @@ else:
 
             clean_input = "".join(filter(str.isdigit, manual_period_input))
             if not clean_input:
-                clean_input = "20261012100010370"
+                clean_input = "10313"
 
             state_input_key = f"matrix_input_{seconds}"
             state_block_key = f"matrix_block_{seconds}"
@@ -228,7 +240,7 @@ else:
             
             base_val = int(clean_input)
             current_target_period = base_val + block_diff
-            target_period_str = str(current_target_period)
+            target_period_str = str(current_target_period)[-5:]
 
             def calculate_omni_matrix_trend(p_num, offset_val):
                 mod_val = (p_num + offset_val) % 5
@@ -267,7 +279,7 @@ else:
                     unsafe_allow_html=True
                 )
 
-            # 3️⃣ टारगेट पीरियड और टाइमर बॉक्स[span_4](start_span)[span_4](end_span)[span_5](start_span)[span_5](end_span)
+            # टारगेट पीरियड और टाइमर बॉक्स
             st.markdown(
                 f"""
                 <div class="target-time-card">
@@ -282,13 +294,13 @@ else:
                 unsafe_allow_html=True,
             )
 
-            # 4️⃣ नेक्स्ट शॉट बैनर[span_6](start_span)[span_6](end_span)[span_7](start_span)[span_7](end_span)
+            # नेक्स्ट शॉट बैनर
             st.markdown(
                 f'<div class="next-shot-banner">🔥 NEXT SHOT : <span style="color: #00FFFF; font-size: 20px;">{pred_size}</span> 🎯</div>',
                 unsafe_allow_html=True
             )
 
-            # 5️⃣ नंबर, साइज़ और कलर बॉक्स[span_8](start_span)[span_8](end_span)[span_9](start_span)[span_9](end_span)
+            # नंबर, साइज़ और कलर बॉक्स
             st.markdown(
                 f"""
                 <div class="result-grid">
@@ -309,7 +321,7 @@ else:
                 unsafe_allow_html=True,
             )
             
-            # 6️⃣ रनिंग हिस्ट्री चार्ट (ब्लिंकिंग रेड लाइट के साथ)
+            # रनिंग हिस्ट्री चार्ट
             boxes_html = ""
             for item in history:
                 bg_color = "#FF9900" if item == "BIG" else "#0077FF"
