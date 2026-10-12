@@ -43,7 +43,7 @@ st.markdown(
     }
     .blinking-red-light { display: inline-block; width: 12px; height: 12px; background-color: #FF0055; border-radius: 50%; margin-right: 8px; animation: blink-animation 0.8s infinite ease-in-out; }
     
-    /* स्क्रीनशॉट जैसी हूबहू रंग-बिरंगी गेम मोड लिस्ट और रेडियो बटन्स */
+    /* गेम मोड लिस्ट स्टाइल */
     .exact-modes-container {
         background: #05050a;
         padding: 6px 0 14px 0;
@@ -63,7 +63,6 @@ st.markdown(
         gap: 10px;
         font-weight: 900;
         font-size: 15px;
-        cursor: pointer;
     }
     .circle-dot {
         width: 16px;
@@ -79,7 +78,7 @@ st.markdown(
         box-shadow: 0 0 10px #FF0055;
     }
 
-    /* 🔥 स्क्रीनशॉट जैसा सिंगल मास्टर ग्रीन बॉक्स (सब कुछ एक ही लाइन में अटैच)[span_2](start_span)[span_2](end_span) */
+    /* सिंगल मास्टर ग्रीन बॉक्स */
     .master-single-box {
         background: #090e14;
         border: 2px solid #00FF66;
@@ -111,7 +110,7 @@ st.markdown(
         align-items: center;
     }
 
-    /* Streamlit इनपुट बॉक्स को बीच वाले डैश्ड खाचे जैसा बनाना[span_3](start_span)[span_3](end_span) */
+    /* इनपुट बॉक्स स्टाइल */
     .stTextInput input {
         background-color: #0d141e !important;
         color: #00FFFF !important;
@@ -125,18 +124,6 @@ st.markdown(
     }
     .stTextInput > label { display: none !important; }
     div[data-baseweb="input"] { background: transparent !important; }
-
-    /* ऊपर के स्ट्रीमलिट बटनों को पूरी तरह अदृश्य करना ताकि कोई व्हाइट पट्टी न आए[span_4](start_span)[span_4](end_span) */
-    div.stButton > button {
-        background-color: transparent !important;
-        border: none !important;
-        color: transparent !important;
-        height: 0px !important;
-        min-height: 0px !important;
-        padding: 0px !important;
-        margin: 0px !important;
-        box-shadow: none !important;
-    }
 
     .main-card { background-color: #0b071a; border: 2px solid #FFD700; border-radius: 12px; padding: 14px; box-shadow: 0 0 15px rgba(255,215,0,0.2); margin-top: 8px; }
     .timer-box-large { color: #FF00FF; font-weight: 900; font-size: 16px; text-shadow: 0 0 8px rgba(255,0,255,0.6); }
@@ -152,24 +139,72 @@ st.markdown(
 
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
+if "used_utrs" not in st.session_state:
+    st.session_state.used_utrs = ["123456789012"]
 
 MASTER_MOBILE = "9011997944"
 MASTER_PASSWORD = "KISHOR90"
 
+# ==========================================
+# 🔒 लॉगिन और रिचार्ज / QR पोर्टल
+# ==========================================
 if not st.session_state.authenticated:
-    st.markdown("<h2 style='text-align: center; color: #FFD700; font-size: 24px; font-weight: 900;'>👑 BDG DUAL SHIELD <br> ACCESS PANEL</h2>", unsafe_allow_html=True)
-    with st.container():
+    st.markdown("<h2 style='text-align: center; color: #FFD700; font-size: 22px; font-weight: 900;'>👑 BDG DUAL SHIELD <br> ACCESS PANEL</h2>", unsafe_allow_html=True)
+    
+    login_tab, recharge_tab = st.tabs(["🔒 LOGIN SYSTEM", "💳 RECHARGE PLAN (₹1500 / 2 DAYS)"])
+    
+    with login_tab:
         st.markdown("<div class='main-card'>", unsafe_allow_html=True)
-        mobile_input = st.text_input("📱 MOBILE NUMBER", placeholder="Enter mobile number")
-        password_input = st.text_input("🔒 PASSWORD", type="password", placeholder="Enter password")
+        st.markdown("<h4 style='color: #00FFFF; text-align: center; font-weight: 900;'>ऑपरेटर लॉगिन</h4>", unsafe_allow_html=True)
+        mobile_input = st.text_input("📱 मोबाइल नंबर", placeholder="Enter Mobile Number", key="login_mob")
+        password_input = st.text_input("🔒 पासवर्ड", type="password", placeholder="Enter Password", key="login_pass")
 
-        if st.button("🚀 UNLOCK PANEL", use_container_width=True):
+        if st.button("🚀 UNLOCK PANEL (ADMIN)", use_container_width=True, key="admin_login_btn"):
             if mobile_input == MASTER_MOBILE and password_input == MASTER_PASSWORD:
                 st.session_state.authenticated = True
                 st.rerun()
             else:
-                st.error("❌ अमान्य विवरण!")
+                st.error("❌ गलत मोबाइल नंबर या पासवर्ड!")
         st.markdown("</div>", unsafe_allow_html=True)
+
+    with recharge_tab:
+        st.markdown("<div class='main-card'>", unsafe_allow_html=True)
+        st.markdown("<h3 style='color: #FFD700; font-weight: 900; text-align: center; margin-bottom: 5px;'>⚡ VIP ACCESS PLAN</h3>", unsafe_allow_html=True)
+        st.markdown("""
+            <div style='background: linear-gradient(135deg, #113300, #001a00); border: 2px solid #00FF66; padding: 10px; border-radius: 8px; margin-bottom: 12px; text-align: center;'>
+                <p style='color: #00FF66; font-size: 15px; font-weight: 900; margin: 0;'>💎 PANEL RECHARGE: ₹1500 (2 DAYS)</p>
+            </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown("""
+            <div style='text-align: center; margin-bottom: 10px;'>
+                <p style='color: #CCCCCC; font-size: 12px; font-weight: 900;'>PhonePe QR से भुगतान करें:</p>
+                <div style='background: #FFFFFF; padding: 10px; display: inline-block; border-radius: 8px;'>
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=upi://pay?pa=kishor90@upi&pn=PhonePeMerchant&am=1500" width="150" height="150">
+                </div>
+                <p style='color: #FFD700; font-size: 12px; margin-top: 5px; font-weight: 900;'>UPI ID: kishor90@upi</p>
+            </div>
+        """, unsafe_allow_html=True)
+        
+        utr_input = st.text_input("📝 12-Digit UTR / Ref No.", placeholder="Enter 12-digit UTR number", max_chars=12, key="user_utr_entry")
+        
+        if st.button("✅ VERIFY UTR & ACTIVATE", use_container_width=True, key="utr_submit_btn"):
+            clean_utr = "".join(filter(str.isdigit, utr_input))
+            if len(clean_utr) != 12:
+                st.error("⚠️ अमान्य UTR! कृपया 12 अंकों का सही UTR नंबर डालें।")
+            elif clean_utr in st.session_state.used_utrs:
+                st.error("🚨 यह UTR नंबर पहले ही इस्तेमाल हो चुका है!")
+            else:
+                st.session_state.used_utrs.append(clean_utr)
+                st.session_state.authenticated = True
+                st.success("✅ पेमेंट वेरिफाई हुआ! पैनल एक्टिवेट हो गया।")
+                time.sleep(1)
+                st.rerun()
+        st.markdown("</div>", unsafe_allow_html=True)
+
+# ==========================================
+# 📊 मुख्य लाइव गेमिंग डैशबोर्ड
+# ==========================================
 else:
     @st.fragment(run_every=1)
     def success_dashboard_core():
@@ -178,7 +213,6 @@ else:
         if "active_game_mode" not in st.session_state:
             st.session_state.active_game_mode = "WINGO 1M"
 
-        # स्क्रीनशॉट जैसे क्लिकेबल कलरफुल गेम मोड बटन (जोशीले और सटीक)
         c1, c2, c3, c4 = st.columns(4)
         with c1:
             if st.button("WINGO 30S", key="btn_30s"): st.session_state.active_game_mode = "WINGO 30S"
@@ -191,7 +225,6 @@ else:
 
         selected_game = st.session_state.active_game_mode
 
-        # 🎨 स्क्रीनशॉट जैसी हूबहू रंग-बिरंगी गेम मोड विजुअल लिस्ट (जैसे WINGO 30S नीला, WINGO 1M पिंक, WINGO 3M पीला, WINGO 5M हरा)[span_5](start_span)[span_5](end_span)
         st.markdown(f"""
             <div class="exact-modes-container">
                 <div class="mode-row">
@@ -219,7 +252,6 @@ else:
 
         now = datetime.now()
         
-        # 🔥 एकदम स्क्रीनशॉट जैसा सिंगल मास्टर ग्रीन बॉक्स (पैनल नाम, पीरियड इनपुट खाचा, और यूजरकाउंट एक ही लाइन में)[span_6](start_span)[span_6](end_span)
         st.markdown('<div class="master-single-box">', unsafe_allow_html=True)
         col_l, col_m, col_r = st.columns([1.3, 1.0, 1.1])
         
