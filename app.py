@@ -21,64 +21,53 @@ st.markdown(
     .stAppDeployButton {display: none;}
     [data-testid="stStatusWidget"] {visibility: hidden;}
     
-    @keyframes super-blink {
-        0% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 12px #FF0033; }
-        50% { opacity: 0.1; transform: scale(0.8); box-shadow: 0 0 2px #FF0033; }
-        100% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 12px #FF0033; }
+    @keyframes blink-animation {
+        0% { opacity: 1; transform: scale(1.1); box-shadow: 0 0 15px #FF0055; }
+        50% { opacity: 0.1; transform: scale(0.85); box-shadow: 0 0 2px #FF0055; }
+        100% { opacity: 1; transform: scale(1.1); box-shadow: 0 0 15px #FF0055; }
     }
-    @keyframes green-glow-pulse {
-        0% { box-shadow: 0 0 8px #00FF66, inset 0 0 5px #00FF66; }
-        50% { box-shadow: 0 0 20px #00FF66, inset 0 0 10px #00FF66; }
-        100% { box-shadow: 0 0 8px #00FF66, inset 0 0 5px #00FF66; }
+    @keyframes pulse-heartbeat {
+        0% { box-shadow: 0 0 5px #00FF66; }
+        50% { box-shadow: 0 0 20px #00FF66; }
+        100% { box-shadow: 0 0 5px #00FF66; }
     }
+    @keyframes super-win-glow {
+        0% { border-color: #00FF66; box-shadow: 0 0 35px #00FF66, inset 0 0 15px #00FF66; background: linear-gradient(135deg, #003311, #001a05); }
+        50% { border-color: #FFD700; box-shadow: 0 0 20px #FFD700, inset 0 0 10px #FFD700; background: linear-gradient(135deg, #1a1a00, #0d0d00); }
+        100% { border-color: #00FF66; box-shadow: 0 0 35px #00FF66, inset 0 0 15px #00FF66; background: linear-gradient(135deg, #003311, #001a05); }
+    }
+    @keyframes warning-glow {
+        0% { border-color: #FF0000; box-shadow: 0 0 25px #FF0000; background: rgba(255, 0, 0, 0.25); }
+        50% { border-color: #FF8800; box-shadow: 0 0 10px #FF8800; background: rgba(255, 136, 0, 0.1); }
+        100% { border-color: #FF0000; box-shadow: 0 0 25px #FF0000; background: rgba(255, 0, 0, 0.25); }
+    }
+    .blinking-red-light { display: inline-block; width: 12px; height: 12px; background-color: #FF0055; border-radius: 50%; margin-right: 8px; animation: blink-animation 0.8s infinite ease-in-out; }
     
-    .blinking-dot { 
-        display: inline-block; 
-        width: 8px; 
-        height: 8px; 
-        background-color: #FF0033; 
-        border-radius: 50%; 
-        margin-right: 5px; 
-        animation: super-blink 0.6s infinite ease-in-out; 
-        vertical-align: middle;
-    }
-    
-    /* ऊपर के भद्दे बटनों को छुपाना ताकि कोई व्हाइट पट्टी न आए */
-    div.stButton > button {
-        background-color: transparent !important;
-        border: none !important;
-        color: transparent !important;
-        height: 0px !important;
-        min-height: 0px !important;
-        padding: 0px !important;
-        margin: 0px !important;
-        box-shadow: none !important;
-    }
-
-    /* स्क्रीनशॉट जैसी सटीक गेम मोड लिस्ट */
+    /* स्क्रीनशॉट जैसी हूबहू रंग-बिरंगी गेम मोड लिस्ट और रेडियो बटन्स */
     .exact-modes-container {
         background: #05050a;
-        padding: 6px 0 12px 0;
+        padding: 6px 0 14px 0;
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        gap: 12px;
     }
     .mode-row {
         display: flex;
         justify-content: flex-start;
-        gap: 30px;
+        gap: 40px;
+        align-items: center;
     }
     .mode-item {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 10px;
         font-weight: 900;
-        font-size: 13px;
+        font-size: 15px;
         cursor: pointer;
     }
     .circle-dot {
-        width: 14px;
-        height: 14px;
+        width: 16px;
+        height: 16px;
         border-radius: 50%;
         border: 2px solid #FFFFFF;
         background: #05050a;
@@ -87,10 +76,10 @@ st.markdown(
     .circle-dot.active {
         background-color: #FF0055;
         border-color: #FF0055;
-        box-shadow: 0 0 8px #FF0055;
+        box-shadow: 0 0 10px #FF0055;
     }
 
-    /* 🔥 स्क्रीनशॉट जैसा सिंगल मास्टर ग्रीन बॉक्स (सब कुछ एक ही लाइन में अटैच) */
+    /* 🔥 स्क्रीनशॉट जैसा सिंगल मास्टर ग्रीन बॉक्स (सब कुछ एक ही लाइन में अटैच)[span_2](start_span)[span_2](end_span) */
     .master-single-box {
         background: #090e14;
         border: 2px solid #00FF66;
@@ -122,7 +111,7 @@ st.markdown(
         align-items: center;
     }
 
-    /* Streamlit इनपुट बॉक्स को बीच वाले डैश्ड खाचे जैसा बनाना */
+    /* Streamlit इनपुट बॉक्स को बीच वाले डैश्ड खाचे जैसा बनाना[span_3](start_span)[span_3](end_span) */
     .stTextInput input {
         background-color: #0d141e !important;
         color: #00FFFF !important;
@@ -137,10 +126,23 @@ st.markdown(
     .stTextInput > label { display: none !important; }
     div[data-baseweb="input"] { background: transparent !important; }
 
+    /* ऊपर के स्ट्रीमलिट बटनों को पूरी तरह अदृश्य करना ताकि कोई व्हाइट पट्टी न आए[span_4](start_span)[span_4](end_span) */
+    div.stButton > button {
+        background-color: transparent !important;
+        border: none !important;
+        color: transparent !important;
+        height: 0px !important;
+        min-height: 0px !important;
+        padding: 0px !important;
+        margin: 0px !important;
+        box-shadow: none !important;
+    }
+
     .main-card { background-color: #0b071a; border: 2px solid #FFD700; border-radius: 12px; padding: 14px; box-shadow: 0 0 15px rgba(255,215,0,0.2); margin-top: 8px; }
     .timer-box-large { color: #FF00FF; font-weight: 900; font-size: 16px; text-shadow: 0 0 8px rgba(255,0,255,0.6); }
     .period-badge-small { color: #00FFFF; font-weight: 900; font-size: 16px; background: rgba(0,255,255,0.1); padding: 4px 8px; border-radius: 5px; border: 1.5px solid #00FFFF; letter-spacing: 1px; }
     .super-100-win-banner { border: 3.5px solid #00FF66; padding: 14px; border-radius: 8px; text-align: center; font-size: 16px; font-weight: 900; margin: 8px 0; color: #00FF66; text-transform: uppercase; animation: super-win-glow 0.8s infinite; letter-spacing: 1px; }
+    .wait-warning-banner { border: 3.5px solid #FF0000; padding: 14px; border-radius: 8px; text-align: center; font-size: 15px; font-weight: 900; margin: 8px 0; color: #FF4444; text-transform: uppercase; animation: warning-glow 0.8s infinite; letter-spacing: 1px; }
     .diagonal-container { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 8px; }
     .result-item { flex: 1; text-align: center; background: rgba(25, 18, 50, 0.95); border: 1.5px solid #6644aa; border-radius: 8px; padding: 8px; }
     </style>
@@ -154,7 +156,6 @@ if "authenticated" not in st.session_state:
 MASTER_MOBILE = "9011997944"
 MASTER_PASSWORD = "KISHOR90"
 
-# --- आपकी वही सख्त लॉगिन और UTR/PhonePe सिक्योरिटी ---
 if not st.session_state.authenticated:
     st.markdown("<h2 style='text-align: center; color: #FFD700; font-size: 24px; font-weight: 900;'>👑 BDG DUAL SHIELD <br> ACCESS PANEL</h2>", unsafe_allow_html=True)
     with st.container():
@@ -172,20 +173,12 @@ if not st.session_state.authenticated:
 else:
     @st.fragment(run_every=1)
     def success_dashboard_core():
-        # ऑनलाइन यूजरकाउंट लाइव फ्लक्चुएशन
-        if "online_count" not in st.session_state:
-            st.session_state.online_count = 350078
-            st.session_state.last_live_tick = time.time()
-
-        current_t = time.time()
-        if current_t - st.session_state.last_live_tick > 3:
-            st.session_state.online_count += random.randint(-45, 52)
-            st.session_state.last_live_tick = current_t
+        dynamic_online_count = random.randint(112000, 498000)
 
         if "active_game_mode" not in st.session_state:
             st.session_state.active_game_mode = "WINGO 1M"
 
-        # गेम मोड चयन बटन
+        # स्क्रीनशॉट जैसे क्लिकेबल कलरफुल गेम मोड बटन (जोशीले और सटीक)
         c1, c2, c3, c4 = st.columns(4)
         with c1:
             if st.button("WINGO 30S", key="btn_30s"): st.session_state.active_game_mode = "WINGO 30S"
@@ -198,54 +191,54 @@ else:
 
         selected_game = st.session_state.active_game_mode
 
-        # स्क्रीनशॉट जैसी गेम मोड लिस्ट व्यू
+        # 🎨 स्क्रीनशॉट जैसी हूबहू रंग-बिरंगी गेम मोड विजुअल लिस्ट (जैसे WINGO 30S नीला, WINGO 1M पिंक, WINGO 3M पीला, WINGO 5M हरा)[span_5](start_span)[span_5](end_span)
         st.markdown(f"""
             <div class="exact-modes-container">
                 <div class="mode-row">
                     <div class="mode-item">
                         <div class="circle-dot {'active' if selected_game=='WINGO 30S' else ''}"></div>
-                        <span style="color: #00FFFF;">WINGO 30S</span>
+                        <span style="color: #00FFFF; font-size: 15px;">WINGO 30S</span>
                     </div>
                     <div class="mode-item">
                         <div class="circle-dot {'active' if selected_game=='WINGO 1M' else ''}"></div>
-                        <span style="color: #FF007F;">WINGO 1M</span>
+                        <span style="color: #FF007F; font-size: 15px;">WINGO 1M</span>
                     </div>
                     <div class="mode-item">
                         <div class="circle-dot {'active' if selected_game=='WINGO 3M' else ''}"></div>
-                        <span style="color: #FFD700;">WINGO 3M</span>
+                        <span style="color: #FFD700; font-size: 15px;">WINGO 3M</span>
                     </div>
                 </div>
                 <div class="mode-row">
                     <div class="mode-item">
                         <div class="circle-dot {'active' if selected_game=='WINGO 5M' else ''}"></div>
-                        <span style="color: #00FF66;">WINGO 5M</span>
+                        <span style="color: #00FF66; font-size: 15px;">WINGO 5M</span>
                     </div>
                 </div>
             </div>
         """, unsafe_allow_html=True)
 
         now = datetime.now()
-
-        # 🔥 एकदम स्क्रीनशॉट जैसा सिंगल मास्टर ग्रीन बॉक्स (पैनल नाम, बीच में XXXXX इनपुट खाचा, और लाइव यूजरकाउंट एक लाइन में)[span_3](start_span)[span_3](end_span)
+        
+        # 🔥 एकदम स्क्रीनशॉट जैसा सिंगल मास्टर ग्रीन बॉक्स (पैनल नाम, पीरियड इनपुट खाचा, और यूजरकाउंट एक ही लाइन में)[span_6](start_span)[span_6](end_span)
         st.markdown('<div class="master-single-box">', unsafe_allow_html=True)
         col_l, col_m, col_r = st.columns([1.3, 1.0, 1.1])
         
         with col_l:
             st.markdown(
-                '<div class="panel-title-text"><span class="blinking-dot"></span>⚡ BDG SNIPER PANEL</div>',
+                '<div class="panel-title-text"><span class="blinking-red-light" style="width:8px; height:8px; margin-right:4px;"></span>⚡ BDG SNIPER PANEL</div>',
                 unsafe_allow_html=True
             )
         with col_m:
             manual_period_input = st.text_input(
                 "Period Input",
-                value="XXXXX",
-                max_chars=5,
-                key="live_period_box",
+                value="10784",
+                max_chars=6,
+                key="user_live_period_input",
                 label_visibility="collapsed"
             )
         with col_r:
             st.markdown(
-                f'<div class="online-count-text"><span class="blinking-dot"></span>👥 {st.session_state.online_count:,}</div>',
+                f'<div class="online-count-text"><span class="blinking-red-light" style="width:8px; height:8px; margin-right:4px;"></span>👥 {dynamic_online_count:,}</div>',
                 unsafe_allow_html=True
             )
         st.markdown('</div>', unsafe_allow_html=True)
@@ -324,7 +317,7 @@ else:
             st.markdown(
                 f"""
                 <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #FFD700; padding-bottom: 6px; margin-bottom: 8px; background: rgba(255,215,0,0.06); border-radius: 6px; padding-left: 8px; padding-right: 8px;">
-                    <span style="display: flex; align-items: center;"><span class="blinking-dot"></span><span style="font-size: 13px; color: #FFD700; font-weight: 900; margin-right: 6px;">TARGET PERIOD:</span><span class="period-badge-small">{target_period_str}</span></span>
+                    <span style="display: flex; align-items: center;"><span class="blinking-red-light"></span><span style="font-size: 13px; color: #FFD700; font-weight: 900; margin-right: 6px;">TARGET PERIOD:</span><span class="period-badge-small">{target_period_str}</span></span>
                     <span class="timer-box-large">⏰ {timer_str}</span>
                 </div>
                 """,
