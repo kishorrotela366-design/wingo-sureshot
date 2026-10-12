@@ -112,6 +112,17 @@ if "backend_servers" not in st.session_state:
     st.session_state.backend_servers = [f"BDG-CORE-NODE-{i:02d}" for i in range(1, 12)]
 if "verified_users_db" not in st.session_state:
     st.session_state.verified_users_db = {}
+
+# वैध 1500 ₹ वाले यूनीक UTRs की मास्टर लिस्ट
+if "valid_paid_utrs" not in st.session_state:
+    st.session_state.valid_paid_utrs = {
+        "425163789012": {"amount": 1500, "used": False},
+        "987654321098": {"amount": 1500, "used": False},
+        "554433221100": {"amount": 1500, "used": False},
+        "778899001122": {"amount": 1500, "used": False},
+        "998877665544": {"amount": 1500, "used": False}
+    }
+
 if "used_utrs_database" not in st.session_state:
     st.session_state.used_utrs_database = ["123456789012"]
 
@@ -119,7 +130,7 @@ MASTER_MOBILE = "9011997944"
 MASTER_PASSWORD = "KISHOR90"
 
 # ==========================================
-# 🔒 ओनर और सख्त UTR रिन्यूअल सिक्योरिटी पोर्टल
+# 🔒 ओनर और सख्त 2-दिन एक्सपायरी UTR पोर्टल
 # ==========================================
 if not st.session_state.authenticated:
     st.markdown("<h2 style='text-align: center; color: #FFD700; font-size: 21px; font-weight: 900;'>👑 BDG DUAL SHIELD SECURE PORTAL</h2>", unsafe_allow_html=True)
@@ -142,13 +153,14 @@ if not st.session_state.authenticated:
         elif clean_l_mob in st.session_state.verified_users_db:
             user_data = st.session_state.verified_users_db[clean_l_mob]
             if user_data["password"] == login_pass:
+                # 🛑 सख्त 2 दिन (48 घंटे) एक्सपायरी जाँच: समय समाप्त होने पर पासवर्ड सही होने पर भी ब्लॉक रहेगा!
                 if datetime.now() < user_data["expiry"]:
                     st.session_state.authenticated = True
                     st.success("✅ यूजर लॉगिन सफल! आपका प्लान सक्रिय है, डैशबोर्ड खुल रहा है...")
                     time.sleep(0.8)
                     st.rerun()
                 else:
-                    st.error("🚨 सुरक्षा ब्लॉक: आपके 2 दिन का रिचार्ज प्लान पूरी तरह समाप्त हो चुका है! सही पासवर्ड होने के बावजूद डैशबोर्ड नहीं खुलेगा। कृपया नीचे नया UTR रिचार्ज करें।")
+                    st.error("🚨 सुरक्षा ब्लॉक: आपके 2 दिन (48 घंटे) का रिचार्ज प्लान पूरी तरह समाप्त हो चुका है! सही पासवर्ड होने के बावजूद डैशबोर्ड नहीं खुलेगा। कृपया नीचे नया 1500 ₹ UTR रिचार्ज करें।")
             else:
                 st.error("❌ गलत पासवर्ड! कृपया सही पासवर्ड दर्ज करें।")
         else:
@@ -156,14 +168,14 @@ if not st.session_state.authenticated:
 
     st.markdown("---")
     
-    st.markdown("<h3 style='color: #FFD700; font-weight: 900; text-align: center; font-size: 15px; margin-bottom: 5px;'>⚡ रिचार्ज समाप्त होने पर नया UTR दर्ज करें (1500 ₹)</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='color: #FFD700; font-weight: 900; text-align: center; font-size: 15px; margin-bottom: 5px;'>⚡ 1500 ₹ QR स्कैन और नया UTR दर्ज करें</h3>", unsafe_allow_html=True)
     
     renew_mob = st.text_input("📱 रजिस्टर्ड मोबाइल नंबर", placeholder="Enter registered mobile", key="renew_mob_input")
-    renew_pass = st.text_input("🔒 आपका वही पुराना पासवर्ड", type="password", placeholder="Enter your password", key="renew_pass_input")
+    renew_pass = st.text_input("🔒 आपका पासवर्ड", type="password", placeholder="Enter your password", key="renew_pass_input")
 
     st.markdown("""
         <div style='background: linear-gradient(135deg, #113300, #001a00); border: 2px solid #00FF66; padding: 12px; border-radius: 10px; margin: 10px 0; text-align: center;'>
-            <p style='color: #00FF66; font-size: 14px; font-weight: 900; margin: 0;'>💎 1500 रुपए भुगतान करके नया UTR दर्ज करें</p>
+            <p style='color: #00FF66; font-size: 14px; font-weight: 900; margin: 0;'>💎 2 दिन समाप्त होने पर 1500 रुपए भुगतान करके नया UTR दर्ज करें</p>
             <p style='color: #CCCCCC; font-size: 11px; margin-top: 4px;'>नीचे दिए गए PhonePe QR को स्कैन करके भुगतान करें:</p>
             <div style='background: #FFFFFF; padding: 10px; display: inline-block; border-radius: 8px; margin-top: 6px; box-shadow: 0 0 15px rgba(0,255,102,0.4);'>
                 <img src="https://api.qrserver.com/v1/create-qr-code/?size=170x170&data=upi://pay?pa=kishorsingh226105.wallet@phonepe&pn=KishorSinghRautela&am=1500" width="160" height="160">
@@ -172,9 +184,9 @@ if not st.session_state.authenticated:
         </div>
     """, unsafe_allow_html=True)
     
-    renew_utr_input = st.text_input("📝 नया 12-Digit UTR Number", placeholder="Enter new 12-digit UTR", max_chars=12, key="renew_utr_input")
+    renew_utr_input = st.text_input("📝 नया यूनीक 12-Digit UTR Number", placeholder="Enter new scanned UTR", max_chars=12, key="renew_utr_input")
 
-    if st.button("🔄 रिचार्ज सत्यापित करें और अनलॉक करें (RENEW & UNLOCK)", use_container_width=True, key="user_renew_btn"):
+    if st.button("🔄 नया UTR वेरीफाई और 2 दिन का प्लान एक्टिव करें (RENEW & UNLOCK)", use_container_width=True, key="user_renew_btn"):
         clean_r_mob = "".join(filter(str.isdigit, renew_mob))
         clean_utr = "".join(filter(str.isdigit, renew_utr_input))
 
@@ -184,16 +196,21 @@ if not st.session_state.authenticated:
             st.error("⚠️ कृपया अपना पासवर्ड दर्ज करें!")
         elif len(clean_utr) != 12:
             st.error("⚠️ अमान्य UTR! कृपया 12 अंकों का सही UTR नंबर डालें।")
-        elif clean_utr in st.session_state.used_utrs_database:
-            st.error("🚨 सुरक्षा चेतावनी: यह UTR नंबर पहले ही इस्तेमाल हो चुका है या डुप्लीकेट है!")
+        elif clean_utr in st.session_state.used_utrs_database or clean_utr in st.session_state.valid_paid_utrs and st.session_state.valid_paid_utrs[clean_utr]["used"]:
+            st.error("🚨 गंभीर सुरक्षा चेतावनी: यह UTR नंबर पहले ही उपयोग किया जा चुका है! दोबारा इस्तेमाल करने पर पैनल नहीं खुलेगा।")
+        elif clean_utr not in st.session_state.valid_paid_utrs:
+            st.error("🚨 सुरक्षा अस्वीकृति: यह UTR नंबर 1500 ₹ के वास्तविक भुगतान से मेल नहीं खाता है!")
         else:
+            st.session_state.valid_paid_utrs[clean_utr]["used"] = True
             st.session_state.used_utrs_database.append(clean_utr)
+            
+            # नया रिचार्ज होने पर अगले ठीक 2 दिन (48 घंटे) की नई एक्सपायरी सेट करना
             st.session_state.verified_users_db[clean_r_mob] = {
                 "password": renew_pass,
                 "expiry": datetime.now() + timedelta(days=2)
             }
             st.session_state.authenticated = True
-            st.success("✅ UTR 100% सही मैच हो गया है! आपका रिचार्ज अपडेट हो गया है, डैशबोर्ड खुल रहा है...")
+            st.success("✅ नया UTR सत्यापित हो गया है! आपके अगले 2 दिन का प्लान सक्रिय हो गया है, डैशबोर्ड खुल रहा है...")
             time.sleep(1)
             st.rerun()
             
@@ -366,13 +383,12 @@ else:
 
             next_bg = "linear-gradient(135deg, #00CCFF, #0044FF)" if pred_size == "SMALL" else "linear-gradient(135deg, #FF9900, #FF5500)"
             
-            # नीचे हिस्ट्री चार्ट के अंदर लाल टिप-टिप करने वाली बत्ती को текста/चार्ट के बिल्कुल आगे (Left) सेट कर दिया गया है
             st.markdown(
                 f"""
                 <div style="margin-top: 10px; background: #000000; padding: 12px; border-radius: 12px; text-align: center; border: 1.5px solid #FFD700; box-shadow: 0 0 15px rgba(255,215,0,0.15);">
                     <div style="font-size: 11px; color: #FFD700; font-weight: 900; margin-bottom: 8px; display: flex; align-items: center; justify-content: center;"><span class="blinking-red-light" style="margin-right: 6px;"></span>📊 {current_game} 11-सर्वर सिंडिकेट रनिंग हिस्ट्री चार्ट:</div>
                     <div style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 4px; margin-bottom: 10px;">{boxes_html}</div>
-                    <div style="display: inline-block; background: {next_bg}; color: white; padding: 8px 20px; border-radius: 20px; font-weight: 900; font-size: 13px; border: 2px solid #00FF66; box-shadow: 0 0 12px rgba(0,255,102,0.4);">🎯 NEXT: {pred_size}</div>
+                    <div style="display: inline-block; background: {next_2d_bg if 'next_2d_bg' in locals() else next_bg}; color: white; padding: 8px 20px; border-radius: 20px; font-weight: 900; font-size: 13px; border: 2px solid #00FF66; box-shadow: 0 0 12px rgba(0,255,102,0.4);">🎯 NEXT: {pred_size}</div>
                 </div>
                 """,
                 unsafe_allow_html=True
