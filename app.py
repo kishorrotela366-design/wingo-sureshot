@@ -147,7 +147,7 @@ MASTER_PASSWORD = "KISHOR90"
 # 🔒 ओनर और यूज़र लॉगिन / UTR सुरक्षा पोर्टल
 # ==========================================
 if not st.session_state.authenticated:
-    st.markdown("<h2 style='text-align: center; color: #FFD700; font-size: 21px; font-weight: 900;'>👑 BDG DUAL SHIELD SECURE PORTAL</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center; color: #FFD700; font-size: 21px; font-weight: 900;'>👑 BDG VIP DUAL SHIELD SECURE PORTAL 👑</h2>", unsafe_allow_html=True)
     
     st.markdown("<div class='auth-card'>", unsafe_allow_html=True)
     st.markdown("<h4 style='color: #00FFFF; text-align: center; font-weight: 900; font-size: 14px;'>रजिस्टर्ड मोबाइल नंबर और पासवर्ड से लॉगिन करें</h4>", unsafe_allow_html=True)
@@ -508,4 +508,4 @@ else:
         elif current_game == "WINGO 5M":
             render_game_panel(300, 53, "WINGO 5M")
 
-    success_dashboard_core()
+    success_dashboard_core
