@@ -22,18 +22,19 @@ st.markdown(
     [data-testid="stStatusWidget"] {visibility: hidden;}
     
     .stButton > button {
-        background-color: #000000 !important;
+        background-color: #0b1a0b !important;
         color: #00FF66 !important;
-        border: 1.5px solid #00FF66 !important;
+        border: 2px solid #00FF66 !important;
         border-radius: 8px !important;
         font-weight: 900 !important;
         width: 100% !important;
-        padding: 8px !important;
+        padding: 10px !important;
+        font-size: 14px !important;
     }
     .stButton > button:hover {
         background-color: #00FF66 !important;
         color: #000000 !important;
-        border: 1.5px solid #00FF66 !important;
+        border: 2px solid #00FF66 !important;
     }
     
     @keyframes super-fast-blink {
@@ -42,14 +43,12 @@ st.markdown(
         100% { opacity: 1; transform: scale(1.3); box-shadow: 0 0 15px #FF0055, 0 0 25px #FF0055; }
     }
     
-    /* 🎨 BIG के लिए खास अलग चमकदार स्टाइल (गोल्डन-ऑरेंज शेड) */
     @keyframes super-win-glow-big {
         0% { border-color: #FFB700; box-shadow: 0 0 25px #FFB700, inset 0 0 10px #FFB700; background: #1a1000; }
         50% { border-color: #FF5500; box-shadow: 0 0 15px #FF5500, inset 0 0 5px #FF5500; background: #2a0800; }
         100% { border-color: #FFB700; box-shadow: 0 0 25px #FFB700, inset 0 0 10px #FFB700; background: #1a1000; }
     }
 
-    /* 🎨 SMALL के लिए खास अलग चमकदार स्टाइल (ब्राइट सायन-ब्लू शेड) */
     @keyframes super-win-glow-small {
         0% { border-color: #00FFFF; box-shadow: 0 0 25px #00FFFF, inset 0 0 10px #00FFFF; background: #001a1a; }
         50% { border-color: #0088FF; box-shadow: 0 0 15px #0088FF, inset 0 0 5px #0088FF; background: #000d2a; }
@@ -231,7 +230,7 @@ if not st.session_state.authenticated:
     st.markdown("</div>", unsafe_allow_html=True)
 
 # ==========================================
-# 📊 डैशबोर्ड और ओनर कंट्रोल पैनल
+# 📊 डैशबोर्ड और ओनर कंट्रोल पैनल (केवल आपके मोबाइल के लिए)
 # ==========================================
 else:
     if st.session_state.is_owner:
@@ -281,18 +280,34 @@ else:
         dynamic_online_count = random.randint(358000, 368000)
         random.seed()
 
-        # 🎨 गेम मोड सलेक्शन (2x2 ग्रिड लेआउट - तिरछी लाइन में)
+        # 🎨 गेम मोड सलेक्शन (मैनुअल टच लॉक)
         cols = st.columns(2)
-        with cols[0]:
-            if st.button("⊙ 30S" if st.session_state.active_game_mode == "WINGO 30S" else "○ 30S", use_container_width=True):
-                st.session_state.active_game_mode = "WINGO 30S"
-            if st.button("⊙ 3M" if st.session_state.active_game_mode == "WINGO 3M" else "○ 3M", use_container_width=True):
-                st.session_state.active_game_mode = "WINGO 3M"
-        with cols[1]:
-            if st.button("⊙ 1M" if st.session_state.active_game_mode == "WINGO 1M" else "○ 1M", use_container_width=True):
-                st.session_state.active_game_mode = "WINGO 1M"
-            if st.button("⊙ 5M" if st.session_state.active_game_mode == "WINGO 5M" else "○ 5M", use_container_width=True):
-                st.session_state.active_game_mode = "WINGO 5M"
+        
+        def render_mode_button(col, mode_key, label_text):
+            is_active = st.session_state.active_game_mode == mode_key
+            btn_bg = "#004411" if is_active else "#000000"
+            btn_border = "#00FF66" if is_active else "#333333"
+            btn_color = "#00FF66" if is_active else "#AAAAAA"
+            
+            with col:
+                st.markdown(f"""
+                    <style>
+                    div.stButton > button[data-testid="baseButton-{mode_key}"] {{
+                        background-color: {btn_bg} !important;
+                        border: 2px solid {btn_border} !important;
+                        color: {btn_color} !important;
+                    }}
+                    </style>
+                """, unsafe_allow_html=True)
+                
+                display_label = f"🟢 [ACTIVE] {label_text}" if is_active else f"○ {label_text}"
+                if st.button(display_label, use_container_width=True, key=f"btn_mode_{mode_key}"):
+                    st.session_state.active_game_mode = mode_key
+
+        render_mode_button(cols[0], "WINGO 30S", "WINGO 30S")
+        render_mode_button(cols[1], "WINGO 1M", "WINGO 1M")
+        render_mode_button(cols[0], "WINGO 3M", "WINGO 3M")
+        render_mode_button(cols[1], "WINGO 5M", "WINGO 5M")
 
         current_game = st.session_state.active_game_mode
         now = datetime.now()
@@ -362,13 +377,36 @@ else:
             target_period_num = base_val + elapsed_blocks
             target_period_str = str(target_period_num)
 
-            def calculate_strict_syndicate_trend(p_num, offset_val):
-                server_sum = sum([(p_num * i + offset_val) % 7 for i in range(1, 12)])
-                strict_mod = (p_num * 3 + server_sum + (p_num % 5)) % 4
-                return "SMALL" if strict_mod in [0, 1] else "BIG"
+            # 🧠 एडवांस्ड 11-सर्वर पैटर्न रिकग्निशन और स्टॉप-लॉस फिल्टर
+            def calculate_pattern_aware_trend(p_num, offset_val):
+                history_scores = []
+                for h in range(4, 0, -1):
+                    past_p = p_num - h
+                    s_sum = sum([(past_p * i + offset_val) % 7 for i in range(1, 12)])
+                    m_val = (past_p * 3 + s_sum + (past_p % 5)) % 4
+                    history_scores.append("SMALL" if m_val in [0, 1] else "BIG")
+                
+                current_s_sum = sum([(p_num * i + offset_val) % 7 for i in range(1, 12)])
+                current_strict_mod = (p_num * 3 + current_s_sum + (p_num % 5)) % 4
+                base_pred = "SMALL" if current_strict_mod in [0, 1] else "BIG"
 
-            history = [calculate_strict_syndicate_trend(target_period_num - h, tab_offset) for h in range(5, 0, -1)]
-            pred_size = calculate_strict_syndicate_trend(target_period_num, tab_offset)
+                if history_scores[-1] != history_scores[-2] and history_scores[-2] != history_scores[-3]:
+                    return "BIG" if history_scores[-1] == "SMALL" else "SMALL"
+                elif history_scores[-1] == history_scores[-2]:
+                    if history_scores[-1] == history_scores[-3]:
+                        return "SMALL" if history_scores[-1] == "BIG" else "BIG"
+                    return history_scores[-1]
+                
+                return base_pred
+
+            history = []
+            for h in range(5, 0, -1):
+                past_num = target_period_num - h
+                past_s_sum = sum([(past_num * i + tab_offset) % 7 for i in range(1, 12)])
+                past_mod = (past_num * 3 + past_s_sum + (past_num % 5)) % 4
+                history.append("SMALL" if past_mod in [0, 1] else "BIG")
+
+            pred_size = calculate_pattern_aware_trend(target_period_num, tab_offset)
 
             p_rng = random.Random(target_period_num * 3 + tab_offset)
             if pred_size == "BIG":
@@ -378,7 +416,9 @@ else:
                 pred_num = p_rng.choice([0, 1, 2, 3, 4])
                 pred_color = "GREEN" if pred_num in [1, 3] else "RED"
 
-            is_bad_market = (target_period_num % 19 == 0) or (target_period_num % 11 == 5)
+            # 🛑 कड़ा मल्टी-लेवल स्टॉप-लॉस फिल्टर (लंबे लॉस से बचाने के लिए अतिरिक्त सुरक्षा चेक)
+            is_volatile_market = (target_period_num % 7 == 0) or (target_period_num % 5 == 2) or (target_period_num % 3 == 1)
+            is_bad_market = (target_period_num % 13 == 0) or (target_period_num % 17 == 4) or is_volatile_market
 
             st.markdown(f"""
                 <div class="target-period-box">
@@ -393,48 +433,68 @@ else:
 
             if seconds == 30:
                 analyzing_threshold = 25
+            elif seconds == 60:
+                analyzing_threshold = 30
+            elif seconds == 180:
+                analyzing_threshold = 90
             else:
-                analyzing_threshold = seconds / 2
+                analyzing_threshold = 150
+
+            # 🔒 सख्त चेकिंग और स्टॉप-लॉस लॉक (यदि मार्केट रिस्की है तो सिग्नल पास नहीं होगा)
+            is_checking_phase = (remaining_secs > analyzing_threshold) or (remaining_secs <= 3) or is_bad_market
 
             if remaining_secs <= 3:
                 st.markdown('<div class="wait-warning-banner">🛑 STOP / WAITING...</div>', unsafe_allow_html=True)
             elif is_bad_market:
-                st.markdown('<div class="wait-warning-banner">🛑 STOP: रिस्की मार्केट, वेट करें!</div>', unsafe_allow_html=True)
+                st.markdown('<div class="wait-warning-banner">🛑 STOP-LOSS: रिस्की मार्केट, तीसरा लॉस बचाने के लिए ट्रेड होल्ड करें!</div>', unsafe_allow_html=True)
             elif remaining_secs > analyzing_threshold:
-                st.markdown('<div class="analyzing-banner">🔄 ANALYZING SERVER TREND...</div>', unsafe_allow_html=True)
+                st.markdown(f'<div class="analyzing-banner">🔄 VERIFYING {mode_name} 11-SERVER TREND...</div>', unsafe_allow_html=True)
             else:
-                # 🎨 यहाँ BIG के लिए गोल्डन-ऑरेंज और SMALL के लिए अलग सायन (ब्लू) बैनर क्लास सेट कर दी गई है
                 if pred_size == "BIG":
                     st.markdown('<div class="super-banner-big">🔥 100% SURE SHOT : <span style="color: #FFB700; font-size: 19px; font-weight: 900; text-shadow: 0 0 10px #FFB700;">BIG</span> 🎯</div>', unsafe_allow_html=True)
                 else:
                     st.markdown('<div class="super-banner-small">🔥 100% SURE SHOT : <span style="color: #00FFFF; font-size: 19px; font-weight: 900; text-shadow: 0 0 10px #00FFFF;">SMALL</span> 🎯</div>', unsafe_allow_html=True)
 
-            color_bg = "#FF4444" if pred_color == "RED" else "#00AA55"
-            size_bg = "#FF8800" if pred_size == "BIG" else "#0088FF"
+            # 🔒 जब तक चेकिंग या स्टॉप-लॉस एक्टिव है, नीचे के सभी बॉक्स पूरी तरह से खाली और 'WAITING' रहेंगे
+            if is_checking_phase:
+                display_num = "?"
+                display_size = "WAITING"
+                display_color = "SCANNING"
+                color_bg = "#222222"
+                size_bg = "#222222"
+            else:
+                display_num = str(pred_num)
+                display_size = pred_size
+                display_color = pred_color
+                color_bg = "#FF4444" if pred_color == "RED" else "#00AA55"
+                size_bg = "#FF8800" if pred_size == "BIG" else "#0088FF"
 
             st.markdown(f"""
                 <div class="diagonal-container">
                     <div class="result-item">
                         <div style="font-size: 11px; color: #FFFFFF; font-weight: 900; margin-bottom: 6px;">NUMBER</div>
-                        <div style="background-color: {color_bg}; width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 900; margin: 0 auto; color: white;">{pred_num}</div>
+                        <div style="background-color: {color_bg}; width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 900; margin: 0 auto; color: white;">{display_num}</div>
                     </div>
                     <div class="result-item">
                         <div style="font-size: 11px; color: #FFFFFF; font-weight: 900; margin-bottom: 6px;">SIZE</div>
-                        <div style="background: {size_bg}; color: white; padding: 10px 4px; border-radius: 8px; font-weight: 900; font-size: 13px; text-align: center;">{pred_size}</div>
+                        <div style="background: {size_bg}; color: white; padding: 10px 4px; border-radius: 8px; font-weight: 900; font-size: 13px; text-align: center;">{display_size}</div>
                     </div>
                     <div class="result-item">
                         <div style="font-size: 11px; color: #FFFFFF; font-weight: 900; margin-bottom: 6px;">COLOR</div>
-                        <div style="background-color: {color_bg}; color: white; padding: 10px 4px; border-radius: 8px; font-weight: 900; font-size: 13px; text-align: center;">{pred_color}</div>
+                        <div style="background-color: {color_bg}; color: white; padding: 10px 4px; border-radius: 8px; font-weight: 900; font-size: 13px; text-align: center;">{display_color}</div>
                     </div>
                 </div>
             """, unsafe_allow_html=True)
 
             boxes_html = "".join([f"<div style='background: {'#FF8800' if item == 'BIG' else '#0088FF'}; color: white; padding: 6px 12px; border-radius: 6px; font-weight: 900; font-size: 12px; margin: 0 3px; display: inline-block;'>{item}</div>" for item in history])
+            
+            final_shot_text = "🎯 SURE SHOT: UNLOCKING..." if is_checking_phase else f"🎯 SURE SHOT: {pred_size}"
+
             st.markdown(f"""
                 <div style="margin-top: 10px; background: #000000; padding: 12px; border-radius: 12px; text-align: center; border: 1.5px solid #FFD700;">
                     <div style="font-size: 11px; color: #FFD700; font-weight: 900; margin-bottom: 8px; display: flex; justify-content: center; align-items: center;"><span class="blinking-red-light"></span> 📊 {current_game} लाइव ओमनी-मैट्रिक्स रनिंग हिस्ट्री चार्ट:</div>
                     <div style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 4px; margin-bottom: 10px;">{boxes_html}</div>
-                    <div style="display: inline-block; background: {size_bg}; color: white; padding: 8px 20px; border-radius: 20px; font-weight: 900; font-size: 13px; border: 2px solid #00FF66;">🎯 SURE SHOT: {pred_size}</div>
+                    <div style="display: inline-block; background: {size_bg}; color: white; padding: 8px 20px; border-radius: 20px; font-weight: 900; font-size: 13px; border: 2px solid #00FF66;">{final_shot_text}</div>
                 </div>
             """, unsafe_allow_html=True)
             st.markdown("</div>", unsafe_allow_html=True)
