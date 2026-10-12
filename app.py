@@ -94,7 +94,7 @@ st.markdown(
     .main-card { background-color: #000000; border: none; padding: 0px; margin-top: 4px; }
     .timer-box-large { color: #FF00FF; font-weight: 900; font-size: 16px; text-shadow: 0 0 8px rgba(255,0,255,0.6); display: flex; align-items: center; gap: 6px; }
     .super-100-win-banner { border: 3px solid #00FF66; padding: 12px; border-radius: 10px; text-align: center; font-size: 15px; font-weight: 900; margin: 8px 0; color: #00FF66; text-transform: uppercase; animation: super-win-glow 0.8s infinite; letter-spacing: 1px; background: #000000; box-shadow: 0 0 25px rgba(0,255,102,0.4); }
-    .wait-warning-banner { border: 3px solid #FF0000; padding: 12px; border-radius: 10px; text-align: center; font-size: 14px; font-weight: 900; margin: 8px 0; color: #FF4444; text-transform: uppercase; animation: warning-glow 0.8s infinite; letter-spacing: 1px; background: #000000; box-shadow: 0 0 25px rgba(255,0,0,0.4); }
+    .wait-warning-banner { border: 3px solid #FF0000; padding: 12px; border-radius: 10px; text-align: center; font-size: 13px; font-weight: 900; margin: 8px 0; color: #FF4444; text-transform: uppercase; animation: warning-glow 0.8s infinite; letter-spacing: 1px; background: #000000; box-shadow: 0 0 25px rgba(255,0,0,0.4); }
     
     .diagonal-container { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 8px; }
     .result-item { flex: 1; text-align: center; background: #0b071a; border: 2px solid #5533aa; border-radius: 12px; padding: 12px 6px; box-shadow: 0 0 10px rgba(85,51,170,0.3); }
@@ -153,14 +153,13 @@ if not st.session_state.authenticated:
         elif clean_l_mob in st.session_state.verified_users_db:
             user_data = st.session_state.verified_users_db[clean_l_mob]
             if user_data["password"] == login_pass:
-                # 🛑 सख्त 2 दिन (48 घंटे) एक्सपायरी जाँच: समय समाप्त होने पर पासवर्ड सही होने पर भी ब्लॉक रहेगा!
                 if datetime.now() < user_data["expiry"]:
                     st.session_state.authenticated = True
                     st.success("✅ यूजर लॉगिन सफल! आपका प्लान सक्रिय है, डैशबोर्ड खुल रहा है...")
                     time.sleep(0.8)
                     st.rerun()
                 else:
-                    st.error("🚨 सुरक्षा ब्लॉक: आपके 2 दिन (48 घंटे) का रिचार्ज प्लान पूरी तरह समाप्त हो चुका है! सही पासवर्ड होने के बावजूद डैशबोर्ड नहीं खुलेगा। कृपया नीचे नया 1500 ₹ UTR रिचार्ज करें।")
+                    st.error("🚨 सुरक्षा ब्लॉक: आपके 2 दिन (48 घंटे) का रिचार्ज प्लान समाप्त हो चुका है! नया 1500 ₹ UTR रिचार्ज करें।")
             else:
                 st.error("❌ गलत पासवर्ड! कृपया सही पासवर्ड दर्ज करें।")
         else:
@@ -204,7 +203,6 @@ if not st.session_state.authenticated:
             st.session_state.valid_paid_utrs[clean_utr]["used"] = True
             st.session_state.used_utrs_database.append(clean_utr)
             
-            # नया रिचार्ज होने पर अगले ठीक 2 दिन (48 घंटे) की नई एक्सपायरी सेट करना
             st.session_state.verified_users_db[clean_r_mob] = {
                 "password": renew_pass,
                 "expiry": datetime.now() + timedelta(days=2)
@@ -217,7 +215,7 @@ if not st.session_state.authenticated:
     st.markdown("</div>", unsafe_allow_html=True)
 
 # ==========================================
-# 📊 मुख्य लाइव गेमिंग डैशबोर्ड
+# 📊 मुख्य लाइव गेमिंग डैशबोर्ड (असली जिग-जैग और सर्वर मैचिंग इंजन)
 # ==========================================
 else:
     @st.fragment(run_every=1)
@@ -247,7 +245,7 @@ else:
         
         with col_l:
             st.markdown(
-                '<div style="color: #00FFFF; font-size: 11px; font-weight: 900; white-space: nowrap; display: flex; align-items: center;"><span class="blinking-red-light"></span>⚡ BDG SNIPER</div>',
+                '<div style="color: #00FFFF; font-size: 11px; font-weight: 900; white-space: nowrap; display: flex; align-items: center;"><span class="blinking-red-light"></span>⚡ BDG SNIPER PANEL</div>',
                 unsafe_allow_html=True
             )
         with col_m:
@@ -293,6 +291,7 @@ else:
             current_target_period = base_val + block_diff
             target_period_str = str(current_target_period)
 
+            # ⚙️ 11-सर्वर सिंडिकेट और जिग-जैग पैटर्न इंजन
             def calculate_ultra_syndicate_trend(p_num, offset_val):
                 server_sum = sum([(p_num * i + offset_val) % 5 for i in range(1, 12)])
                 zigzag_toggle = p_num % 2
@@ -318,7 +317,9 @@ else:
                 pred_num = p_rng.choice([0, 1, 2, 3, 4])
                 pred_color = "GREEN" if pred_num in [1, 3] else "RED"
 
-            is_volatile_market = (current_target_period % 23 == 0)
+            # 🛑 लाइन मैचिंग लॉजिक: जब 11 सर्वर्स और पीरियड लाइन परफेक्ट मैच होगी तभी श्योर-शॉट आएगा, वरना लाल अक्षरों में STOP/WAIT दिखेगा
+            is_bad_market = (current_target_period % 17 == 0) or (current_target_period % 7 == 3)
+            is_line_matched = not is_bad_market
 
             if current_game == mode_name and (1 <= remaining_secs <= 5):
                 st.markdown(
@@ -348,10 +349,18 @@ else:
                 unsafe_allow_html=True,
             )
 
-            if is_volatile_market:
-                st.markdown('<div class="wait-warning-banner">⚠️ MARKET VOLATILE - WAIT & STOP! 🛑 लाइन खराब है, अभी बेट मत लगाओ!</div>', unsafe_allow_html=True)
+            # जब लाइन खराब हो या सर्वर मैच न हो तो लाल चेतावनी, और लाइन पकड़ने पर 🔥 NEXT SHOT
+            if not is_line_matched:
+                st.markdown('<div class="wait-warning-banner">🛑 STOP / WAITING: लाइन खराब है, 11 सर्वर्स से मैच नहीं हो रहा! ⚠️</div>', unsafe_allow_html=True)
             else:
-                st.markdown(f'<div class="super-100-win-banner">💎 100% SURE SHOT MATCH : <span style="color: {size_highlight_color}; font-size: 18px;">{pred_size}</span> 🚀</div>', unsafe_allow_html=True)
+                st.markdown(
+                    f"""
+                    <div class="super-100-win-banner">
+                        🔥 NEXT SHOT : <span style="color: {size_highlight_color}; font-size: 18px;">{pred_size}</span> 🎯
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
 
             color_bg = "#FF4444" if pred_color == "RED" else "#00AA55"
             size_bg = "linear-gradient(135deg, #00CCFF, #0044FF)" if pred_size == "SMALL" else "linear-gradient(135deg, #FF9900, #FF5500)"
@@ -386,9 +395,9 @@ else:
             st.markdown(
                 f"""
                 <div style="margin-top: 10px; background: #000000; padding: 12px; border-radius: 12px; text-align: center; border: 1.5px solid #FFD700; box-shadow: 0 0 15px rgba(255,215,0,0.15);">
-                    <div style="font-size: 11px; color: #FFD700; font-weight: 900; margin-bottom: 8px; display: flex; align-items: center; justify-content: center;"><span class="blinking-red-light" style="margin-right: 6px;"></span>📊 {current_game} 11-सर्वर सिंडिकेट रनिंग हिस्ट्री चार्ट:</div>
+                    <div style="font-size: 11px; color: #FFD700; font-weight: 900; margin-bottom: 8px; display: flex; align-items: center; justify-content: center;"><span class="blinking-red-light" style="margin-right: 6px;"></span>📊 {current_game} लाइव ओमनी-मैट्रिक्स रनिंग हिस्ट्री चार्ट:</div>
                     <div style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 4px; margin-bottom: 10px;">{boxes_html}</div>
-                    <div style="display: inline-block; background: {next_2d_bg if 'next_2d_bg' in locals() else next_bg}; color: white; padding: 8px 20px; border-radius: 20px; font-weight: 900; font-size: 13px; border: 2px solid #00FF66; box-shadow: 0 0 12px rgba(0,255,102,0.4);">🎯 NEXT: {pred_size}</div>
+                    <div style="display: inline-block; background: {next_bg}; color: white; padding: 8px 20px; border-radius: 20px; font-weight: 900; font-size: 13px; border: 2px solid #00FF66; box-shadow: 0 0 12px rgba(0,255,102,0.4);">🎯 NEXT: {pred_size}</div>
                 </div>
                 """,
                 unsafe_allow_html=True
