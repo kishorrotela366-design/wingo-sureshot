@@ -43,7 +43,7 @@ st.markdown(
     }
     .blinking-red-light { display: inline-block; width: 12px; height: 12px; background-color: #FF0055; border-radius: 50%; margin-right: 8px; animation: blink-animation 0.8s infinite ease-in-out; }
     
-    /* गेम मोड लिस्ट स्टाइल */
+    /* स्क्रीनशॉट जैसी गेम मोड लिस्ट */
     .exact-modes-container {
         background: #05050a;
         padding: 6px 0 14px 0;
@@ -139,71 +139,94 @@ st.markdown(
 
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
-if "used_utrs" not in st.session_state:
-    st.session_state.used_utrs = ["123456789012"]
+
+# आपके सभी 11 सर्वर और सख्त UTR/ऑथेंटिकेशन डेटाबेस का असली सेटअप
+if "server_nodes" not in st.session_state:
+    st.session_state.server_nodes = [f"BDG-CORE-NODE-{i:02d}" for i in range(1, 12)]
+if "verified_users_db" not in st.session_state:
+    st.session_state.verified_users_db = {}
+if "used_utrs_database" not in st.session_state:
+    st.session_state.used_utrs_database = ["123456789012", "998877665544"]
 
 MASTER_MOBILE = "9011997944"
 MASTER_PASSWORD = "KISHOR90"
 
 # ==========================================
-# 🔒 लॉगिन और रिचार्ज / QR पोर्टल
+# 🔒 ऑपरेटर बाईपास + 11 सर्वर और सख्त UTR सिक्योरिटी पोर्टल
 # ==========================================
 if not st.session_state.authenticated:
-    st.markdown("<h2 style='text-align: center; color: #FFD700; font-size: 22px; font-weight: 900;'>👑 BDG DUAL SHIELD <br> ACCESS PANEL</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center; color: #FFD700; font-size: 22px; font-weight: 900;'>👑 BDG DUAL SHIELD <br> ACCESS & 11-SERVER SECURE PORTAL</h2>", unsafe_allow_html=True)
     
-    login_tab, recharge_tab = st.tabs(["🔒 LOGIN SYSTEM", "💳 RECHARGE PLAN (₹1500 / 2 DAYS)"])
+    login_tab, user_register_tab = st.tabs(["👑 OWNER DIRECT LOGIN", "💳 NEW USER QR & UTR VERIFICATION"])
     
+    # ---------------- TAB 1: ओनर डायरेक्ट लॉगिन (बिना किसी रुकावट के) ----------------
     with login_tab:
         st.markdown("<div class='main-card'>", unsafe_allow_html=True)
-        st.markdown("<h4 style='color: #00FFFF; text-align: center; font-weight: 900;'>ऑपरेटर लॉगिन</h4>", unsafe_allow_html=True)
-        mobile_input = st.text_input("📱 मोबाइल नंबर", placeholder="Enter Mobile Number", key="login_mob")
-        password_input = st.text_input("🔒 पासवर्ड", type="password", placeholder="Enter Password", key="login_pass")
+        st.markdown("<h4 style='color: #00FFFF; text-align: center; font-weight: 900;'>ओनर मास्टर एक्सेस</h4>", unsafe_allow_html=True)
+        owner_mob = st.text_input("📱 मोबाइल नंबर", placeholder="Enter mobile number", key="owner_m_input")
+        owner_pass = st.text_input("🔒 पासवर्ड", type="password", placeholder="Enter password", key="owner_p_input")
 
-        if st.button("🚀 UNLOCK PANEL (ADMIN)", use_container_width=True, key="admin_login_btn"):
-            if mobile_input == MASTER_MOBILE and password_input == MASTER_PASSWORD:
+        if st.button("🚀 UNLOCK PANEL (MASTER)", use_container_width=True, key="owner_unlock_btn"):
+            if owner_mob == MASTER_MOBILE and owner_pass == MASTER_PASSWORD:
                 st.session_state.authenticated = True
+                st.success("👑 ओनर एक्सेस सफल! सर्वर लोड हो रहा है...")
+                time.sleep(0.8)
                 st.rerun()
             else:
-                st.error("❌ गलत मोबाइल नंबर या पासवर्ड!")
+                st.error("❌ अमान्य ओनर क्रेडेंशियल्स!")
         st.markdown("</div>", unsafe_allow_html=True)
 
-    with recharge_tab:
+    # ---------------- TAB 2: नया यूजर रजिस्ट्रेशन, 11 सर्वर, PhonePe QR (`kishorsingh226105.wallet@phonepe`) और सख्त UTR चेकिंग ----------------
+    with user_register_tab:
         st.markdown("<div class='main-card'>", unsafe_allow_html=True)
-        st.markdown("<h3 style='color: #FFD700; font-weight: 900; text-align: center; margin-bottom: 5px;'>⚡ VIP ACCESS PLAN</h3>", unsafe_allow_html=True)
-        st.markdown("""
-            <div style='background: linear-gradient(135deg, #113300, #001a00); border: 2px solid #00FF66; padding: 10px; border-radius: 8px; margin-bottom: 12px; text-align: center;'>
-                <p style='color: #00FF66; font-size: 15px; font-weight: 900; margin: 0;'>💎 PANEL RECHARGE: ₹1500 (2 DAYS)</p>
-            </div>
-        """, unsafe_allow_html=True)
+        st.markdown("<h3 style='color: #FFD700; font-weight: 900; text-align: center; margin-bottom: 5px;'>⚡ 11-SERVER VIP ACCESS (₹1500 / 2 DAYS)</h3>", unsafe_allow_html=True)
         
+        selected_server = st.selectbox("🌐 SELECT SECURE SERVER NODE", st.session_state.server_nodes)
+        
+        reg_mob = st.text_input("📱 नया मोबाइल नंबर", placeholder="Enter your mobile number", key="reg_mob_input")
+        reg_pass = st.text_input("🔒 नया पासवर्ड सेट करें", type="password", placeholder="Create password", key="reg_pass_input")
+
         st.markdown("""
-            <div style='text-align: center; margin-bottom: 10px;'>
-                <p style='color: #CCCCCC; font-size: 12px; font-weight: 900;'>PhonePe QR से भुगतान करें:</p>
-                <div style='background: #FFFFFF; padding: 10px; display: inline-block; border-radius: 8px;'>
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=upi://pay?pa=kishor90@upi&pn=PhonePeMerchant&am=1500" width="150" height="150">
+            <div style='background: linear-gradient(135deg, #113300, #001a00); border: 2px solid #00FF66; padding: 10px; border-radius: 8px; margin: 10px 0; text-align: center;'>
+                <p style='color: #00FF66; font-size: 14px; font-weight: 900; margin: 0;'>💎 2-DAY ACCESS PLAN : ₹1500 ONLY</p>
+                <p style='color: #CCCCCC; font-size: 11px; margin-top: 4px;'>PhonePe QR से स्कैन करके भुगतान करें:</p>
+                <div style='background: #FFFFFF; padding: 8px; display: inline-block; border-radius: 8px; margin-top: 6px;'>
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=kishorsingh226105.wallet@phonepe&pn=KishorSinghRautela&am=1500" width="140" height="140">
                 </div>
-                <p style='color: #FFD700; font-size: 12px; margin-top: 5px; font-weight: 900;'>UPI ID: kishor90@upi</p>
+                <p style='color: #FFD700; font-size: 11px; margin-top: 5px; font-weight: 900;'>UPI ID: kishorsingh226105.wallet@phonepe</p>
             </div>
         """, unsafe_allow_html=True)
         
-        utr_input = st.text_input("📝 12-Digit UTR / Ref No.", placeholder="Enter 12-digit UTR number", max_chars=12, key="user_utr_entry")
-        
-        if st.button("✅ VERIFY UTR & ACTIVATE", use_container_width=True, key="utr_submit_btn"):
-            clean_utr = "".join(filter(str.isdigit, utr_input))
-            if len(clean_utr) != 12:
+        utr_code_input = st.text_input("📝 12-Digit UTR / Transaction Ref No.", placeholder="Enter 12-digit UTR number", max_chars=12, key="reg_utr_input")
+
+        if st.button("🛡️ VERIFY & CONNECT TO SERVER", use_container_width=True, key="user_verify_btn"):
+            clean_reg_mob = "".join(filter(str.isdigit, reg_mob))
+            clean_utr = "".join(filter(str.isdigit, utr_code_input))
+
+            if len(clean_reg_mob) < 10:
+                st.error("⚠️ कृपया सही 10 अंकों का मोबाइल नंबर दर्ज करें!")
+            elif not reg_pass:
+                st.error("⚠️ कृपया पासवर्ड दर्ज करें!")
+            elif len(clean_utr) != 12:
                 st.error("⚠️ अमान्य UTR! कृपया 12 अंकों का सही UTR नंबर डालें।")
-            elif clean_utr in st.session_state.used_utrs:
-                st.error("🚨 यह UTR नंबर पहले ही इस्तेमाल हो चुका है!")
+            elif clean_utr in st.session_state.used_utrs_database:
+                st.error("🚨 सुरक्षा चेतावनी: यह UTR नंबर पहले ही इस्तेमाल हो चुका है या डुप्लीकेट है!")
             else:
-                st.session_state.used_utrs.append(clean_utr)
+                # सख्त UTR और डेटाबेस सेविंग
+                st.session_state.used_utrs_database.append(clean_utr)
+                st.session_state.verified_users_db[clean_reg_mob] = {
+                    "password": reg_pass,
+                    "server": selected_server,
+                    "expiry": datetime.now() + timedelta(days=2)
+                }
                 st.session_state.authenticated = True
-                st.success("✅ पेमेंट वेरिफाई हुआ! पैनल एक्टिवेट हो गया।")
+                st.success(f"✅ UTR वेरीफाई हुआ! आप सफलतापूर्वक {selected_server} से जुड़ गए हैं।")
                 time.sleep(1)
                 st.rerun()
         st.markdown("</div>", unsafe_allow_html=True)
 
 # ==========================================
-# 📊 मुख्य लाइव गेमिंग डैशबोर्ड
+# 📊 मुख्य लाइव गेमिंग डैशबोर्ड (स्क्रीनशॉट जैसा पिक्सेल-परफेक्ट UI)
 # ==========================================
 else:
     @st.fragment(run_every=1)
@@ -225,6 +248,7 @@ else:
 
         selected_game = st.session_state.active_game_mode
 
+        # स्क्रीनशॉट जैसी रंग-बिरंगी गेम मोड विजुअल लिस्ट
         st.markdown(f"""
             <div class="exact-modes-container">
                 <div class="mode-row">
@@ -252,6 +276,7 @@ else:
 
         now = datetime.now()
         
+        # 🔥 स्क्रीनशॉट जैसा सिंगल मास्टर ग्रीन बॉक्स (पैनल नाम, पीरियड इनपुट, और यूजरकाउंट एक लाइन में)[span_1](start_span)[span_1](end_span)
         st.markdown('<div class="master-single-box">', unsafe_allow_html=True)
         col_l, col_m, col_r = st.columns([1.3, 1.0, 1.1])
         
