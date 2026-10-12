@@ -38,6 +38,22 @@ st.markdown(
     }
     .blinking-red-light { display: inline-block; width: 12px; height: 12px; background-color: #FF0055; border-radius: 50%; margin-right: 6px; animation: blink-animation 0.8s infinite ease-in-out; }
     
+    /* स्क्रीनशॉट के मुताबिक ऊपर वाले मोड्स को रंगीन और चमकीला रखने के लिए */
+    div.row-widget.stRadio > div {
+        flex-direction: row;
+        align-items: center;
+        gap: 12px;
+    }
+    div.row-widget.stRadio label {
+        color: #00FFFF !important;
+        font-weight: 900 !important;
+        font-size: 13px !important;
+        text-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
+    }
+    div.row-widget.stRadio label:nth-child(2) label { color: #FF007F !important; text-shadow: 0 0 8px rgba(255, 0, 127, 0.4); }
+    div.row-widget.stRadio label:nth-child(3) label { color: #FFD700 !important; text-shadow: 0 0 8px rgba(255, 215, 0, 0.4); }
+    div.row-widget.stRadio label:nth-child(4) label { color: #00FF66 !important; text-shadow: 0 0 8px rgba(0, 255, 102, 0.4); }
+
     .master-single-box {
         background: #000000;
         border: 1.5px solid #00FF66;
@@ -185,7 +201,7 @@ if not st.session_state.authenticated:
     st.markdown("</div>", unsafe_allow_html=True)
 
 # ==========================================
-# 📊 मुख्य लाइव गेमिंग डैशबोर्ड (स्क्रीनशॉट के लेआउट जैसा)[span_3](start_span)[span_3](end_span)
+# 📊 मुख्य लाइव गेमिंग डैशबोर्ड (स्क्रीनशॉट के लेआउट जैसा)
 # ==========================================
 else:
     @st.fragment(run_every=1)
@@ -195,7 +211,6 @@ else:
         if "active_game_mode" not in st.session_state:
             st.session_state.active_game_mode = "WINGO 1M"
 
-        # स्क्रीनशॉट[span_4](start_span)[span_4](end_span) जैसी साफ़ सुथरी रेडियो बटन सलेक्ट करने की प्रणाली
         selected_game = st.radio(
             "Select Game Mode",
             ["WINGO 30S", "WINGO 1M", "WINGO 3M", "WINGO 5M"],
@@ -208,9 +223,9 @@ else:
 
         now = datetime.now()
         
-        # 1st बॉक्स: BDG SNIPER PANEL और बीच में पीरियड नंबर इनपुट खांचा[span_5](start_span)[span_5](end_span)
+        # 1st बॉक्स: BDG SNIPER पैनल और ऑनलाइन यूजर काउंट
         st.markdown('<div class="master-single-box">', unsafe_allow_html=True)
-        col_l, col_m, col_r = st.columns([1.2, 1.1, 1.1])
+        col_l, col_m, col_r = st.columns([1.1, 1.2, 1.1])
         
         with col_l:
             st.markdown(
@@ -303,7 +318,7 @@ else:
 
             size_highlight_color = "#00FFFF" if pred_size == "SMALL" else "#FFD700"
 
-            # 2nd बॉक्स: टारगेट पीरियड और टाइमर की सिंगल पट्टी[span_6](start_span)[span_6](end_span)
+            # 2nd बॉक्स: टारगेट पीरियड और टाइमर की सिंगल पट्टी
             st.markdown(
                 f"""
                 <div class="target-period-box">
@@ -328,7 +343,7 @@ else:
             color_bg = "#FF4444" if pred_color == "RED" else "#00AA55"
             size_bg = "linear-gradient(135deg, #00CCFF, #0044FF)" if pred_size == "SMALL" else "linear-gradient(135deg, #FF9900, #FF5500)"
 
-            # 3rd बॉक्स: नंबर, साइज़, कलर[span_7](start_span)[span_7](end_span)
+            # 3rd बॉक्स: नंबर, साइज़, कलर
             st.markdown(
                 f"""
                 <div class="diagonal-container">
@@ -356,7 +371,7 @@ else:
 
             next_bg = "linear-gradient(135deg, #00CCFF, #0044FF)" if pred_size == "SMALL" else "linear-gradient(135deg, #FF9900, #FF5500)"
             
-            # 4th बॉक्स: रनिंग हिस्ट्री चार्ट[span_8](start_span)[span_8](end_span)
+            # 4th बॉक्स: रनिंग हिस्ट्री चार्ट
             st.markdown(
                 f"""
                 <div style="margin-top: 10px; background: #000000; padding: 12px; border-radius: 12px; text-align: center; border: 1.5px solid #FFD700; box-shadow: 0 0 15px rgba(255,215,0,0.15);">
