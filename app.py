@@ -508,4 +508,4 @@ else:
         elif current_game == "WINGO 5M":
             render_game_panel(300, 53, "WINGO 5M")
 
-    success_dashboard_core
+    success_dashboard_core()
