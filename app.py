@@ -38,7 +38,6 @@ st.markdown(
     }
     .blinking-red-light { display: inline-block; width: 12px; height: 12px; background-color: #FF0055; border-radius: 50%; margin-right: 6px; animation: blink-animation 0.8s infinite ease-in-out; }
     
-    /* स्क्रीनशॉट के मुताबिक ऊपर वाले मोड्स को रंगीन और चमकीला रखने के लिए */
     div.row-widget.stRadio > div {
         flex-direction: row;
         align-items: center;
@@ -120,14 +119,14 @@ MASTER_MOBILE = "9011997944"
 MASTER_PASSWORD = "KISHOR90"
 
 # ==========================================
-# 🔒 ओनर और यूजर लॉगिन + UTR एंटी-फ्रॉड पोर्टल
+# 🔒 ओनर और सख्त UTR रिन्यूअल सिक्योरिटी पोर्टल
 # ==========================================
 if not st.session_state.authenticated:
     st.markdown("<h2 style='text-align: center; color: #FFD700; font-size: 21px; font-weight: 900;'>👑 BDG DUAL SHIELD SECURE PORTAL</h2>", unsafe_allow_html=True)
     
     st.markdown("<div class='auth-card'>", unsafe_allow_html=True)
     
-    st.markdown("<h4 style='color: #00FFFF; text-align: center; font-weight: 900; font-size: 14px;'>मोबाइल नंबर और पासवर्ड से लॉगिन करें</h4>", unsafe_allow_html=True)
+    st.markdown("<h4 style='color: #00FFFF; text-align: center; font-weight: 900; font-size: 14px;'>रजिस्टर्ड मोबाइल नंबर और पासवर्ड से लॉगिन करें</h4>", unsafe_allow_html=True)
     
     login_mob = st.text_input("📱 मोबाइल नंबर", placeholder="Enter mobile number", key="login_mob_input")
     login_pass = st.text_input("🔒 पासवर्ड", type="password", placeholder="Enter password", key="login_pass_input")
@@ -149,22 +148,22 @@ if not st.session_state.authenticated:
                     time.sleep(0.8)
                     st.rerun()
                 else:
-                    st.error("⏰ आपके 2 दिन का रिचार्ज प्लान समाप्त हो चुका है! कृपया नीचे दिए गए QR से नया रिचार्ज करें।")
+                    st.error("🚨 सुरक्षा ब्लॉक: आपके 2 दिन का रिचार्ज प्लान पूरी तरह समाप्त हो चुका है! सही पासवर्ड होने के बावजूद डैशबोर्ड नहीं खुलेगा। कृपया नीचे नया UTR रिचार्ज करें।")
             else:
                 st.error("❌ गलत पासवर्ड! कृपया सही पासवर्ड दर्ज करें।")
         else:
-            st.error("❌ यह मोबाइल नंबर रजिस्टर्ड नहीं है या रिचार्ज समाप्त हो गया है! नीचे दिए गए QR से नया रिचार्ज करें।")
+            st.error("❌ यह मोबाइल नंबर रजिस्टर्ड नहीं है या रिचार्ज समाप्त हो गया है!")
 
     st.markdown("---")
     
-    st.markdown("<h3 style='color: #FFD700; font-weight: 900; text-align: center; font-size: 15px; margin-bottom: 5px;'>⚡ नया यूजर रिचार्ज करिए 1500 दो दिन के लिए</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='color: #FFD700; font-weight: 900; text-align: center; font-size: 15px; margin-bottom: 5px;'>⚡ रिचार्ज समाप्त होने पर नया UTR दर्ज करें (1500 ₹)</h3>", unsafe_allow_html=True)
     
-    reg_mob = st.text_input("📱 नया मोबाइल नंबर", placeholder="Enter mobile number", key="reg_mob_input")
-    reg_pass = st.text_input("🔒 नया पासवर्ड बनाएं", type="password", placeholder="Create password", key="reg_pass_input")
+    renew_mob = st.text_input("📱 रजिस्टर्ड मोबाइल नंबर", placeholder="Enter registered mobile", key="renew_mob_input")
+    renew_pass = st.text_input("🔒 आपका वही पुराना पासवर्ड", type="password", placeholder="Enter your password", key="renew_pass_input")
 
     st.markdown("""
         <div style='background: linear-gradient(135deg, #113300, #001a00); border: 2px solid #00FF66; padding: 12px; border-radius: 10px; margin: 10px 0; text-align: center;'>
-            <p style='color: #00FF66; font-size: 14px; font-weight: 900; margin: 0;'>💎 नया यूजर रिचार्ज करिए 1500 दो दिन के लिए</p>
+            <p style='color: #00FF66; font-size: 14px; font-weight: 900; margin: 0;'>💎 1500 रुपए भुगतान करके नया UTR दर्ज करें</p>
             <p style='color: #CCCCCC; font-size: 11px; margin-top: 4px;'>नीचे दिए गए PhonePe QR को स्कैन करके भुगतान करें:</p>
             <div style='background: #FFFFFF; padding: 10px; display: inline-block; border-radius: 8px; margin-top: 6px; box-shadow: 0 0 15px rgba(0,255,102,0.4);'>
                 <img src="https://api.qrserver.com/v1/create-qr-code/?size=170x170&data=upi://pay?pa=kishorsingh226105.wallet@phonepe&pn=KishorSinghRautela&am=1500" width="160" height="160">
@@ -173,40 +172,43 @@ if not st.session_state.authenticated:
         </div>
     """, unsafe_allow_html=True)
     
-    utr_code_input = st.text_input("📝 12-Digit UTR Number", placeholder="Enter 12-digit UTR number", max_chars=12, key="reg_utr_input")
+    renew_utr_input = st.text_input("📝 नया 12-Digit UTR Number", placeholder="Enter new 12-digit UTR", max_chars=12, key="renew_utr_input")
 
-    if st.button("🔓 अनलॉक पैनल (UNLOCK PANEL)", use_container_width=True, key="user_verify_btn"):
-        clean_reg_mob = "".join(filter(str.isdigit, reg_mob))
-        clean_utr = "".join(filter(str.isdigit, utr_code_input))
+    if st.button("🔄 रिचार्ज सत्यापित करें और अनलॉक करें (RENEW & UNLOCK)", use_container_width=True, key="user_renew_btn"):
+        clean_r_mob = "".join(filter(str.isdigit, renew_mob))
+        clean_utr = "".join(filter(str.isdigit, renew_utr_input))
 
-        if len(clean_reg_mob) < 10:
-            st.error("⚠️ कृपया सही 10 अंकों का मोबाइल नंबर दर्ज करें!")
-        elif not reg_pass:
-            st.error("⚠️ कृपया पासवर्ड बनाएं!")
+        if len(clean_r_mob) < 10:
+            st.error("⚠️ कृपया सही 10 अंकों का रजिस्टर्ड मोबाइल नंबर दर्ज करें!")
+        elif not renew_pass:
+            st.error("⚠️ कृपया अपना पासवर्ड दर्ज करें!")
         elif len(clean_utr) != 12:
             st.error("⚠️ अमान्य UTR! कृपया 12 अंकों का सही UTR नंबर डालें।")
         elif clean_utr in st.session_state.used_utrs_database:
-            st.error("🚨 सुरक्षा चेतावनी: यह UTR नंबर पहले ही इस्तेमाल हो चुका है या डुप्लीकेट है! डैशबोर्ड नहीं खुलेगा।")
+            st.error("🚨 सुरक्षा चेतावनी: यह UTR नंबर पहले ही इस्तेमाल हो चुका है या डुप्लीकेट है!")
         else:
             st.session_state.used_utrs_database.append(clean_utr)
-            st.session_state.verified_users_db[clean_reg_mob] = {
-                "password": reg_pass,
+            st.session_state.verified_users_db[clean_r_mob] = {
+                "password": renew_pass,
                 "expiry": datetime.now() + timedelta(days=2)
             }
             st.session_state.authenticated = True
-            st.success("✅ UTR 100% सही मैच हो गया है! डैशबोर्ड अनलॉक हो रहा है...")
+            st.success("✅ UTR 100% सही मैच हो गया है! आपका रिचार्ज अपडेट हो गया है, डैशबोर्ड खुल रहा है...")
             time.sleep(1)
             st.rerun()
             
     st.markdown("</div>", unsafe_allow_html=True)
 
 # ==========================================
-# 📊 मुख्य लाइव गेमिंग डैशबोर्ड (स्क्रीनशॉट के लेआउट जैसा)
+# 📊 मुख्य लाइव गेमिंग डैशबोर्ड
 # ==========================================
 else:
     @st.fragment(run_every=1)
     def success_dashboard_core():
+        current_time_epoch = int(time.time())
+        random.seed(current_time_epoch // 90)
         dynamic_online_count = random.randint(340000, 370000)
+        random.seed()
 
         if "active_game_mode" not in st.session_state:
             st.session_state.active_game_mode = "WINGO 1M"
@@ -223,7 +225,6 @@ else:
 
         now = datetime.now()
         
-        # 1st बॉक्स: BDG SNIPER पैनल और ऑनलाइन यूजर काउंट
         st.markdown('<div class="master-single-box">', unsafe_allow_html=True)
         col_l, col_m, col_r = st.columns([1.1, 1.2, 1.1])
         
@@ -277,16 +278,13 @@ else:
 
             def calculate_ultra_syndicate_trend(p_num, offset_val):
                 server_sum = sum([(p_num * i + offset_val) % 5 for i in range(1, 12)])
-                pattern_mod = (p_num ^ offset_val + server_sum) % 8
+                zigzag_toggle = p_num % 2
+                pattern_mod = (p_num ^ offset_val + server_sum + zigzag_toggle) % 8
                 
-                if pattern_mod in [0, 1, 2]:
+                if pattern_mod in [0, 1, 3]:
                     return "SMALL"
-                elif pattern_mod in [3, 4, 5]:
-                    return "BIG"
-                elif p_num % 2 == 0:
-                    return "BIG"
                 else:
-                    return "SMALL"
+                    return "BIG"
 
             history = []
             for h_offset in range(5, 0, -1):
@@ -303,9 +301,8 @@ else:
                 pred_num = p_rng.choice([0, 1, 2, 3, 4])
                 pred_color = "GREEN" if pred_num in [1, 3] else "RED"
 
-            is_volatile_market = (current_target_period % 19 == 0) or (current_target_period % 37 == 0)
+            is_volatile_market = (current_target_period % 23 == 0)
 
-            # 🔥 बैकएंड अलार्म साउंड (सिर्फ सक्रिय मोड में आखिरी 5 सेकंड पर)
             if current_game == mode_name and (1 <= remaining_secs <= 5):
                 st.markdown(
                     """
@@ -318,7 +315,6 @@ else:
 
             size_highlight_color = "#00FFFF" if pred_size == "SMALL" else "#FFD700"
 
-            # 2nd बॉक्स: टारगेट पीरियड और टाइमर की सिंगल पट्टी
             st.markdown(
                 f"""
                 <div class="target-period-box">
@@ -343,7 +339,6 @@ else:
             color_bg = "#FF4444" if pred_color == "RED" else "#00AA55"
             size_bg = "linear-gradient(135deg, #00CCFF, #0044FF)" if pred_size == "SMALL" else "linear-gradient(135deg, #FF9900, #FF5500)"
 
-            # 3rd बॉक्स: नंबर, साइज़, कलर
             st.markdown(
                 f"""
                 <div class="diagonal-container">
@@ -371,11 +366,11 @@ else:
 
             next_bg = "linear-gradient(135deg, #00CCFF, #0044FF)" if pred_size == "SMALL" else "linear-gradient(135deg, #FF9900, #FF5500)"
             
-            # 4th बॉक्स: रनिंग हिस्ट्री चार्ट
+            # नीचे हिस्ट्री चार्ट के अंदर लाल टिप-टिप करने वाली बत्ती को текста/चार्ट के बिल्कुल आगे (Left) सेट कर दिया गया है
             st.markdown(
                 f"""
                 <div style="margin-top: 10px; background: #000000; padding: 12px; border-radius: 12px; text-align: center; border: 1.5px solid #FFD700; box-shadow: 0 0 15px rgba(255,215,0,0.15);">
-                    <div style="font-size: 11px; color: #FFD700; font-weight: 900; margin-bottom: 8px;">📊 {current_game} 11-सर्वर सिंडिकेट रनिंग हिस्ट्री चार्ट:</div>
+                    <div style="font-size: 11px; color: #FFD700; font-weight: 900; margin-bottom: 8px; display: flex; align-items: center; justify-content: center;"><span class="blinking-red-light" style="margin-right: 6px;"></span>📊 {current_game} 11-सर्वर सिंडिकेट रनिंग हिस्ट्री चार्ट:</div>
                     <div style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 4px; margin-bottom: 10px;">{boxes_html}</div>
                     <div style="display: inline-block; background: {next_bg}; color: white; padding: 8px 20px; border-radius: 20px; font-weight: 900; font-size: 13px; border: 2px solid #00FF66; box-shadow: 0 0 12px rgba(0,255,102,0.4);">🎯 NEXT: {pred_size}</div>
                 </div>
