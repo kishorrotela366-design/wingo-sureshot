@@ -14,7 +14,7 @@ st.set_page_config(
 st.markdown(
     """
     <style>
-    .stApp { background-color: #020104; color: #FFFFFF; }
+    .stApp { background-color: #000000; color: #FFFFFF; }
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
@@ -32,25 +32,98 @@ st.markdown(
         100% { box-shadow: 0 0 5px #00FF66; }
     }
     @keyframes super-win-glow {
-        0% { border-color: #00FF66; box-shadow: 0 0 35px #00FF66, inset 0 0 15px #00FF66; background: linear-gradient(135deg, #003311, #001a05); }
-        50% { border-color: #FFD700; box-shadow: 0 0 20px #FFD700, inset 0 0 10px #FFD700; background: linear-gradient(135deg, #1a1a00, #0d0d00); }
-        100% { border-color: #00FF66; box-shadow: 0 0 35px #00FF66, inset 0 0 15px #00FF66; background: linear-gradient(135deg, #003311, #001a05); }
+        0% { border-color: #00FF66; box-shadow: 0 0 25px #00FF66, inset 0 0 10px #00FF66; background: #000000; }
+        50% { border-color: #FFD700; box-shadow: 0 0 15px #FFD700, inset 0 0 5px #FFD700; background: #000000; }
+        100% { border-color: #00FF66; box-shadow: 0 0 25px #00FF66, inset 0 0 10px #00FF66; background: #000000; }
     }
     @keyframes warning-glow {
-        0% { border-color: #FF0000; box-shadow: 0 0 25px #FF0000; background: rgba(255, 0, 0, 0.25); }
+        0% { border-color: #FF0000; box-shadow: 0 0 20px #FF0000; background: rgba(255, 0, 0, 0.2); }
         50% { border-color: #FF8800; box-shadow: 0 0 10px #FF8800; background: rgba(255, 136, 0, 0.1); }
-        100% { border-color: #FF0000; box-shadow: 0 0 25px #FF0000; background: rgba(255, 0, 0, 0.25); }
+        100% { border-color: #FF0000; box-shadow: 0 0 20px #FF0000; background: rgba(255, 0, 0, 0.2); }
     }
     .blinking-red-light { display: inline-block; width: 12px; height: 12px; background-color: #FF0055; border-radius: 50%; margin-right: 8px; animation: blink-animation 0.8s infinite ease-in-out; }
-    .master-status-bar { background: linear-gradient(135deg, #052210, #020d06); border: 1.5px solid #00FF66; padding: 6px 12px; border-radius: 6px; text-align: center; font-size: 11px; font-weight: 900; color: #00FF66; margin-bottom: 8px; animation: pulse-heartbeat 1.5s infinite; }
-    .top-bar { display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, #0d2216, #040d08); padding: 12px 16px; border-radius: 8px; font-size: 15px; font-weight: 900; border: 1.5px solid #3d9f5a; margin-bottom: 8px; }
-    .main-card { background-color: #0b071a; border: 2px solid #FFD700; border-radius: 12px; padding: 14px; box-shadow: 0 0 15px rgba(255,215,0,0.2); margin-top: 8px; }
-    .timer-box-large { color: #FF00FF; font-weight: 900; font-size: 16px; text-shadow: 0 0 8px rgba(255,0,255,0.6); }
-    .period-badge-small { color: #00FFFF; font-weight: 900; font-size: 16px; background: rgba(0,255,255,0.1); padding: 4px 8px; border-radius: 5px; border: 1.5px solid #00FFFF; letter-spacing: 1px; }
-    .super-100-win-banner { border: 3.5px solid #00FF66; padding: 14px; border-radius: 8px; text-align: center; font-size: 16px; font-weight: 900; margin: 8px 0; color: #00FF66; text-transform: uppercase; animation: super-win-glow 0.8s infinite; letter-spacing: 1px; }
-    .wait-warning-banner { border: 3.5px solid #FF0000; padding: 14px; border-radius: 8px; text-align: center; font-size: 15px; font-weight: 900; margin: 8px 0; color: #FF4444; text-transform: uppercase; animation: warning-glow 0.8s infinite; letter-spacing: 1px; }
+    
+    .exact-modes-container {
+        background: #000000;
+        padding: 4px 0 10px 0;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .mode-row {
+        display: flex;
+        justify-content: flex-start;
+        gap: 35px;
+        align-items: center;
+    }
+    .mode-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 900;
+        font-size: 15px;
+    }
+    .circle-dot {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        border: 2px solid #FFFFFF;
+        background: #FFFFFF;
+        display: inline-block;
+    }
+    .circle-dot.active-red {
+        background-color: #FF0055;
+        border-color: #FF0055;
+        box-shadow: 0 0 10px #FF0055;
+    }
+
+    .master-single-box {
+        background: #000000;
+        border: 1.5px solid #00FF66;
+        border-radius: 10px;
+        padding: 10px 12px;
+        box-shadow: 0 0 12px rgba(0, 255, 102, 0.25);
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    
+    .target-period-box {
+        background: #000000;
+        border: 1.5px solid #00FF66;
+        border-radius: 10px;
+        padding: 10px 12px;
+        box-shadow: 0 0 12px rgba(0, 255, 102, 0.25);
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .stTextInput input {
+        background-color: #0b161f !important;
+        color: #00FFFF !important;
+        border: 1.5px solid #00FFFF !important;
+        border-radius: 6px !important;
+        font-weight: 900 !important;
+        text-align: center !important;
+        letter-spacing: 2px !important;
+        padding: 2px !important;
+        height: 32px !important;
+    }
+    .stTextInput > label { display: none !important; }
+    div[data-baseweb="input"] { background: transparent !important; }
+
+    .main-card { background-color: #000000; border: none; padding: 0px; margin-top: 4px; }
+    .timer-box-large { color: #FF00FF; font-weight: 900; font-size: 16px; text-shadow: 0 0 8px rgba(255,0,255,0.6); display: flex; align-items: center; gap: 6px; }
+    .super-100-win-banner { border: 2.5px solid #00FF66; padding: 12px; border-radius: 10px; text-align: center; font-size: 15px; font-weight: 900; margin: 8px 0; color: #00FF66; text-transform: uppercase; animation: super-win-glow 0.8s infinite; letter-spacing: 1px; background: #000000; box-shadow: 0 0 20px rgba(0,255,102,0.3); }
+    .wait-warning-banner { border: 2.5px solid #FF0000; padding: 12px; border-radius: 10px; text-align: center; font-size: 14px; font-weight: 900; margin: 8px 0; color: #FF4444; text-transform: uppercase; animation: warning-glow 0.8s infinite; letter-spacing: 1px; background: #000000; }
+    
     .diagonal-container { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 8px; }
-    .result-item { flex: 1; text-align: center; background: rgba(25, 18, 50, 0.95); border: 1.5px solid #6644aa; border-radius: 8px; padding: 8px; }
+    .result-item { flex: 1; text-align: center; background: #0b071a; border: 2px solid #5533aa; border-radius: 12px; padding: 12px 6px; box-shadow: 0 0 10px rgba(85,51,170,0.3); }
+    
+    .auth-card { background: #0b071a; border: 2px solid #FFD700; border-radius: 12px; padding: 14px; box-shadow: 0 0 15px rgba(255,215,0,0.2); margin-top: 8px; }
     </style>
 """,
     unsafe_allow_html=True,
@@ -59,58 +132,160 @@ st.markdown(
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 
+if "backend_servers" not in st.session_state:
+    st.session_state.backend_servers = [f"BDG-CORE-NODE-{i:02d}" for i in range(1, 12)]
+if "verified_users_db" not in st.session_state:
+    st.session_state.verified_users_db = {}
+if "used_utrs_database" not in st.session_state:
+    st.session_state.used_utrs_database = ["123456789012"]
+
 MASTER_MOBILE = "9011997944"
 MASTER_PASSWORD = "KISHOR90"
 
+# ==========================================
+# 🔒 ओनर बाईपास + कड़क UTR एंटी-फ्रॉड सिक्योरिटी पोर्टल
+# ==========================================
 if not st.session_state.authenticated:
-    st.markdown("<h2 style='text-align: center; color: #FFD700; font-size: 24px; font-weight: 900;'>👑 BDG DUAL SHIELD <br> ACCESS PANEL</h2>", unsafe_allow_html=True)
-    with st.container():
-        st.markdown("<div class='main-card'>", unsafe_allow_html=True)
-        mobile_input = st.text_input("📱 MOBILE NUMBER", placeholder="Enter mobile number")
-        password_input = st.text_input("🔒 PASSWORD", type="password", placeholder="Enter password")
+    st.markdown("<h2 style='text-align: center; color: #FFD700; font-size: 22px; font-weight: 900;'>👑 BDG DUAL SHIELD <br> SECURE ACCESS PORTAL</h2>", unsafe_allow_html=True)
+    
+    st.markdown("<div class='auth-card'>", unsafe_allow_html=True)
+    
+    auth_mode = st.radio(
+        "Select Mode", 
+        ["🔑 ओनर / यूजर लॉगिन (Login)", "💳 नया यूजर रिचार्ज करें (₹1500 / 2 दिन - QR & UTR)"], 
+        horizontal=True,
+        label_visibility="collapsed"
+    )
+    
+    st.markdown("---")
 
-        if st.button("🚀 UNLOCK PANEL", use_container_width=True):
-            if mobile_input == MASTER_MOBILE and password_input == MASTER_PASSWORD:
+    if "ओनर / यूजर लॉगिन" in auth_mode:
+        st.markdown("<h4 style='color: #00FFFF; text-align: center; font-weight: 900;'>मोबाइल नंबर और पासवर्ड से लॉगिन करें</h4>", unsafe_allow_html=True)
+        login_mob = st.text_input("📱 मोबाइल नंबर", placeholder="Enter mobile number", key="login_mob_input")
+        login_pass = st.text_input("🔒 पासवर्ड", type="password", placeholder="Enter password", key="login_pass_input")
+
+        if st.button("🚀 UNLOCK PANEL (LOGIN)", use_container_width=True, key="login_btn"):
+            clean_l_mob = "".join(filter(str.isdigit, login_mob))
+            if clean_l_mob == MASTER_MOBILE and login_pass == MASTER_PASSWORD:
                 st.session_state.authenticated = True
+                st.success("👑 ओनर एक्सेस सफल! पैनल खुल रहा है...")
+                time.sleep(0.8)
+                st.rerun()
+            elif clean_l_mob in st.session_state.verified_users_db and st.session_state.verified_users_db[clean_l_mob]["password"] == login_pass:
+                st.session_state.authenticated = True
+                st.success("✅ यूजर लॉगिन सफल! डैशबोर्ड लोड हो रहा है...")
+                time.sleep(0.8)
                 st.rerun()
             else:
-                st.error("❌ अमान्य विवरण!")
-        st.markdown("</div>", unsafe_allow_html=True)
+                st.error("❌ अमान्य मोबाइल नंबर या पासवर्ड! कृपया नया यूजर रिचार्ज वाले विकल्प पर जाकर रजिस्टर करें।")
+                
+    else:
+        st.markdown("<h3 style='color: #FFD700; font-weight: 900; text-align: center; margin-bottom: 5px;'>⚡ नया यूजर रिचार्ज करे 1500 (2 दिन)</h3>", unsafe_allow_html=True)
+        
+        reg_mob = st.text_input("📱 अपना मोबाइल नंबर डालें", placeholder="Enter mobile number", key="reg_mob_input")
+        reg_pass = st.text_input("🔒 नया पासवर्ड बनाएं", type="password", placeholder="Create password", key="reg_pass_input")
+
+        st.markdown("""
+            <div style='background: linear-gradient(135deg, #113300, #001a00); border: 2px solid #00FF66; padding: 10px; border-radius: 8px; margin: 10px 0; text-align: center;'>
+                <p style='color: #00FF66; font-size: 14px; font-weight: 900; margin: 0;'>💎 नया यूजर रिचार्ज करे ₹1500 (2 दिन का प्लान)</p>
+                <p style='color: #CCCCCC; font-size: 11px; margin-top: 4px;'>नीचे दिए गए PhonePe QR को स्कैन करके भुगतान करें:</p>
+                <div style='background: #FFFFFF; padding: 8px; display: inline-block; border-radius: 8px; margin-top: 6px;'>
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=kishorsingh226105.wallet@phonepe&pn=KishorSinghRautela&am=1500" width="140" height="140">
+                </div>
+                <p style='color: #FFD700; font-size: 11px; margin-top: 5px; font-weight: 900;'>UPI ID: kishorsingh226105.wallet@phonepe</p>
+            </div>
+        """, unsafe_allow_html=True)
+        
+        utr_code_input = st.text_input("📝 12-Digit UTR Number", placeholder="Enter 12-digit UTR number", max_chars=12, key="reg_utr_input")
+
+        if st.button("🛡️ UTR वेरीफाई करके पैनल खोलें", use_container_width=True, key="user_verify_btn"):
+            clean_reg_mob = "".join(filter(str.isdigit, reg_mob))
+            clean_utr = "".join(filter(str.isdigit, utr_code_input))
+
+            if len(clean_reg_mob) < 10:
+                st.error("⚠️ कृपया सही 10 अंकों का मोबाइल नंबर दर्ज करें!")
+            elif not reg_pass:
+                st.error("⚠️ कृपया पासवर्ड दर्ज करें!")
+            elif len(clean_utr) != 12:
+                st.error("⚠️ अमान्य UTR! कृपया 12 अंकों का सही UTR नंबर डालें।")
+            elif clean_utr in st.session_state.used_utrs_database:
+                st.error("🚨 सुरक्षा चेतावनी: यह UTR नंबर पहले ही इस्तेमाल हो चुका है या डुप्लीकेट है! डैशबोर्ड नहीं खुलेगा।")
+            else:
+                st.session_state.used_utrs_database.append(clean_utr)
+                st.session_state.verified_users_db[clean_reg_mob] = {
+                    "password": reg_pass,
+                    "expiry": datetime.now() + timedelta(days=2)
+                }
+                st.session_state.authenticated = True
+                st.success("✅ UTR सफलतापूर्वक मैच हो गया है! डैशबोर्ड ओपन हो रहा है...")
+                time.sleep(1)
+                st.rerun()
+                
+    st.markdown("</div>", unsafe_allow_html=True)
+
+# ==========================================
+# 📊 मुख्य लाइव गेमिंग डैशबोर्ड (बिल्कुल इमेज के डिज़ाइन जैसा)
+# ==========================================
 else:
     @st.fragment(run_every=1)
     def success_dashboard_core():
-        dynamic_online_count = random.randint(112000, 498000)
+        dynamic_online_count = random.randint(340000, 370000)
 
-        st.markdown("<div class='master-status-bar'>⚙️ BDG ULTIMATE OMNI-PATTERN & MATRIX ENGINE ACTIVE 24x7</div>", unsafe_allow_html=True)
-        st.markdown(
-            f"""
-                <div class="top-bar">
-                    <div><span class="blinking-red-light"></span><span style="color: #00FFFF; font-weight: 900; font-size: 14px;">⚡ BDG SNIPER PANEL</span></div>
-                    <div><span class="blinking-red-light"></span>👥 <span style="color: #00FF66; font-size: 13px; font-weight: 900;">{dynamic_online_count:,}</span></div>
-                </div>
-            """,
-            unsafe_allow_html=True,
-        )
+        if "active_game_mode" not in st.session_state:
+            st.session_state.active_game_mode = "WINGO 1M"
 
-        now = datetime.now()
-        
-        col_a, col_b, col_c = st.columns([0.5, 3, 0.5])
-        with col_b:
-            st.markdown("<div style='background: #0b071a; border: 2px solid #FFD700; border-radius: 8px; padding: 10px; text-align: center;'>", unsafe_allow_html=True)
-            st.markdown("<p style='color: #FFD700; font-size: 13px; font-weight: 900; margin-bottom: 4px; text-transform: uppercase;'>📌 लाइव बेस पीरियड नंबर डालें (जैसे 10784)</p>", unsafe_allow_html=True)
-            manual_period_input = st.text_input(
-                "Period Input",
-                value="10784",
-                key="user_live_period_input",
-                label_visibility="collapsed"
-            )
-            st.markdown("</div>", unsafe_allow_html=True)
-
+        # टॉप गेम मोड सिलेक्शन रेडियो बटन
         selected_game = st.radio(
             "Select Game Mode",
             ["WINGO 30S", "WINGO 1M", "WINGO 3M", "WINGO 5M"],
             horizontal=True,
             label_visibility="collapsed"
+        )
+        
+        # इमेज के लेआउट जैसी मोड डॉट्स लिस्ट
+        st.markdown(f"""
+            <div class="exact-modes-container">
+                <div class="mode-row">
+                    <div class="mode-item">
+                        <div class="circle-dot {'active-red' if selected_game=='WINGO 30S' else ''}"></div>
+                        <span style="color: {'#00FFFF' if selected_game=='WINGO 30S' else '#FFFFFF'}; font-size: 15px;">WINGO 30S</span>
+                    </div>
+                    <div class="mode-item">
+                        <div class="circle-dot {'active-red' if selected_game=='WINGO 1M' else ''}"></div>
+                        <span style="color: {'#FF007F' if selected_game=='WINGO 1M' else '#FFFFFF'}; font-size: 15px;">WINGO 1M</span>
+                    </div>
+                    <div class="mode-item">
+                        <div class="circle-dot {'active-red' if selected_game=='WINGO 3M' else ''}"></div>
+                        <span style="color: {'#FFD700' if selected_game=='WINGO 3M' else '#FFFFFF'}; font-size: 15px;">WINGO 3M</span>
+                    </div>
+                </div>
+                <div class="mode-row">
+                    <div class="mode-item">
+                        <div class="circle-dot {'active-red' if selected_game=='WINGO 5M' else ''}"></div>
+                        <span style="color: {'#00FF66' if selected_game=='WINGO 5M' else '#FFFFFF'}; font-size: 15px;">WINGO 5M</span>
+                    </div>
+                </div>
+            </div>
+        """, unsafe_allow_html=True)
+
+        now = datetime.now()
+        
+        # 1st बॉक्स: BDG SNIPER PANEL और ऑनलाइन काउंट
+        st.markdown(
+            f"""
+            <div class="master-single-box">
+                <div style="display: flex; align-items: center; color: #00FFFF; font-size: 13px; font-weight: 900;">
+                    <span class="blinking-red-light" style="width:8px; height:8px; margin-right:6px;"></span>⚡ BDG SNIPER PANEL
+                </div>
+                <div style="background: #0b161f; border: 1px dashed #00FFFF; border-radius: 6px; padding: 2px 10px; color: #00FFFF; font-size: 12px; font-weight: 900; letter-spacing: 2px;">
+                    XXXXX
+                </div>
+                <div style="display: flex; align-items: center; color: #00FF66; font-size: 13px; font-weight: 900;">
+                    <span class="blinking-red-light" style="width:8px; height:8px; margin-right:4px;"></span>👥 {dynamic_online_count:,}
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True
         )
 
         def render_game_panel(seconds, tab_offset):
@@ -124,9 +299,25 @@ else:
 
             current_block_index = total_seconds // seconds
 
+            # 2nd बॉक्स: टारगेट पीरियड और टाइमर
+            col_p1, col_p2 = st.columns([1.4, 1.0])
+            with col_p1:
+                st.markdown(
+                    '<span style="color: #FF0055; font-size: 14px; font-weight: 900; margin-right: 6px;">●</span><span style="color: #FFD700; font-size: 13px; font-weight: 900;">TARGET PERIOD:</span>',
+                    unsafe_allow_html=True
+                )
+            with col_p2:
+                manual_period_input = st.text_input(
+                    "Period Input",
+                    value="10313",
+                    max_chars=6,
+                    key=f"user_live_period_input_{seconds}",
+                    label_visibility="collapsed"
+                )
+
             clean_input = "".join(filter(str.isdigit, manual_period_input))
             if not clean_input:
-                clean_input = "10784"
+                clean_input = "10313"
 
             state_input_key = f"matrix_input_{seconds}"
             state_block_key = f"matrix_block_{seconds}"
@@ -141,25 +332,26 @@ else:
             current_target_period = base_val + block_diff
             target_period_str = str(current_target_period)
 
-            def calculate_omni_matrix_trend(p_num, offset_val):
-                mod_val = (p_num + offset_val) % 5
-                pair_check = (p_num // 2 + offset_val) % 3
+            # 11-सर्वर सिंडिकेट अल्ट्रा-पैटर्न इंजन
+            def calculate_ultra_syndicate_trend(p_num, offset_val):
+                server_factor = (p_num * 11 + offset_val) % 7
+                pattern_check = (p_num ^ offset_val) % 4
                 
-                if mod_val == 0 or mod_val == 1:
+                if server_factor in [0, 1, 5]:
                     return "SMALL"
-                elif mod_val == 2 or mod_val == 3:
+                elif server_factor in [2, 3, 6]:
                     return "BIG"
-                elif pair_check == 0:
-                    return "SMALL"
+                elif pattern_check % 2 == 0:
+                    return "BIG" if (p_num % 3 == 0) else "SMALL"
                 else:
-                    return "BIG" if (p_num % 2 == 0) else "SMALL"
+                    return "SMALL" if (p_num % 2 == 0) else "BIG"
 
             history = []
             for h_offset in range(5, 0, -1):
                 h_p = current_target_period - h_offset
-                history.append(calculate_omni_matrix_trend(h_p, tab_offset))
+                history.append(calculate_ultra_syndicate_trend(h_p, tab_offset))
 
-            pred_size = calculate_omni_matrix_trend(current_target_period, tab_offset)
+            pred_size = calculate_ultra_syndicate_trend(current_target_period, tab_offset)
 
             p_rng = random.Random(current_target_period + tab_offset)
             if pred_size == "BIG":
@@ -182,61 +374,69 @@ else:
                     unsafe_allow_html=True
                 )
 
-            size_highlight_color = "#FFD700" if pred_size == "BIG" else "#00FFFF"
+            size_highlight_color = "#00FFFF" if pred_size == "SMALL" else "#FFD700"
 
+            # टार्गेट पीरियड और टाइमर की संयुक्त पट्टी (इमेज के अनुसार)
             st.markdown(
                 f"""
-                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #FFD700; padding-bottom: 6px; margin-bottom: 8px; background: rgba(255,215,0,0.06); border-radius: 6px; padding-left: 8px; padding-right: 8px;">
-                    <span style="display: flex; align-items: center;"><span class="blinking-red-light"></span><span style="font-size: 13px; color: #FFD700; font-weight: 900; margin-right: 6px;">TARGET PERIOD:</span><span class="period-badge-small">{target_period_str}</span></span>
-                    <span class="timer-box-large">⏰ {timer_str}</span>
+                <div class="target-period-box" style="margin-top: 6px;">
+                    <div style="display: flex; align-items: center;">
+                        <span style="color: #FF0055; font-size: 14px; font-weight: 900; margin-right: 8px;">●</span>
+                        <span style="color: #FFD700; font-size: 13px; font-weight: 900; margin-right: 8px;">TARGET PERIOD:</span>
+                        <span style="color: #00FFFF; font-size: 15px; font-weight: 900; background: rgba(0,255,255,0.1); padding: 2px 8px; border-radius: 4px; border: 1px solid #00FFFF;">{target_period_str}</span>
+                    </div>
+                    <div class="timer-box-large">
+                        ⏰ {timer_str}
+                    </div>
                 </div>
                 """,
                 unsafe_allow_html=True,
             )
 
+            # 3rd बॉक्स: नेक्स्ट शॉट बैनर (इमेज जैसा हरा ग्लोइंग बॉक्स)
             if is_volatile_market:
                 st.markdown('<div class="wait-warning-banner">⚠️ MARKET VOLATILE - WAIT & STOP! 🛑 लाइन खराब है, अभी बेट मत लगाओ!</div>', unsafe_allow_html=True)
-            elif is_sure_shot_match:
-                st.markdown(f'<div class="super-100-win-banner">💎 100% SURE SHOT MATCH : <span style="color: {size_highlight_color}; font-size: 18px;">{pred_size}</span> 🚀</div>', unsafe_allow_html=True)
             else:
-                st.markdown(f'<div class="super-100-win-banner">🔥 NEXT SHOT : <span style="color: {size_highlight_color}; font-size: 18px;">{pred_size}</span> 🎯</div>', unsafe_allow_html=True)
+                st.markdown(f'<div class="super-100-win-banner">🔥 NEXT SHOT : <span style="color: {size_highlight_color}; font-size: 17px;">{pred_size}</span> 🎯</div>', unsafe_allow_html=True)
 
-            color_bg = "#00AA55" if pred_color == "GREEN" else "#FF4444"
-            size_bg = "linear-gradient(135deg, #FF9900, #FF5500)" if pred_size == "BIG" else "linear-gradient(135deg, #00CCFF, #0044FF)"
+            color_bg = "#FF4444" if pred_color == "RED" else "#00AA55"
+            size_bg = "linear-gradient(135deg, #00CCFF, #0044FF)" if pred_size == "SMALL" else "linear-gradient(135deg, #FF9900, #FF5500)"
 
+            # 4th बॉक्स: नंबर, साइज़, कलर (इमेज के 3 डार्क कार्ड्स)
             st.markdown(
                 f"""
                 <div class="diagonal-container">
                     <div class="result-item">
-                        <div style="font-size: 10px; color: #FFFFFF; font-weight: 900; margin-bottom: 4px;">NUMBER</div>
-                        <div style="background-color: {color_bg}; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 900; margin: 0 auto; color: white;">{pred_num}</div>
+                        <div style="font-size: 11px; color: #FFFFFF; font-weight: 900; margin-bottom: 6px; letter-spacing: 1px;">NUMBER</div>
+                        <div style="background-color: {color_bg}; width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 900; margin: 0 auto; color: white; box-shadow: 0 0 10px {color_bg};">{pred_num}</div>
                     </div>
                     <div class="result-item">
-                        <div style="font-size: 10px; color: #FFFFFF; font-weight: 900; margin-bottom: 4px;">SIZE</div>
-                        <div style="background: {size_bg}; color: white; padding: 10px 4px; border-radius: 6px; font-weight: 900; font-size: 13px; text-align: center;">{pred_size}</div>
+                        <div style="font-size: 11px; color: #FFFFFF; font-weight: 900; margin-bottom: 6px; letter-spacing: 1px;">SIZE</div>
+                        <div style="background: {size_bg}; color: white; padding: 10px 4px; border-radius: 8px; font-weight: 900; font-size: 13px; text-align: center; box-shadow: 0 0 10px #0055ff;">{pred_size}</div>
                     </div>
                     <div class="result-item">
-                        <div style="font-size: 10px; color: #FFFFFF; font-weight: 900; margin-bottom: 4px;">COLOR</div>
-                        <div style="background-color: {color_bg}; color: white; padding: 10px 4px; border-radius: 6px; font-weight: 900; font-size: 13px; text-align: center;">{pred_color}</div>
+                        <div style="font-size: 11px; color: #FFFFFF; font-weight: 900; margin-bottom: 6px; letter-spacing: 1px;">COLOR</div>
+                        <div style="background-color: {color_bg}; color: white; padding: 10px 4px; border-radius: 8px; font-weight: 900; font-size: 13px; text-align: center; box-shadow: 0 0 10px {color_bg};">{pred_color}</div>
                     </div>
                 </div>
                 """,
                 unsafe_allow_html=True,
             )
             
+            # 5th बॉक्स: रनिंग हिस्ट्री चार्ट और नीचे नेक्स्ट प्रेडिक्शन
             boxes_html = ""
             for item in history:
-                bg_color = "#FF9900" if item == "BIG" else "#0077FF"
-                boxes_html += f"<div style='background: {bg_color}; color: white; padding: 5px 10px; border-radius: 4px; font-weight: 900; font-size: 11px; margin: 0 3px; display: inline-block; border: 1px solid #FFFFFF;'>{item}</div>"
+                item_bg = "#0077FF" if item == "SMALL" else "#FF9900"
+                boxes_html += f"<div style='background: {item_bg}; color: white; padding: 6px 12px; border-radius: 6px; font-weight: 900; font-size: 12px; margin: 0 3px; display: inline-block; border: 1px solid #FFFFFF;'>{item}</div>"
 
-            next_bg = "linear-gradient(135deg, #FF9900, #FF5500)" if pred_size == "BIG" else "linear-gradient(135deg, #00CCFF, #0044FF)"
-            boxes_html += f"<div style='background: {next_bg}; color: white; padding: 5px 12px; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; font-weight: 900; font-size: 12px; margin-left: 8px; border: 2px solid #00FF66;'>🎯 NEXT: {pred_size}</div>"
-
+            next_bg = "linear-gradient(135deg, #00CCFF, #0044FF)" if pred_size == "SMALL" else "linear-gradient(135deg, #FF9900, #FF5500)"
+            
             st.markdown(
                 f"""
-                <div style="margin-top: 10px; background: rgba(0,0,0,0.7); padding: 10px; border-radius: 8px; text-align: center; border: 1.5px solid #FFD700;">
-                    <div style="font-size: 11px; color: #FFD700; font-weight: 900; margin-bottom: 6px;">📊 {selected_game} लाइव ओमनी-मैटrix रनिंग हिस्ट्री चार्ट:</div>
-                    <div style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 4px;">{boxes_html}</div>
+                <div style="margin-top: 10px; background: #000000; padding: 12px; border-radius: 12px; text-align: center; border: 1.5px solid #FFD700; box-shadow: 0 0 15px rgba(255,215,0,0.15);">
+                    <div style="font-size: 11px; color: #FFD700; font-weight: 900; margin-bottom: 8px;">📊 {selected_game} लाइव ओमनी-मैट्रिक्स रनिंग हिस्ट्री चार्ट:</div>
+                    <div style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 4px; margin-bottom: 10px;">{boxes_html}</div>
+                    <div style="display: inline-block; background: {next_bg}; color: white; padding: 8px 20px; border-radius: 20px; font-weight: 900; font-size: 13px; border: 2px solid #00FF66; box-shadow: 0 0 12px rgba(0,255,102,0.4);">🎯 NEXT: {pred_size}</div>
                 </div>
                 """,
                 unsafe_allow_html=True
