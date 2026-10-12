@@ -11,7 +11,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# --- 100% स्क्रीनशॉट जैसा सटीक CSS (बिना किसी व्हाइट पट्टी के, पूरी तरह डार्क) ---
+# --- 100% पिक्सेल-परफेक्ट CSS (बिना किसी व्हाइट पट्टी के और सटीक टच के साथ) ---
 st.markdown("""
     <style>
     .stApp { background-color: #05050a; color: #FFFFFF; }
@@ -43,23 +43,38 @@ st.markdown("""
         vertical-align: middle;
     }
     
-    /* गेम मोड लिस्ट शैली (स्क्रीनशॉट जैसी) */
-    .exact-modes-box {
-        background: #05050a;
-        padding: 4px 0 10px 0;
+    /* ऊपर के सभी Streamlit बटनों को पूरी तरह अदृश्य और शून्य आकार का करना ताकि कोई व्हाइट पट्टी न आए */
+    div.stButton > button {
+        background-color: transparent !important;
+        border: none !important;
+        color: transparent !important;
+        height: 0px !important;
+        min-height: 0px !important;
+        padding: 0px !important;
+        margin: 0px !important;
+        box-shadow: none !important;
     }
-    .mode-row-flex {
+
+    /* स्क्रीनशॉट जैसी सटीक गेम मोड लिस्ट और उनके क्लिकेबल रेडियो बटन */
+    .exact-modes-container {
+        background: #05050a;
+        padding: 6px 0 12px 0;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .mode-row {
         display: flex;
         justify-content: flex-start;
-        gap: 25px;
-        margin-bottom: 6px;
+        gap: 30px;
     }
-    .mode-item-flex {
+    .mode-item {
         display: flex;
         align-items: center;
         gap: 8px;
         font-weight: 900;
         font-size: 13px;
+        cursor: pointer;
     }
     .circle-dot {
         width: 14px;
@@ -75,46 +90,39 @@ st.markdown("""
         box-shadow: 0 0 8px #FF0055;
     }
 
-    /* 🔥 स्क्रीनशॉट जैसा सिंगल लाइन मास्टर ग्रीन बॉक्स */
-    .master-green-box {
+    /* 🔥 स्क्रीनशॉट जैसा सिंगल मास्टर ग्रीन बॉक्स (सब कुछ एक ही लाइन में अटैच) */
+    .master-single-box {
         background: #090e14;
         border: 2px solid #00FF66;
         border-radius: 10px;
-        padding: 8px;
+        padding: 8px 10px;
         box-shadow: 0 0 15px rgba(0, 255, 102, 0.3);
         margin-bottom: 10px;
         display: flex;
-        justify-content: space-between;
         align-items: center;
+        justify-content: space-between;
         gap: 6px;
     }
     
-    .sub-box-left {
-        background: #090a10;
-        border: 1.5px solid #00FF66;
-        border-radius: 6px;
-        padding: 8px 10px;
+    .panel-title-text {
         color: #00FFFF;
         font-size: 11px;
         font-weight: 900;
+        white-space: nowrap;
         display: flex;
         align-items: center;
-        white-space: nowrap;
     }
-    .sub-box-right {
-        background: #090a10;
-        border: 1.5px solid #00FF66;
-        border-radius: 6px;
-        padding: 8px 10px;
+    
+    .online-count-text {
         color: #FFFFFF;
         font-size: 11px;
         font-weight: 900;
+        white-space: nowrap;
         display: flex;
         align-items: center;
-        white-space: nowrap;
     }
 
-    /* Streamlit इनपुट बॉक्स को पूरी तरह डार्क, डैश्ड और स्क्रीनशॉट जैसा बनाना */
+    /* Streamlit इनपुट बॉक्स को बिल्कुल बीच वाले डैश्ड खाचे जैसा बनाना */
     .stTextInput input {
         background-color: #0d141e !important;
         color: #00FFFF !important;
@@ -124,8 +132,8 @@ st.markdown("""
         text-align: center !important;
         letter-spacing: 2px !important;
         padding: 4px !important;
+        height: 32px !important;
     }
-    /* Streamlit के फालतू लेबिल और स्पेस को छुपाना */
     .stTextInput > label { display: none !important; }
     div[data-baseweb="input"] { background: transparent !important; }
 
@@ -214,51 +222,51 @@ if not st.session_state.authenticated:
                 st.error("❌ अमान्य विवरण!")
         st.markdown("</div>", unsafe_allow_html=True)
 else:
+    # ऑनलाइन यूजरकाउंट लाइव फ्लक्चुएशन लॉजिक
     if "online_count" not in st.session_state:
-        st.session_state.online_count = random.randint(350000, 380000)
-        st.session_state.last_count_update = time.time()
+        st.session_state.online_count = 350078
+        st.session_state.last_live_tick = time.time()
 
-    current_time_epoch = time.time()
-    if current_time_epoch - st.session_state.last_count_update > 90:
-        change_amount = random.randint(-1200, 1500)
-        st.session_state.online_count = max(320000, min(410000, st.session_state.online_count + change_amount))
-        st.session_state.last_count_update = current_time_epoch
+    current_t = time.time()
+    if current_t - st.session_state.last_live_tick > 3:
+        st.session_state.online_count += random.randint(-45, 52)
+        st.session_state.last_live_tick = current_t
 
     if "active_game_mode" not in st.session_state:
         st.session_state.active_game_mode = "WINGO 1M"
 
-    # गुप्त गेम मोड बटन बार (मोड बदलने के लिए)
-    b1, b2, b3, b4 = st.columns(4)
-    with b1:
-        if st.button("30S", use_container_width=True): st.session_state.active_game_mode = "WINGO 30S"
-    with b2:
-        if st.button("1M", use_container_width=True): st.session_state.active_game_mode = "WINGO 1M"
-    with b3:
-        if st.button("3M", use_container_width=True): st.session_state.active_game_mode = "WINGO 3M"
-    with b4:
-        if st.button("5M", use_container_width=True): st.session_state.active_game_mode = "WINGO 5M"
+    # स्क्रीनशॉट जैसे सटीक गेम मोड (30S, 1M, 3M, 5M) चुनने के लिए सटीक बटन ग्रिड
+    c1, c2, c3, c4 = st.columns(4)
+    with c1:
+        if st.button("WINGO 30S", key="btn_30s"): st.session_state.active_game_mode = "WINGO 30S"
+    with c2:
+        if st.button("WINGO 1M", key="btn_1m"): st.session_state.active_game_mode = "WINGO 1M"
+    with c3:
+        if st.button("WINGO 3M", key="btn_3m"): st.session_state.active_game_mode = "WINGO 3M"
+    with c4:
+        if st.button("WINGO 5M", key="btn_5m"): st.session_state.active_game_mode = "WINGO 5M"
 
     selected_game = st.session_state.active_game_mode
 
-    # स्क्रीनशॉट जैसी फिक्स दो-पंक्तियों वाली गेम मोड लिस्ट
+    # 🎨 स्क्रीनशॉट जैसी हूबहू दो-पंक्तियों वाली गेम मोड लिस्ट (बिना किसी व्हाइट पट्टी के)
     st.markdown(f"""
-        <div class="exact-modes-box">
-            <div class="mode-row-flex">
-                <div class="mode-item-flex">
+        <div class="exact-modes-container">
+            <div class="mode-row">
+                <div class="mode-item">
                     <div class="circle-dot {'active' if selected_game=='WINGO 30S' else ''}"></div>
                     <span style="color: #00FFFF;">WINGO 30S</span>
                 </div>
-                <div class="mode-item-flex">
+                <div class="mode-item">
                     <div class="circle-dot {'active' if selected_game=='WINGO 1M' else ''}"></div>
                     <span style="color: #FF007F;">WINGO 1M</span>
                 </div>
-                <div class="mode-item-flex">
+                <div class="mode-item">
                     <div class="circle-dot {'active' if selected_game=='WINGO 3M' else ''}"></div>
                     <span style="color: #FFD700;">WINGO 3M</span>
                 </div>
             </div>
-            <div class="mode-row-flex" style="margin-top: 6px;">
-                <div class="mode-item-flex">
+            <div class="mode-row">
+                <div class="mode-item">
                     <div class="circle-dot {'active' if selected_game=='WINGO 5M' else ''}"></div>
                     <span style="color: #00FF66;">WINGO 5M</span>
                 </div>
@@ -270,17 +278,16 @@ else:
     def live_dashboard_core():
         now = datetime.now()
 
-        # 🔥 स्क्रीनशॉट जैसा सिंगल लाइन मास्टर ग्रीन बॉक्स (एक ही लाइन में तीनों: पैनल नाम, XXXXX इनपुट खाचा, यूजरकाउंट)
-        st.markdown('<div class="master-green-box">', unsafe_allow_html=True)
-        col_l, col_c, col_r = st.columns([1.2, 0.9, 1.1])
+        # 🔥 एकदम स्क्रीनशॉट जैसा सिंगल मास्टर ग्रीन बॉक्स (पैनल नाम, XXXXX इनपुट, और लाइव यूजरकाउंट एक लाइन में)[span_5](start_span)[span_5](end_span)
+        st.markdown('<div class="master-single-box">', unsafe_allow_html=True)
+        col_l, col_m, col_r = st.columns([1.3, 1.0, 1.1])
         
         with col_l:
             st.markdown(
-                '<div class="sub-box-left"><span class="blinking-dot"></span>⚡ BDG SNIPER PANEL</div>',
+                '<div class="panel-title-text"><span class="blinking-dot"></span>⚡ BDG SNIPER PANEL</div>',
                 unsafe_allow_html=True
             )
-        with col_c:
-            # यह वही बीच वाला डैश्ड खाचा है जिसमें XXXXX दिखेगा और नंबर डालते ही पीरियड बदल जाएगा
+        with col_m:
             manual_period_input = st.text_input(
                 "Period Input",
                 value="XXXXX",
@@ -290,7 +297,7 @@ else:
             )
         with col_r:
             st.markdown(
-                f'<div class="sub-box-right"><span class="blinking-dot"></span>👥 {st.session_state.online_count:,}</div>',
+                f'<div class="online-count-text"><span class="blinking-dot"></span>👥 {st.session_state.online_count:,}</div>',
                 unsafe_allow_html=True
             )
         st.markdown('</div>', unsafe_allow_html=True)
