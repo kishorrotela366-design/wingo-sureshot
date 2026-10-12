@@ -38,41 +38,6 @@ st.markdown(
     }
     .blinking-red-light { display: inline-block; width: 12px; height: 12px; background-color: #FF0055; border-radius: 50%; margin-right: 6px; animation: blink-animation 0.8s infinite ease-in-out; }
     
-    .exact-modes-container {
-        background: #000000;
-        padding: 6px 0 12px 0;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
-    .mode-row {
-        display: flex;
-        justify-content: flex-start;
-        gap: 30px;
-        align-items: center;
-    }
-    .mode-item {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-weight: 900;
-        font-size: 14px;
-    }
-    .circle-dot {
-        width: 14px;
-        height: 14px;
-        border-radius: 50%;
-        border: 2px solid #FFFFFF;
-        background: #FFFFFF;
-        display: inline-block;
-    }
-    .circle-dot.active-red {
-        background-color: #FF0055;
-        border-color: #FF0055;
-        box-shadow: 0 0 10px #FF0055;
-        animation: blink-animation 0.8s infinite ease-in-out;
-    }
-
     .master-single-box {
         background: #000000;
         border: 1.5px solid #00FF66;
@@ -220,7 +185,7 @@ if not st.session_state.authenticated:
     st.markdown("</div>", unsafe_allow_html=True)
 
 # ==========================================
-# 📊 मुख्य लाइव गेमिंग डैशबोर्ड (स्क्रीनशॉट के लेआउट और बैकएंड अलार्म के साथ)[span_6](start_span)[span_6](end_span)
+# 📊 मुख्य लाइव गेमिंग डैशबोर्ड (स्क्रीनशॉट के लेआउट जैसा)[span_3](start_span)[span_3](end_span)
 # ==========================================
 else:
     @st.fragment(run_every=1)
@@ -230,40 +195,20 @@ else:
         if "active_game_mode" not in st.session_state:
             st.session_state.active_game_mode = "WINGO 1M"
 
+        # स्क्रीनशॉट[span_4](start_span)[span_4](end_span) जैसी साफ़ सुथरी रेडियो बटन सलेक्ट करने की प्रणाली
         selected_game = st.radio(
             "Select Game Mode",
             ["WINGO 30S", "WINGO 1M", "WINGO 3M", "WINGO 5M"],
             horizontal=True,
-            label_visibility="collapsed"
+            label_visibility="collapsed",
+            key="main_radio_mode"
         )
         
-        st.markdown(f"""
-            <div class="exact-modes-container">
-                <div class="mode-row">
-                    <div class="mode-item">
-                        <div class="circle-dot {'active-red' if selected_game=='WINGO 30S' else ''}"></div>
-                        <span style="color: {'#00FFFF' if selected_game=='WINGO 30S' else '#FFFFFF'};">WINGO 30S</span>
-                    </div>
-                    <div class="mode-item">
-                        <div class="circle-dot {'active-red' if selected_game=='WINGO 1M' else ''}"></div>
-                        <span style="color: {'#FF007F' if selected_game=='WINGO 1M' else '#FFFFFF'};">WINGO 1M</span>
-                    </div>
-                    <div class="mode-item">
-                        <div class="circle-dot {'active-red' if selected_game=='WINGO 3M' else ''}"></div>
-                        <span style="color: {'#FFD700' if selected_game=='WINGO 3M' else '#FFFFFF'};">WINGO 3M</span>
-                    </div>
-                </div>
-                <div class="mode-row">
-                    <div class="mode-item">
-                        <div class="circle-dot {'active-red' if selected_game=='WINGO 5M' else ''}"></div>
-                        <span style="color: {'#00FF66' if selected_game=='WINGO 5M' else '#FFFFFF'};">WINGO 5M</span>
-                    </div>
-                </div>
-            </div>
-        """, unsafe_allow_html=True)
+        current_game = selected_game
 
         now = datetime.now()
         
+        # 1st बॉक्स: BDG SNIPER PANEL और बीच में पीरियड नंबर इनपुट खांचा[span_5](start_span)[span_5](end_span)
         st.markdown('<div class="master-single-box">', unsafe_allow_html=True)
         col_l, col_m, col_r = st.columns([1.2, 1.1, 1.1])
         
@@ -345,8 +290,8 @@ else:
 
             is_volatile_market = (current_target_period % 19 == 0) or (current_target_period % 37 == 0)
 
-            # 🔥 बैकएंड अलार्म साउंड (स्क्रीन पर कोई फालतू आइकॉन नहीं, सिर्फ सक्रिय मोड में आखिरी 5 सेकंड पर आवाज़)
-            if selected_game == mode_name and (1 <= remaining_secs <= 5):
+            # 🔥 बैकएंड अलार्म साउंड (सिर्फ सक्रिय मोड में आखिरी 5 सेकंड पर)
+            if current_game == mode_name and (1 <= remaining_secs <= 5):
                 st.markdown(
                     """
                     <audio autoplay style="display:none;">
@@ -358,6 +303,7 @@ else:
 
             size_highlight_color = "#00FFFF" if pred_size == "SMALL" else "#FFD700"
 
+            # 2nd बॉक्स: टारगेट पीरियड और टाइमर की सिंगल पट्टी[span_6](start_span)[span_6](end_span)
             st.markdown(
                 f"""
                 <div class="target-period-box">
@@ -382,6 +328,7 @@ else:
             color_bg = "#FF4444" if pred_color == "RED" else "#00AA55"
             size_bg = "linear-gradient(135deg, #00CCFF, #0044FF)" if pred_size == "SMALL" else "linear-gradient(135deg, #FF9900, #FF5500)"
 
+            # 3rd बॉक्स: नंबर, साइज़, कलर[span_7](start_span)[span_7](end_span)
             st.markdown(
                 f"""
                 <div class="diagonal-container">
@@ -409,10 +356,11 @@ else:
 
             next_bg = "linear-gradient(135deg, #00CCFF, #0044FF)" if pred_size == "SMALL" else "linear-gradient(135deg, #FF9900, #FF5500)"
             
+            # 4th बॉक्स: रनिंग हिस्ट्री चार्ट[span_8](start_span)[span_8](end_span)
             st.markdown(
                 f"""
                 <div style="margin-top: 10px; background: #000000; padding: 12px; border-radius: 12px; text-align: center; border: 1.5px solid #FFD700; box-shadow: 0 0 15px rgba(255,215,0,0.15);">
-                    <div style="font-size: 11px; color: #FFD700; font-weight: 900; margin-bottom: 8px;">📊 {selected_game} 11-सर्वर सिंडिकेट रनिंग हिस्ट्री चार्ट:</div>
+                    <div style="font-size: 11px; color: #FFD700; font-weight: 900; margin-bottom: 8px;">📊 {current_game} 11-सर्वर सिंडिकेट रनिंग हिस्ट्री चार्ट:</div>
                     <div style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 4px; margin-bottom: 10px;">{boxes_html}</div>
                     <div style="display: inline-block; background: {next_bg}; color: white; padding: 8px 20px; border-radius: 20px; font-weight: 900; font-size: 13px; border: 2px solid #00FF66; box-shadow: 0 0 12px rgba(0,255,102,0.4);">🎯 NEXT: {pred_size}</div>
                 </div>
@@ -421,13 +369,13 @@ else:
             )
             st.markdown("</div>", unsafe_allow_html=True)
 
-        if selected_game == "WINGO 30S":
+        if current_game == "WINGO 30S":
             render_game_panel(30, 11, "WINGO 30S")
-        elif selected_game == "WINGO 1M":
+        elif current_game == "WINGO 1M":
             render_game_panel(60, 23, "WINGO 1M")
-        elif selected_game == "WINGO 3M":
+        elif current_game == "WINGO 3M":
             render_game_panel(180, 37, "WINGO 3M")
-        elif selected_game == "WINGO 5M":
+        elif current_game == "WINGO 5M":
             render_game_panel(300, 53, "WINGO 5M")
 
     success_dashboard_core()
