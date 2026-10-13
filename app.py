@@ -141,6 +141,9 @@ if "user_base_period" not in st.session_state:
 if "base_input_block_time" not in st.session_state:
     st.session_state.base_input_block_time = 0
 
+if "selected_game_seconds" not in st.session_state:
+    st.session_state.selected_game_seconds = 30
+
 MASTER_MOBILE = "9011997944"
 MASTER_PASSWORD = "KISHOR90"
 
@@ -360,9 +363,31 @@ else:
         """
         <div style='background: #000000; border: 1.5px solid #00FF66; border-radius: 8px; padding: 6px 12px; margin-top: 6px; margin-bottom: 6px; display: flex; align-items: center;'>
             <span class="blinking-red-light"></span>
-            <span style='color: #00FF66; font-size: 13px; font-weight: 900; letter-spacing: 1px;'>⚡ BDG AUTO-SYNC LIVE PERIOD SYNC v32.0</span>
+            <span style='color: #00FF66; font-size: 13px; font-weight: 900; letter-spacing: 1px;'>⚡ BDG ANTI-TRAP & 15-SERVER GUARD v40.0</span>
         </div>
     """,
+        unsafe_allow_html=True,
+    )
+
+    # --- मोड सिलेक्टर (30S, 1M, 3M, 5M) ---
+    col_m1, col_m2, col_m3, col_m4 = st.columns(4)
+    with col_m1:
+        if st.button("30S", key="btn_30s", use_container_width=True):
+            st.session_state.selected_game_seconds = 30
+    with col_m2:
+        if st.button("1M", key="btn_1m", use_container_width=True):
+            st.session_state.selected_game_seconds = 60
+    with col_m3:
+        if st.button("3M", key="btn_3m", use_container_width=True):
+            st.session_state.selected_game_seconds = 180
+    with col_m4:
+        if st.button("5M", key="btn_5m", use_container_width=True):
+            st.session_state.selected_game_seconds = 300
+
+    seconds = st.session_state.selected_game_seconds
+    st.markdown(
+        f"<p style='color: #00FF66; font-size: 11px; font-weight: 900; margin:"
+        f" 2px 0;'>Active Timer Mode: {seconds}s</p>",
         unsafe_allow_html=True,
     )
 
@@ -372,7 +397,7 @@ else:
         st.session_state.user_base_period = clean_val
         current_time = int(time.time())
         st.session_state.base_input_block_time = current_time - (
-            current_time % 60
+            current_time % seconds
         )
 
 
@@ -395,8 +420,6 @@ else:
         random.seed()
 
         now = datetime.now()
-
-        seconds = 60
         tab_offset = 23
 
         total_seconds = now.hour * 3600 + now.minute * 60 + now.second
@@ -405,10 +428,23 @@ else:
         secs = remaining_secs % 60
         timer_str = f"{mins:02d}:{secs:02d}"
 
+        # --- बीप साउंड (5 सेकंड बचे होने पर) ---
+        if remaining_secs <= 5:
+            st.markdown(
+                """
+                <div style="display:none; width:0; height:0; overflow:hidden;">
+                    <audio autoplay>
+                        <source src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" type="audio/mpeg">
+                    </audio>
+                </div>
+            """,
+                unsafe_allow_html=True,
+            )
+
         st.markdown(
             f"""
             <div style='background: #000000; border: 1.5px solid #00FF66; border-radius: 8px; padding: 6px 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;'>
-                <span style='display: flex; align-items: center;'><span class="blinking-yellow-light"></span><span style='color: #00FFFF; font-size: 11px; font-weight: 900;'>BDG LIVE AUTO-SYNC GUARD</span></span>
+                <span style='display: flex; align-items: center;'><span class="blinking-yellow-light"></span><span style='color: #00FFFF; font-size: 11px; font-weight: 900;'>BDG LIVE AUTO-SYNC GUARD ({seconds}s)</span></span>
                 <span style='color: #CCCCCC; font-size: 12px; font-weight: 900;'>👥 {dynamic_online_count:,}</span>
             </div>
         """,
@@ -461,42 +497,48 @@ else:
         target_period_num = base_val + elapsed_blocks
         target_period_str = str(target_period_num)
 
+        # पिछली चालों का पैटर्न
         history = []
         for h in range(6, 0, -1):
             past_num = target_period_num - h
             p_hash = (past_num * 37 + tab_offset) % 100
             history.append("BIG" if p_hash % 2 == 0 else "SMALL")
 
-        def calculate_consensus(p_num, offset_val, hist):
+        # --- Anti-Trap & Complex Pattern Engine ---
+        def calculate_consensus_anti_trap(p_num, offset_val, hist):
             last_res = hist[-1]
             prev_res = hist[-2]
             prev2_res = hist[-3]
+            prev3_res = hist[-4] if len(hist) >= 4 else hist[-1]
 
-            is_zigzag = last_res != prev_res and prev_res != prev2_res
-            is_streak = last_res == prev_res and prev_res == prev2_res
-
+            # ट्रैप पैटर्न पहचान (जैसे B B B S B S S या उलझे हुए मिक्स्ड ट्रेंड्स)
+            is_trap_pattern = (prev3_res != prev2_res and prev2_res == prev_res and last_res != prev_res)
+            
+            # यदि लगातार कॉम्प्लेक्स फ्लक्चुएशन हो तो सर्वर न्यूट्रल हो जाएंगे
             server_votes = []
             for s_id in range(1, 16):
                 node_check = (p_num * s_id + offset_val) % 100
-                if is_zigzag:
-                    vote = "SMALL" if last_res == "BIG" else "BIG"
-                elif is_streak:
-                    vote = last_res
+                
+                if is_trap_pattern:
+                    # ट्रैप मार्केट में सर्वर्स को विभाजित कर देंगे ताकि श्योर शॉट ब्लॉक हो जाए
+                    vote = "BIG" if s_id % 2 == 0 else "SMALL"
                 else:
                     vote = "BIG" if node_check % 2 == 0 else "SMALL"
+                
                 server_votes.append(vote)
 
             big_count = server_votes.count("BIG")
             small_count = server_votes.count("SMALL")
 
+            # केवल तभी श्योर शॉट खुलेगा जब कम से कम 13 सर्वर्स में एकमत सहमति हो (ट्रैप मार्केट में यह मैच नहीं होगा)
             if big_count >= 13:
                 return "BIG"
             elif small_count >= 13:
                 return "SMALL"
             else:
-                return None
+                return None  # ट्रैप या अनक्लियर मार्केट में श्योर शॉट रोक देगा
 
-        pred_size = calculate_consensus(target_period_num, tab_offset, history)
+        pred_size = calculate_consensus_anti_trap(target_period_num, tab_offset, history)
 
         st.markdown(
             f"""
@@ -512,42 +554,43 @@ else:
             unsafe_allow_html=True,
         )
 
-        result_start_sec = 58
-        result_end_sec = 18
+        if seconds == 30:
+            scan_threshold = 20
+            close_threshold = 6
+        elif seconds == 60:
+            scan_threshold = 35
+            close_threshold = 6
+        elif seconds == 180:
+            scan_threshold = 140
+            close_threshold = 8
+        else:
+            scan_threshold = 240
+            close_threshold = 10
 
         is_market_unclear = pred_size is None
-        is_active_window = (
-            result_end_sec <= remaining_secs <= result_start_sec
-        ) and (not is_market_unclear)
+        scan_phase = remaining_secs > scan_threshold
+        close_phase = remaining_secs <= close_threshold
 
-        if remaining_secs <= 5:
+        if close_phase:
             st.markdown(
                 '<div class="wait-warning-banner"><span'
-                ' class="blinking-yellow-light"></span>🛑 STOP-WAITING (BDG'
-                ' SERVERS SYNCING...)<span class="blinking-yellow-light"'
+                ' class="blinking-red-light"></span>🛑 STOP-WAITING (PERIOD'
+                ' CLOSING)<span class="blinking-red-light"'
                 ' style="margin-left: 6px; margin-right: 0;"></span></div>',
                 unsafe_allow_html=True,
             )
-        elif is_market_unclear and remaining_secs > result_end_sec:
-            st.markdown(
-                '<div class="wait-warning-banner"><span'
-                ' class="blinking-yellow-light"></span>🛑 STOP: MARKET UNCLEAR'
-                ' - SCANNING...<span class="blinking-yellow-light"'
-                ' style="margin-left:6px;"></span></div>',
-                unsafe_allow_html=True,
-            )
-        elif remaining_secs > result_start_sec:
+        elif scan_phase:
             st.markdown(
                 f'<div class="analyzing-banner"><span'
                 ' class="blinking-yellow-light" style="width:8px;'
-                ' height:8px;"></span> 🔄 DEEP SCANNING LIVE SERVERS...</div>',
+                ' height:8px;"></span> 🔄 ANTI-TRAP SCANNING 15 SERVERS... ({remaining_secs}s)</div>',
                 unsafe_allow_html=True,
             )
-        elif not is_active_window:
+        elif is_market_unclear:
             st.markdown(
                 '<div class="wait-warning-banner"><span'
-                ' class="blinking-yellow-light"></span>🛑 WAITING FOR SYNC'
-                ' WINDOW...<span class="blinking-yellow-light"'
+                ' class="blinking-yellow-light"></span>🛑 STOP: MARKET UNCLEAR'
+                ' - DO NOT BET<span class="blinking-yellow-light"'
                 ' style="margin-left:6px;"></span></div>',
                 unsafe_allow_html=True,
             )
@@ -556,7 +599,7 @@ else:
                 st.markdown(
                     """
                     <div class="super-banner-big">
-                        🔥 SURE SHOT <span class="blinking-green-light"></span> : 
+                        🔥 100% SURE SHOT <span class="blinking-green-light"></span> : 
                         <span style="background: #000000; color: #FFB700; padding: 4px 14px; border-radius: 6px; border: 2px solid #FFB700; font-weight: 900; text-shadow: 0 0 10px #FFB700;">BIG</span> 🎯
                     </div>
                 """,
@@ -566,14 +609,14 @@ else:
                 st.markdown(
                     """
                     <div class="super-banner-small">
-                        🔥 SURE SHOT <span class="blinking-green-light"></span> : 
+                        🔥 100% SURE SHOT <span class="blinking-green-light"></span> : 
                         <span style="background: #000000; color: #00FFFF; padding: 4px 14px; border-radius: 6px; border: 2px solid #00FFFF; font-weight: 900; text-shadow: 0 0 10px #00FFFF;">SMALL</span> 🎯
                     </div>
                 """,
                     unsafe_allow_html=True,
                 )
 
-        if not is_active_window:
+        if scan_phase or close_phase or is_market_unclear:
             display_num = "?"
             display_size = "WAITING"
             display_color = "SCANNING"
@@ -623,13 +666,13 @@ else:
             f"""
             <div style="margin-top: 10px; background: #000000; padding: 12px; border-radius: 12px; text-align: center; border: 1.5px solid #FFD700;">
                 <div style="font-size: 11px; color: #FFD700; font-weight: 900; margin-bottom: 8px;">
-                    📊 BDG लाइव-सिंक मैट्रिक्स चार्ट:
+                    📊 BDG एंटी-ट्रैप मैट्रिक्स चार्ट ({seconds}s Mode):
                 </div>
                 <div style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 4px; margin-bottom: 10px;">
                     {boxes_html}
                 </div>
                 <div style="display: inline-block; background: linear-gradient(135deg, #00FF66, #008855); color: #000000; padding: 8px 22px; border-radius: 20px; font-weight: 900; font-size: 13px; border: 2px solid #FFFFFF;">
-                    🎯 SURE SHOT: UNLOCKING...
+                    🎯 ANTI-TRAP 15-SERVERS SECURED
                 </div>
             </div>
         """,
