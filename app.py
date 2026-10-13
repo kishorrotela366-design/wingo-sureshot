@@ -371,7 +371,6 @@ else:
         clean_val = "".join(filter(str.isdigit, st.session_state.period_text_box))
         st.session_state.user_base_period = clean_val
         current_time = int(time.time())
-        # बेस ब्लॉक टाइम को रिसेट किया जाता है ताकि समय के साथ पीरियड आगे बढ़े
         st.session_state.base_input_block_time = current_time - (
             current_time % 60
         )
@@ -397,7 +396,6 @@ else:
 
         now = datetime.now()
 
-        # गेम का ब्लॉक समय (डिफ़ॉल्ट 60 सेकंड / 1 मिनट)
         seconds = 60
         tab_offset = 23
 
@@ -457,7 +455,6 @@ else:
         if st.session_state.base_input_block_time == 0:
             st.session_state.base_input_block_time = current_block_start
 
-        # समय बीतने के साथ यह अपने आप आगे बढ़ेगा (Auto-increment)
         elapsed_blocks = (
             current_block_start - st.session_state.base_input_block_time
         ) // seconds
@@ -617,16 +614,10 @@ else:
             unsafe_allow_html=True,
         )
 
-        boxes_html = "".join([
-            (
-                "<div style='background:"
-                f" {\"#FF8800\" if item == \"BIG\" else \"#0088FF\"}; color:"
-                f" white; padding: 6px 12px; border-radius: 6px; font-weight:"
-                f" 900; font-size: 12px; margin: 0 3px; display:"
-                f" inline-block;'>{item}</div>"
-            )
-            for item in history
-        ])
+        boxes_html = ""
+        for item in history:
+            bg_color = "#FF8800" if item == "BIG" else "#0088FF"
+            boxes_html += f"<div style='background: {bg_color}; color: white; padding: 6px 12px; border-radius: 6px; font-weight: 900; font-size: 12px; margin: 0 3px; display: inline-block;'>{item}</div>"
 
         st.markdown(
             f"""
