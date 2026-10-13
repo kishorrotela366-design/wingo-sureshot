@@ -365,7 +365,7 @@ else:
         """
         <div style='background: #000000; border: 1.5px solid #00FF66; border-radius: 8px; padding: 6px 12px; margin-top: 6px; margin-bottom: 6px; display: flex; align-items: center;'>
             <span class="blinking-red-light"></span>
-            <span style='color: #00FF66; font-size: 13px; font-weight: 900; letter-spacing: 1px;'>⚡ BDG 24/7 NON-STOP STABLE GUARD v75.0</span>
+            <span style='color: #00FF66; font-size: 13px; font-weight: 900; letter-spacing: 1px;'>⚡ BDG 10S SCAN & 20S BETTING GUARD v80.0</span>
         </div>
     """,
         unsafe_allow_html=True,
@@ -568,23 +568,22 @@ else:
                 unsafe_allow_html=True,
             )
 
-            # --- स्कैनिंग और बेटिंग समय ---
+            # --- एकदम सही टाइमिंग: 30s मोड में शुरू के 10s स्कैनिंग, बाकी 20s बेटिंग ---
             if seconds == 30:
-                scan_threshold = 10
-                close_threshold = 5
+                # जैसे ही नया पीरियड शुरू होता है (remaining_secs 30 से घटकर 20 पर आता है), शुरुआती 10s स्कैनिंग होगी
+                scan_active = remaining_secs > 20
+                close_phase = remaining_secs <= 4
             elif seconds == 60:
-                scan_threshold = 40
-                close_threshold = 6
+                scan_active = remaining_secs > 30
+                close_phase = remaining_secs <= 5
             elif seconds == 180:
-                scan_threshold = 140
-                close_threshold = 8
+                scan_active = remaining_secs > 120
+                close_phase = remaining_secs <= 8
             else:
-                scan_threshold = 240
-                close_threshold = 10
+                scan_active = remaining_secs > 210
+                close_phase = remaining_secs <= 10
 
             is_market_unclear = pred_size is None
-            scan_phase = remaining_secs > scan_threshold
-            close_phase = remaining_secs <= close_threshold
 
             if close_phase:
                 st.markdown(
@@ -594,11 +593,11 @@ else:
                     ' style="margin-left: 6px; margin-right: 0;"></span></div>',
                     unsafe_allow_html=True,
                 )
-            elif scan_phase:
+            elif scan_active:
                 st.markdown(
                     f'<div class="analyzing-banner"><span'
                     ' class="blinking-yellow-light" style="width:8px;'
-                    ' height:8px;"></span> 🔄 DEEP SCANNING MARKET & ZIG-ZAG ({seconds}s)... ({remaining_secs}s)</div>',
+                    ' height:8px;"></span> 🔄 DEEP SCANNING MARKET & ZIG-ZAG... ({remaining_secs}s left)</div>',
                     unsafe_allow_html=True,
                 )
             elif is_market_unclear:
@@ -631,7 +630,7 @@ else:
                         unsafe_allow_html=True,
                     )
 
-            if scan_phase or close_phase or is_market_unclear:
+            if scan_active or close_phase or is_market_unclear:
                 display_num = "?"
                 display_size = "WAITING"
                 display_color = "SCANNING"
@@ -687,7 +686,7 @@ else:
                         {boxes_html}
                     </div>
                     <div style="display: inline-block; background: linear-gradient(135deg, #00FF66, #008855); color: #000000; padding: 8px 22px; border-radius: 20px; font-weight: 900; font-size: 13px; border: 2px solid #FFFFFF;">
-                        🎯 24/7 NON-STOP STABLE GUARD ACTIVE
+                        🎯 10S SCAN & 20S BETTING ACTIVE
                     </div>
                 </div>
             """,
@@ -696,7 +695,6 @@ else:
 
             st.markdown("</div>", unsafe_allow_html=True)
         except Exception as e:
-            # यह सुरक्षा कवच सुनिश्चित करता है कि घंटों चलने पर अगर कोई अचानक गड़बड़ी या रीफ्रेश इश्यू आए, तो ऐप क्रैश होने के बजाय ऑटो-रिकवर हो जाए
             st.warning("⚠️ री-सिंकिंग हो रही है... कृपया प्रतीक्षा करें।")
             time.sleep(1)
             st.rerun()
