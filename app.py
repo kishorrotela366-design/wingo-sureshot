@@ -276,7 +276,7 @@ if not st.session_state.authenticated:
         elif not renew_pass:
             st.error("⚠️ कृपया अपना पासवर्ड दर्ज करें!")
         elif len(clean_utr) != 12:
-            st.error("⚠️ अमान्य UTR! कृपया 12 अंकों का सही UTR नंबर डालें।")
+            st.error("⚠️ अमान्य UTR! कृपया ठीक 12 अंकों का सही UTR नंबर डालें!")
         elif clean_utr in st.session_state.used_utrs_list:
             st.error(
                 "🚨 सुरक्षा चेतावनी: यह UTR नंबर पहले ही इस्तेमाल किया जा चुका"
@@ -368,7 +368,7 @@ else:
         """
         <div style='background: #000000; border: 1.5px solid #00FF66; border-radius: 8px; padding: 6px 12px; margin-top: 6px; margin-bottom: 6px; display: flex; align-items: center;'>
             <span class="blinking-red-light"></span>
-            <span style='color: #00FF66; font-size: 13px; font-weight: 900; letter-spacing: 1px;'>⚡ BDG VIP ZIG-ZAG & TIME-SYNC ENGINE v57.0</span>
+            <span style='color: #00FF66; font-size: 13px; font-weight: 900; letter-spacing: 1px;'>⚡ BDG EXACT LAST 5-DIGIT GUARD v66.0</span>
         </div>
     """,
         unsafe_allow_html=True,
@@ -378,41 +378,25 @@ else:
     col_m1, col_m2, col_m3, col_m4 = st.columns(4)
 
     with col_m1:
-        label_30s = (
-            "🔴 30S"
-            if st.session_state.selected_game_seconds == 30
-            else "30S"
-        )
+        label_30s = "🔴 30S" if st.session_state.selected_game_seconds == 30 else "30S"
         if st.button(label_30s, key="btn_30s", use_container_width=True):
             st.session_state.selected_game_seconds = 30
             st.rerun()
 
     with col_m2:
-        label_1m = (
-            "🔴 1M"
-            if st.session_state.selected_game_seconds == 60
-            else "1M"
-        )
+        label_1m = "🔴 1M" if st.session_state.selected_game_seconds == 60 else "1M"
         if st.button(label_1m, key="btn_1m", use_container_width=True):
             st.session_state.selected_game_seconds = 60
             st.rerun()
 
     with col_m3:
-        label_3m = (
-            "🔴 3M"
-            if st.session_state.selected_game_seconds == 180
-            else "3M"
-        )
+        label_3m = "🔴 3M" if st.session_state.selected_game_seconds == 180 else "3M"
         if st.button(label_3m, key="btn_3m", use_container_width=True):
             st.session_state.selected_game_seconds = 180
             st.rerun()
 
     with col_m4:
-        label_5m = (
-            "🔴 5M"
-            if st.session_state.selected_game_seconds == 300
-            else "5M"
-        )
+        label_5m = "🔴 5M" if st.session_state.selected_game_seconds == 300 else "5M"
         if st.button(label_5m, key="btn_5m", use_container_width=True):
             st.session_state.selected_game_seconds = 300
             st.rerun()
@@ -420,7 +404,7 @@ else:
     seconds = st.session_state.selected_game_seconds
     st.markdown(
         f"<p style='color: #00FF66; font-size: 11px; font-weight: 900; margin:"
-        f" 2px 0;'>Active Timer Mode: {seconds}s</p>",
+        f" 2px 0;'>Active Timer Mode: {seconds}s (🔴 Blinking Active)</p>",
         unsafe_allow_html=True,
     )
 
@@ -437,7 +421,7 @@ else:
     st.text_input(
         "Period Input",
         value=st.session_state.user_base_period,
-        placeholder="बीडीजी गेम के पीछे के सटीक 5 अंक (जैसे 12345) यहाँ डालें...",
+        placeholder="बीडीजी गेम के पीछे के आखिरी 5 अंक यहाँ डालें...",
         max_chars=5,
         key="period_text_box",
         on_change=update_period_callback,
@@ -477,7 +461,7 @@ else:
         st.markdown(
             f"""
             <div style='background: #000000; border: 1.5px solid #00FF66; border-radius: 8px; padding: 6px 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;'>
-                <span style='display: flex; align-items: center;'><span class="blinking-yellow-light"></span><span style='color: #00FFFF; font-size: 11px; font-weight: 900;'>BDG LIVE TIME-SYNC GUARD ({seconds}s)</span></span>
+                <span style='display: flex; align-items: center;'><span class="blinking-yellow-light"></span><span style='color: #00FFFF; font-size: 11px; font-weight: 900;'>BDG LIVE SYNC GUARD ({seconds}s)</span></span>
                 <span style='color: #CCCCCC; font-size: 12px; font-weight: 900;'>👥 {dynamic_online_count:,}</span>
             </div>
         """,
@@ -488,7 +472,7 @@ else:
 
         user_input_str = st.session_state.user_base_period.strip()
 
-        # --- स्ट्रिक्ट 5-डिजिट वैलिडेशन ---
+        # --- बिल्कुल सरल और सख्त नियम: केवल और केवल ठीक 5 अंकों का नंबर होने पर ही खुलेगा ---
         is_invalid_format = False
         if not user_input_str or len(user_input_str) != 5 or not user_input_str.isdigit():
             is_invalid_format = True
@@ -500,7 +484,7 @@ else:
                     <div style="display: flex; align-items: center;">
                         <span class="blinking-red-light"></span>
                         <span style="color: #FFD700; font-size: 13px; font-weight: 900; margin-right: 6px;">LIVE PERIOD:</span>
-                        <span style="color: #FF4444; font-size: 12px; font-weight: 900;">🚨 कृपया बीडीजी गेम के पीछे के सटीक 5 अंक ही डालें!</span>
+                        <span style="color: #FF4444; font-size: 12px; font-weight: 900;">🚨 कृपया बीडीजी गेम के पीछे के आखिरी 5 अंक ही डालें!</span>
                     </div>
                     <div class="timer-box-large">⏰ {timer_str}</div>
                 </div>
@@ -509,8 +493,8 @@ else:
             )
             st.markdown(
                 '<div class="wait-warning-banner"><span'
-                ' class="blinking-red-light"></span>🛑 ENTER EXACT 5-DIGIT PERIOD'
-                ' FOR ' + str(seconds) + 'S MODE<span class="blinking-red-light"'
+                ' class="blinking-red-light"></span>🛑 PANEL LOCKED - ENTER'
+                ' LAST 5 DIGITS<span class="blinking-red-light"'
                 ' style="margin-left: 6px; margin-right: 0;"></span></div>',
                 unsafe_allow_html=True,
             )
@@ -520,7 +504,7 @@ else:
         try:
             base_val = int(user_input_str)
         except:
-            base_val = 10451
+            base_val = 10000
 
         current_time = int(time.time())
         current_block_start = current_time - (current_time % seconds)
@@ -528,6 +512,7 @@ else:
         if st.session_state.base_input_block_time == 0:
             st.session_state.base_input_block_time = current_block_start
 
+        # --- समय और ब्लॉक के हिसाब से लाइव पीरियड आगे बढ़ेगा ---
         elapsed_blocks = (
             current_block_start - st.session_state.base_input_block_time
         ) // seconds
@@ -543,15 +528,15 @@ else:
             if len(st.session_state.processed_periods_history) > 100:
                 st.session_state.processed_periods_history.pop()
 
-        # पिछली चालों का पैटर्न (History) - समय के साथ डायनेमिक रूप से बदलेगा
+        # पिछली चालों का पैटर्न (History)
         history = []
         for h in range(6, 0, -1):
             past_num = target_period_num - h
             p_hash = (past_num * 37 + tab_offset) % 100
             history.append("BIG" if p_hash % 2 == 0 else "SMALL")
 
-        # --- जिग-जैग (Zig-Zag) और लंबी स्ट्रीक वाला कंसेंसस इंजन ---
-        def calculate_consensus_zigzag_guard(p_num, offset_val, hist):
+        # --- 13/15 कड़ा कंसेंसस इंजन ---
+        def calculate_consensus_strict(p_num, offset_val, hist):
             if is_duplicate:
                 return None
 
@@ -559,7 +544,6 @@ else:
             prev_res = hist[-2]
             prev2_res = hist[-3]
 
-            # मार्केट में बहुत ज्यादा उथल-पुथल होने पर नो-बेट
             chaos_score = history.count("BIG")
             if chaos_score in [2, 3, 4] and random.random() < 0.35:
                 return None
@@ -578,7 +562,6 @@ else:
             for s_id in range(1, 16):
                 node_check = (p_num * s_id + offset_val) % 100
                 
-                # --- जिग-जैग और स्ट्रीक का असली कोडिंग नियम ---
                 if is_long_streak:
                     if node_check % 6 == 0:
                         vote = "SMALL" if last_res == "BIG" else "BIG"
@@ -594,7 +577,6 @@ else:
             big_count = server_votes.count("BIG")
             small_count = server_votes.count("SMALL")
 
-            # 13 सर्वर्स की सहमति होने पर ही रिजल्ट खुलेगा
             if big_count >= 13:
                 return "BIG"
             elif small_count >= 13:
@@ -602,7 +584,7 @@ else:
             else:
                 return None
 
-        pred_size = calculate_consensus_zigzag_guard(target_period_num, tab_offset, history)
+        pred_size = calculate_consensus_strict(target_period_num, tab_offset, history)
 
         st.markdown(
             f"""
@@ -744,7 +726,7 @@ else:
                     {boxes_html}
                 </div>
                 <div style="display: inline-block; background: linear-gradient(135deg, #00FF66, #008855); color: #000000; padding: 8px 22px; border-radius: 20px; font-weight: 900; font-size: 13px; border: 2px solid #FFFFFF;">
-                    🎯 ZIG-ZAG & TIME-SYNC ACTIVE
+                    🎯 EXACT LAST 5-DIGIT GUARD ACTIVE
                 </div>
             </div>
         """,
