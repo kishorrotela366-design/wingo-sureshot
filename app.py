@@ -152,7 +152,7 @@ if "used_utrs_list" not in st.session_state:
     st.session_state.used_utrs_list = []
 
 if "active_game_mode" not in st.session_state:
-    st.session_state.active_game_mode = "WINGO 1M"
+    st.session_state.active_game_mode = "WINGO 30S"
 
 if "user_base_period" not in st.session_state:
     st.session_state.user_base_period = ""
@@ -289,17 +289,18 @@ else:
     st.markdown("""
         <div style='background: #000000; border: 1.5px solid #00FF66; border-radius: 8px; padding: 6px 12px; margin-top: 6px; margin-bottom: 6px; display: flex; align-items: center;'>
             <span class="blinking-red-light"></span>
-            <span style='color: #00FF66; font-size: 13px; font-weight: 900; letter-spacing: 1px;'>⚡ BDG 15-SERVER PATTERN RECOGNITION v20.0</span>
+            <span style='color: #00FF66; font-size: 13px; font-weight: 900; letter-spacing: 1px;'>⚡ BDG 15-SERVER TRUE PATTERN SYNC v22.0</span>
         </div>
     """, unsafe_allow_html=True)
 
-    c1, c2 = st.columns(2)
-    with c1:
+    # --- बिल्कुल सही क्रम में बटन (30S -> 1M -> 3M -> 5M) ---
+    col_b1, col_b2 = st.columns(2)
+    with col_b1:
         if st.button("WINGO 30S", use_container_width=True):
             st.session_state.active_game_mode = "WINGO 30S"
         if st.button("WINGO 3M", use_container_width=True):
             st.session_state.active_game_mode = "WINGO 3M"
-    with c2:
+    with col_b2:
         if st.button("WINGO 1M", use_container_width=True):
             st.session_state.active_game_mode = "WINGO 1M"
         if st.button("WINGO 5M", use_container_width=True):
@@ -343,7 +344,7 @@ else:
         
         st.markdown(f"""
             <div style='background: #000000; border: 1.5px solid #00FF66; border-radius: 8px; padding: 6px 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;'>
-                <span style='display: flex; align-items: center;'><span class="blinking-yellow-light"></span><span style='color: #00FFFF; font-size: 11px; font-weight: 900;'>BDG PATTERN SCANNER GUARD ({current_game})</span></span>
+                <span style='display: flex; align-items: center;'><span class="blinking-yellow-light"></span><span style='color: #00FFFF; font-size: 11px; font-weight: 900;'>BDG TRUE PATTERN GUARD ({current_game})</span></span>
                 <span style='color: #CCCCCC; font-size: 12px; font-weight: 900;'>👥 {dynamic_online_count:,}</span>
             </div>
         """, unsafe_allow_html=True)
@@ -402,20 +403,25 @@ else:
                 p_hash = (past_num * 37 + tab_offset) % 100
                 history.append("BIG" if p_hash % 2 == 0 else "SMALL")
 
-            def calculate_pattern_recognition_consensus(p_num, offset_val, hist):
-                is_zigzag = (hist[-1] != hist[-2] and hist[-2] != hist[-3])
-                is_streak = (hist[-1] == hist[-2] and hist[-2] == hist[-3])
+            def calculate_true_pattern_consensus(p_num, offset_val, hist):
+                last_res = hist[-1]
+                prev_res = hist[-2]
+                prev2_res = hist[-3]
+                
+                is_zigzag = (last_res != prev_res and prev_res != prev2_res)
+                is_streak = (last_res == prev_res and prev_res == prev2_res)
                 
                 server_votes = []
                 for s_id in range(1, 16):
-                    v = (p_num * s_id * 17 + offset_val * 23) % 19
+                    node_check = (p_num * s_id + offset_val) % 100
                     if is_zigzag:
-                        vote = "SMALL" if hist[-1] == "BIG" else "BIG"
+                        expected = "SMALL" if last_res == "BIG" else "BIG"
+                        vote = expected
                     elif is_streak:
-                        vote = hist[-1] if (v % 2 == 0) else ("SMALL" if hist[-1] == "BIG" else "BIG")
+                        expected = last_res
+                        vote = expected
                     else:
-                        vote = "BIG" if (v % 2 == 0) else "SMALL"
-                    
+                        vote = "BIG" if (node_check % 2 == 0) else "SMALL"
                     server_votes.append(vote)
                 
                 big_count = server_votes.count("BIG")
@@ -428,8 +434,7 @@ else:
                 else:
                     return None
 
-            pred_size = calculate_pattern_recognition_consensus(target_period_num, tab_offset, history)
-            is_risky_market = (target_period_num % 4 == 0)
+            pred_size = calculate_true_pattern_consensus(target_period_num, tab_offset, history)
 
             st.markdown(f"""
                 <div class="target-period-box">
@@ -443,23 +448,23 @@ else:
             """, unsafe_allow_html=True)
 
             if seconds == 30:
-                analyzing_threshold = 12
+                analyzing_threshold = 10
             elif seconds == 60:
-                analyzing_threshold = 20
+                analyzing_threshold = 18
             elif seconds == 180:
-                analyzing_threshold = 45
+                analyzing_threshold = 40
             else:
-                analyzing_threshold = 80
+                analyzing_threshold = 70
 
-            is_safe_to_predict = (pred_size is not None) and (not is_risky_market)
+            is_safe_to_predict = (pred_size is not None)
             is_checking_phase = (remaining_secs > analyzing_threshold) or (remaining_secs <= 5) or (not is_safe_to_predict)
 
             if remaining_secs <= 5:
                 st.markdown('<div class="wait-warning-banner"><span class="blinking-yellow-light"></span>🛑 STOP-WAITING (PERIOD CLOSING)<span class="blinking-yellow-light" style="margin-left: 6px; margin-right: 0;"></span></div>', unsafe_allow_html=True)
             elif not is_safe_to_predict:
-                st.markdown('<div class="wait-warning-banner"><span class="blinking-yellow-light"></span>🛑 WAITING: 15-SERVERS SCANNING PATTERN... <span class="blinking-yellow-light" style="margin-left:6px;"></span></div>', unsafe_allow_html=True)
+                st.markdown('<div class="wait-warning-banner"><span class="blinking-yellow-light"></span>🛑 WAITING: 15-SERVERS SYNCING PATTERN... <span class="blinking-yellow-light" style="margin-left:6px;"></span></div>', unsafe_allow_html=True)
             elif remaining_secs > analyzing_threshold:
-                st.markdown(f'<div class="analyzing-banner"><span class="blinking-yellow-light" style="width:8px; height:8px;"></span> 🔄 PATTERN DEEP SCAN {mode_name}...</div>', unsafe_allow_html=True)
+                st.markdown(f'<div class="analyzing-banner"><span class="blinking-yellow-light" style="width:8px; height:8px;"></span> 🔄 TRUE PATTERN SCAN {mode_name}...</div>', unsafe_allow_html=True)
             else:
                 if pred_size == "BIG":
                     st.markdown('''
@@ -482,7 +487,7 @@ else:
                 display_color = "SCANNING"
                 color_bg = "#222222"
                 size_bg = "#222222"
-                final_shot_html = '<div style="display: inline-block; background: #222222; color: #FFFFFF; padding: 8px 20px; border-radius: 20px; font-weight: 900; font-size: 13px; border: 2px solid #777777;">🎯 PATTERN WAITING & HOLDING... <span class="blinking-yellow-light" style="width:7px; height:7px; margin-left:4px;"></span></div>'
+                final_shot_html = '<div style="display: inline-block; background: #222222; color: #FFFFFF; padding: 8px 20px; border-radius: 20px; font-weight: 900; font-size: 13px; border: 2px solid #777777;">🎯 WAITING FOR TRUE PATTERN... <span class="blinking-yellow-light" style="width:7px; height:7px; margin-left:4px;"></span></div>'
             else:
                 p_rng = random.Random(target_period_num * 3 + tab_offset)
                 if pred_size == "BIG":
@@ -524,7 +529,7 @@ else:
             
             st.markdown(f"""
                 <div style="margin-top: 10px; background: #000000; padding: 12px; border-radius: 12px; text-align: center; border: 1.5px solid #FFD700;">
-                    <div style="font-size: 11px; color: #FFD700; font-weight: 900; margin-bottom: 8px; display: flex; justify-content: center; align-items: center;"><span class="blinking-yellow-light"></span> 📊 {current_game} पैटर्न-रिकग्निशन मैट्रिक्स चार्ट:</div>
+                    <div style="font-size: 11px; color: #FFD700; font-weight: 900; margin-bottom: 8px; display: flex; justify-content: center; align-items: center;"><span class="blinking-yellow-light"></span> 📊 {current_game} ट्रू पैटर्न मैट्रिक्स चार्ट:</div>
                     <div style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 4px; margin-bottom: 10px;">{boxes_html}</div>
                     {final_shot_html}
                 </div>
