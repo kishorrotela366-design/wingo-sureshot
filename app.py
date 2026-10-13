@@ -276,7 +276,7 @@ else:
     st.markdown("""
         <div style='background: #000000; border: 1.5px solid #00FF66; border-radius: 8px; padding: 6px 12px; margin-top: 6px; margin-bottom: 6px; display: flex; align-items: center;'>
             <span class="blinking-red-light"></span>
-            <span style='color: #00FF66; font-size: 13px; font-weight: 900; letter-spacing: 1px;'>⚡ BDG 15-SERVER CONSENSUS UNIFIED ENGINE v8.0</span>
+            <span style='color: #00FF66; font-size: 13px; font-weight: 900; letter-spacing: 1px;'>⚡ BDG 5-DIGIT AUTO-RUNNING ENGINE v10.0</span>
         </div>
     """, unsafe_allow_html=True)
 
@@ -295,12 +295,20 @@ else:
     current_game = st.session_state.active_game_mode
     st.markdown(f"<p style='color: #FFD700; font-size: 12px; font-weight: 900; margin: 4px 0;'>Active Mode: {current_game}</p>", unsafe_allow_html=True)
 
-    raw_input = st.text_input("Period Input", value=st.session_state.user_base_period, placeholder="BDG लाइव पीरियड नंबर यहाँ डालें...", max_chars=15, key="user_live_period_input_main", label_visibility="collapsed")
-    
-    clean_input = "".join(filter(str.isdigit, raw_input))
-    if clean_input != st.session_state.user_base_period:
-        st.session_state.user_base_period = clean_input
+    def update_period_callback():
+        clean_val = "".join(filter(str.isdigit, st.session_state.period_text_box))
+        st.session_state.user_base_period = clean_val
         st.session_state.base_input_timestamp = int(time.time())
+
+    st.text_input(
+        "Period Input", 
+        value=st.session_state.user_base_period, 
+        placeholder="लाइव पीरियड के पीछे के 5 अंक डालें...", 
+        max_chars=10, 
+        key="period_text_box", 
+        on_change=update_period_callback,
+        label_visibility="collapsed"
+    )
 
     @st.fragment(run_every=1)
     def success_dashboard_core():
@@ -313,7 +321,7 @@ else:
         
         st.markdown(f"""
             <div style='background: #000000; border: 1.5px solid #00FF66; border-radius: 8px; padding: 6px 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;'>
-                <span style='display: flex; align-items: center;'><span class="blinking-red-light"></span><span style='color: #00FFFF; font-size: 11px; font-weight: 900;'>BDG SERVER SYNC GUARD ({current_game})</span></span>
+                <span style='display: flex; align-items: center;'><span class="blinking-red-light"></span><span style='color: #00FFFF; font-size: 11px; font-weight: 900;'>BDG AUTO-SYNC GUARD ({current_game})</span></span>
                 <span style='color: #CCCCCC; font-size: 12px; font-weight: 900;'>👥 {dynamic_online_count:,}</span>
             </div>
         """, unsafe_allow_html=True)
@@ -337,19 +345,19 @@ else:
                     </div>
                 """, unsafe_allow_html=True)
 
-            # --- 15 सर्वर कंसेंसस गार्ड: जब तक सही लाइव पीरियड नहीं होगा, डेक्स बॉक्स पूरी तरह लॉक रहेगा ---
-            if not st.session_state.user_base_period or len(st.session_state.user_base_period) < 10:
+            # --- 5 अंकों के लाइव पीरियड इनपुट की जाँच ---
+            if not st.session_state.user_base_period or len(st.session_state.user_base_period) < 3:
                 st.markdown(f"""
                     <div class="target-period-box">
                         <div style="display: flex; align-items: center;">
                             <span class="blinking-red-light"></span>
                             <span style="color: #FFD700; font-size: 13px; font-weight: 900; margin-right: 6px;">LIVE PERIOD:</span>
-                            <span style="color: #FF4444; font-size: 13px; font-weight: 900;">🚨 कृपया असली BDG लाइव पीरियड नंबर दर्ज करें!</span>
+                            <span style="color: #FF4444; font-size: 13px; font-weight: 900;">🚨 कृपया गेम के पीछे के लाइव 5 अंक दर्ज करें!</span>
                         </div>
                         <div class="timer-box-large">⏰ {timer_str}</div>
                     </div>
                 """, unsafe_allow_html=True)
-                st.markdown('<div class="wait-warning-banner"><span class="blinking-red-light"></span>🛑 15-SERVERS LOCKED: ENTER VALID BDG PERIOD<span class="blinking-red-light" style="margin-left: 6px; margin-right: 0;"></span></div>', unsafe_allow_html=True)
+                st.markdown('<div class="wait-warning-banner"><span class="blinking-red-light"></span>🛑 PANEL LOCKED - ENTER 5-DIGIT LIVE PERIOD<span class="blinking-red-light" style="margin-left: 6px; margin-right: 0;"></span></div>', unsafe_allow_html=True)
                 st.markdown("</div>", unsafe_allow_html=True)
                 return
 
@@ -362,33 +370,31 @@ else:
             if st.session_state.base_input_timestamp == 0:
                 st.session_state.base_input_timestamp = current_time
 
+            # --- ऑटो-इन्क्रिमेंटल टाइम रनिंग कैलकुलेशन ---
             elapsed_blocks = (current_time - st.session_state.base_input_timestamp) // seconds
             target_period_num = base_val + elapsed_blocks
             target_period_str = str(target_period_num)
 
-            # --- पूर्ण सर्वर मिलन और लास्ट-5-डिजिट स्ट्रिक्ट कंसेंसस चेक ---
-            expected_last_5 = str(target_period_num)[-5:]
-            user_last_5 = st.session_state.user_base_period[-5:]
+            # --- 5-डिजिट मैचिंग चेक ---
+            user_input_val = st.session_state.user_base_period
+            is_match_valid = (len(user_input_val) >= 3)
 
-            # यदि सभी 15 सर्वर मिलकर इनपुट किए गए पीरियड के पिछले 5 अंकों को लाइव टाइमिंग से वेरीफाई नहीं कर पाते, तो कोई भी प्रेडिक्शन या बिग/स्मॉल शो नहीं होगा
-            is_consensus_valid = (user_last_5 == expected_last_5) or (abs(int(target_period_num) - int(base_val)) <= 3)
-
-            if not is_consensus_valid:
+            if not is_match_valid:
                 st.markdown(f"""
                     <div class="target-period-box">
                         <div style="display: flex; align-items: center;">
                             <span class="blinking-red-light"></span>
                             <span style="color: #FFD700; font-size: 13px; font-weight: 900; margin-right: 6px;">INPUT PERIOD:</span>
-                            <span style="color: #FF4444; font-size: 13px; font-weight: 900;">❌ सर्वर मिसमैच: लाइव गेम से पीरियड मेल नहीं खा रहा!</span>
+                            <span style="color: #FF4444; font-size: 13px; font-weight: 900;">❌ अमान्य पीरियड नंबर!</span>
                         </div>
                         <div class="timer-box-large">⏰ {timer_str}</div>
                     </div>
                 """, unsafe_allow_html=True)
-                st.markdown('<div class="wait-warning-banner"><span class="blinking-red-light"></span>🛑 SERVERS CONSENSUS FAILED - DECK LOCKED<span class="blinking-red-light" style="margin-left: 6px; margin-right: 0;"></span></div>', unsafe_allow_html=True)
+                st.markdown('<div class="wait-warning-banner"><span class="blinking-red-light"></span>🛑 PERIOD MISMATCH - DECK LOCKED<span class="blinking-red-light" style="margin-left: 6px; margin-right: 0;"></span></div>', unsafe_allow_html=True)
                 st.markdown("</div>", unsafe_allow_html=True)
                 return
 
-            # --- BDG लाइव पीरियड-बेस्ड 15-सर्वर सिंक्रोनाइज़्ड इंजन ---
+            # --- BDG लाइव पीरियड-बेस्ड सिंक्रोनाइज़्ड इंजन ---
             def calculate_bdg_live_trend(p_num, offset_val):
                 history_results = []
                 for h in range(12, 0, -1):
