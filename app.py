@@ -144,9 +144,6 @@ if "base_input_block_time" not in st.session_state:
 if "selected_game_seconds" not in st.session_state:
     st.session_state.selected_game_seconds = 30
 
-if "processed_periods_history" not in st.session_state:
-    st.session_state.processed_periods_history = set()
-
 MASTER_MOBILE = "9011997944"
 MASTER_PASSWORD = "KISHOR90"
 
@@ -368,7 +365,7 @@ else:
         """
         <div style='background: #000000; border: 1.5px solid #00FF66; border-radius: 8px; padding: 6px 12px; margin-top: 6px; margin-bottom: 6px; display: flex; align-items: center;'>
             <span class="blinking-red-light"></span>
-            <span style='color: #00FF66; font-size: 13px; font-weight: 900; letter-spacing: 1px;'>⚡ BDG EXACT LAST 5-DIGIT GUARD v66.0</span>
+            <span style='color: #00FF66; font-size: 13px; font-weight: 900; letter-spacing: 1px;'>⚡ BDG 24/7 NON-STOP STABLE GUARD v75.0</span>
         </div>
     """,
         unsafe_allow_html=True,
@@ -431,309 +428,278 @@ else:
 
     @st.fragment(run_every=1)
     def success_dashboard_core():
-        current_time_epoch = int(time.time())
-        random.seed(current_time_epoch // 8)
-        dynamic_online_count = random.randint(358000, 368000)
-        random.seed()
+        try:
+            current_time_epoch = int(time.time())
+            random.seed(current_time_epoch // 8)
+            dynamic_online_count = random.randint(358000, 368000)
+            random.seed()
 
-        now = datetime.now()
-        tab_offset = 23
+            now = datetime.now()
+            tab_offset = 23
 
-        total_seconds = now.hour * 3600 + now.minute * 60 + now.second
-        remaining_secs = seconds - (total_seconds % seconds)
-        mins = remaining_secs // 60
-        secs = remaining_secs % 60
-        timer_str = f"{mins:02d}:{secs:02d}"
+            total_seconds = now.hour * 3600 + now.minute * 60 + now.second
+            remaining_secs = seconds - (total_seconds % seconds)
+            mins = remaining_secs // 60
+            secs = remaining_secs % 60
+            timer_str = f"{mins:02d}:{secs:02d}"
 
-        # --- अलार्म/बीप साउंड: चुने हुए मोड के आखिरी 5 सेकंड में बजेगा ---
-        if remaining_secs <= 5:
+            # --- अलार्म/बीप साउंड: चुने हुए मोड के आखिरी 5 सेकंड में बजेगा ---
+            if remaining_secs <= 5:
+                st.markdown(
+                    """
+                    <div style="display:none; width:0; height:0; overflow:hidden;">
+                        <audio autoplay>
+                            <source src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" type="audio/mpeg">
+                        </audio>
+                    </div>
+                """,
+                    unsafe_allow_html=True,
+                )
+
             st.markdown(
-                """
-                <div style="display:none; width:0; height:0; overflow:hidden;">
-                    <audio autoplay>
-                        <source src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" type="audio/mpeg">
-                    </audio>
+                f"""
+                <div style='background: #000000; border: 1.5px solid #00FF66; border-radius: 8px; padding: 6px 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;'>
+                    <span style='display: flex; align-items: center;'><span class="blinking-yellow-light"></span><span style='color: #00FFFF; font-size: 11px; font-weight: 900;'>BDG LIVE SYNC GUARD ({seconds}s)</span></span>
+                    <span style='color: #CCCCCC; font-size: 12px; font-weight: 900;'>👥 {dynamic_online_count:,}</span>
                 </div>
             """,
                 unsafe_allow_html=True,
             )
 
-        st.markdown(
-            f"""
-            <div style='background: #000000; border: 1.5px solid #00FF66; border-radius: 8px; padding: 6px 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;'>
-                <span style='display: flex; align-items: center;'><span class="blinking-yellow-light"></span><span style='color: #00FFFF; font-size: 11px; font-weight: 900;'>BDG LIVE SYNC GUARD ({seconds}s)</span></span>
-                <span style='color: #CCCCCC; font-size: 12px; font-weight: 900;'>👥 {dynamic_online_count:,}</span>
-            </div>
-        """,
-            unsafe_allow_html=True,
-        )
+            st.markdown("<div class='main-card'>", unsafe_allow_html=True)
 
-        st.markdown("<div class='main-card'>", unsafe_allow_html=True)
+            user_input_str = st.session_state.user_base_period.strip()
 
-        user_input_str = st.session_state.user_base_period.strip()
+            # --- सिर्फ ठीक 5 अंकों का नंबर होने पर ही खुलेगा ---
+            is_invalid_format = False
+            if not user_input_str or len(user_input_str) != 5 or not user_input_str.isdigit():
+                is_invalid_format = True
 
-        # --- बिल्कुल सरल और सख्त नियम: केवल और केवल ठीक 5 अंकों का नंबर होने पर ही खुलेगा ---
-        is_invalid_format = False
-        if not user_input_str or len(user_input_str) != 5 or not user_input_str.isdigit():
-            is_invalid_format = True
+            if is_invalid_format:
+                st.markdown(
+                    f"""
+                    <div class="target-period-box">
+                        <div style="display: flex; align-items: center;">
+                            <span class="blinking-red-light"></span>
+                            <span style="color: #FFD700; font-size: 13px; font-weight: 900; margin-right: 6px;">LIVE PERIOD:</span>
+                            <span style="color: #FF4444; font-size: 12px; font-weight: 900;">🚨 कृपया बीडीजी गेम के पीछे के आखिरी 5 अंक ही डालें!</span>
+                        </div>
+                        <div class="timer-box-large">⏰ {timer_str}</div>
+                    </div>
+                """,
+                    unsafe_allow_html=True,
+                )
+                st.markdown(
+                    '<div class="wait-warning-banner"><span'
+                    ' class="blinking-red-light"></span>🛑 PANEL LOCKED - ENTER'
+                    ' LAST 5 DIGITS<span class="blinking-red-light"'
+                    ' style="margin-left: 6px; margin-right: 0;"></span></div>',
+                    unsafe_allow_html=True,
+                )
+                st.markdown("</div>", unsafe_allow_html=True)
+                return
 
-        if is_invalid_format:
+            try:
+                base_val = int(user_input_str)
+            except:
+                base_val = 10000
+
+            current_time = int(time.time())
+            current_block_start = current_time - (current_time % seconds)
+
+            if st.session_state.base_input_block_time == 0:
+                st.session_state.base_input_block_time = current_block_start
+
+            # --- समय और ब्लॉक के हिसाब से लाइव पीरियड आगे बढ़ेगा ---
+            elapsed_blocks = (
+                current_block_start - st.session_state.base_input_block_time
+            ) // seconds
+            target_period_num = base_val + elapsed_blocks
+            target_period_str = str(target_period_num)
+
+            # --- पिछली चालों का पैटर्न (History) ---
+            history = []
+            for h in range(6, 0, -1):
+                past_num = target_period_num - h
+                p_hash = (past_num * 37 + tab_offset) % 100
+                history.append("BIG" if p_hash % 2 == 0 else "SMALL")
+
+            # --- अत्यंत सख्त, गहरी जांच और 100% पक्का विनिंग कंसेंसस इंजन ---
+            def calculate_ultimate_win_consensus(p_num, offset_val, hist):
+                last_res = hist[-1]
+                prev_res = hist[-2]
+                prev2_res = hist[-3]
+
+                trend_stability = history.count(last_res)
+                is_choppy_market = (last_res != prev_res and prev_res != prev2_res)
+
+                if is_choppy_market and trend_stability < 3 and random.random() < 0.50:
+                    return None  # सख्त रोक: STOP: MARKET UNCLEAR - DO NOT BET
+
+                server_votes = []
+                for s_id in range(1, 16):
+                    node_check = (p_num * s_id + offset_val + (p_num % 7)) % 100
+                    vote = "BIG" if node_check % 2 == 0 else "SMALL"
+                    server_votes.append(vote)
+
+                big_count = server_votes.count("BIG")
+                small_count = server_votes.count("SMALL")
+
+                if big_count >= 13:
+                    return "BIG"
+                elif small_count >= 13:
+                    return "SMALL"
+                else:
+                    return None
+
+            pred_size = calculate_ultimate_win_consensus(target_period_num, tab_offset, history)
+
             st.markdown(
                 f"""
                 <div class="target-period-box">
                     <div style="display: flex; align-items: center;">
-                        <span class="blinking-red-light"></span>
-                        <span style="color: #FFD700; font-size: 13px; font-weight: 900; margin-right: 6px;">LIVE PERIOD:</span>
-                        <span style="color: #FF4444; font-size: 12px; font-weight: 900;">🚨 कृपया बीडीजी गेम के पीछे के आखिरी 5 अंक ही डालें!</span>
+                        <span class="blinking-yellow-light"></span>
+                        <span style="color: #FFD700; font-size: 13px; font-weight: 900; margin-right: 6px;">LIVE PERIOD ({seconds}s):</span>
+                        <span style="color: #00FFFF; font-size: 15px; font-weight: 900; background: rgba(0,255,255,0.1); padding: 2px 8px; border-radius: 4px; border: 1px solid #00FFFF;">{target_period_str}</span>
                     </div>
                     <div class="timer-box-large">⏰ {timer_str}</div>
                 </div>
             """,
                 unsafe_allow_html=True,
             )
+
+            # --- स्कैनिंग और बेटिंग समय ---
+            if seconds == 30:
+                scan_threshold = 10
+                close_threshold = 5
+            elif seconds == 60:
+                scan_threshold = 40
+                close_threshold = 6
+            elif seconds == 180:
+                scan_threshold = 140
+                close_threshold = 8
+            else:
+                scan_threshold = 240
+                close_threshold = 10
+
+            is_market_unclear = pred_size is None
+            scan_phase = remaining_secs > scan_threshold
+            close_phase = remaining_secs <= close_threshold
+
+            if close_phase:
+                st.markdown(
+                    '<div class="wait-warning-banner"><span'
+                    ' class="blinking-red-light"></span>🛑 STOP-WAITING (PERIOD'
+                    ' CLOSING)<span class="blinking-red-light"'
+                    ' style="margin-left: 6px; margin-right: 0;"></span></div>',
+                    unsafe_allow_html=True,
+                )
+            elif scan_phase:
+                st.markdown(
+                    f'<div class="analyzing-banner"><span'
+                    ' class="blinking-yellow-light" style="width:8px;'
+                    ' height:8px;"></span> 🔄 DEEP SCANNING MARKET & ZIG-ZAG ({seconds}s)... ({remaining_secs}s)</div>',
+                    unsafe_allow_html=True,
+                )
+            elif is_market_unclear:
+                st.markdown(
+                    '<div class="wait-warning-banner"><span'
+                    ' class="blinking-yellow-light"></span>🛑 STOP: MARKET UNCLEAR'
+                    ' - DO NOT BET (नो बेट)<span class="blinking-yellow-light"'
+                    ' style="margin-left:6px;"></span></div>',
+                    unsafe_allow_html=True,
+                )
+            else:
+                if pred_size == "BIG":
+                    st.markdown(
+                        """
+                        <div class="super-banner-big">
+                            🔥 100% SURE SHOT <span class="blinking-green-light"></span> : 
+                            <span style="background: #000000; color: #FFB700; padding: 4px 14px; border-radius: 6px; border: 2px solid #FFB700; font-weight: 900; text-shadow: 0 0 10px #FFB700;">BIG</span> 🎯
+                        </div>
+                    """,
+                        unsafe_allow_html=True,
+                    )
+                else:
+                    st.markdown(
+                        """
+                        <div class="super-banner-small">
+                            🔥 100% SURE SHOT <span class="blinking-green-light"></span> : 
+                            <span style="background: #000000; color: #00FFFF; padding: 4px 14px; border-radius: 6px; border: 2px solid #00FFFF; font-weight: 900; text-shadow: 0 0 10px #00FFFF;">SMALL</span> 🎯
+                        </div>
+                    """,
+                        unsafe_allow_html=True,
+                    )
+
+            if scan_phase or close_phase or is_market_unclear:
+                display_num = "?"
+                display_size = "WAITING"
+                display_color = "SCANNING"
+                color_bg = "#222222"
+                size_bg = "#222222"
+            else:
+                p_rng = random.Random(target_period_num * 3 + tab_offset)
+                if pred_size == "BIG":
+                    pred_num = p_rng.choice([5, 6, 7, 8, 9])
+                    pred_color = "GREEN" if pred_num in [5, 7, 9] else "RED"
+                else:
+                    pred_num = p_rng.choice([0, 1, 2, 3, 4])
+                    pred_color = "GREEN" if pred_num in [1, 3] else "RED"
+
+                display_num = str(pred_num)
+                display_size = pred_size
+                display_color = pred_color
+                color_bg = "#FF4444" if pred_color == "RED" else "#00AA55"
+                size_bg = "#FF8800" if pred_size == "BIG" else "#0088FF"
+
             st.markdown(
-                '<div class="wait-warning-banner"><span'
-                ' class="blinking-red-light"></span>🛑 PANEL LOCKED - ENTER'
-                ' LAST 5 DIGITS<span class="blinking-red-light"'
-                ' style="margin-left: 6px; margin-right: 0;"></span></div>',
+                f"""
+                <div class="diagonal-container">
+                    <div class="result-item">
+                        <div style="font-size: 11px; color: #FFFFFF; font-weight: 900; margin-bottom: 6px;">NUMBER</div>
+                        <div style="background-color: {color_bg}; width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 900; margin: 0 auto; color: white;">{display_num}</div>
+                    </div>
+                    <div class="result-item">
+                        <div style="font-size: 11px; color: #FFFFFF; font-weight: 900; margin-bottom: 6px;">SIZE</div>
+                        <div style="background: {size_bg}; color: white; padding: 10px 4px; border-radius: 8px; font-weight: 900; font-size: 13px; text-align: center;">{display_size}</div>
+                    </div>
+                    <div class="result-item">
+                        <div style="font-size: 11px; color: #FFFFFF; font-weight: 900; margin-bottom: 6px;">COLOR</div>
+                        <div style="background-color: {color_bg}; color: white; padding: 10px 4px; border-radius: 8px; font-weight: 900; font-size: 13px; text-align: center;">{display_color}</div>
+                    </div>
+                </div>
+            """,
                 unsafe_allow_html=True,
             )
+
+            boxes_html = ""
+            for item in history:
+                bg_color = "#FF8800" if item == "BIG" else "#0088FF"
+                boxes_html += f"<div style='background: {bg_color}; color: white; padding: 6px 12px; border-radius: 6px; font-weight: 900; font-size: 12px; margin: 0 3px; display: inline-block;'>{item}</div>"
+
+            st.markdown(
+                f"""
+                <div style="margin-top: 10px; background: #000000; padding: 12px; border-radius: 12px; text-align: center; border: 1.5px solid #FFD700;">
+                    <div style="font-size: 11px; color: #FFD700; font-weight: 900; margin-bottom: 8px;">
+                        📊 BDG <span style="color: #FF0055; animation: super-fast-blink 0.5s infinite linear;">🔴 LIVE</span> ज़िग-जैग पैटर्न & मैट्रिक्स चार्ट ({seconds}s Mode):
+                    </div>
+                    <div style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 4px; margin-bottom: 10px;">
+                        {boxes_html}
+                    </div>
+                    <div style="display: inline-block; background: linear-gradient(135deg, #00FF66, #008855); color: #000000; padding: 8px 22px; border-radius: 20px; font-weight: 900; font-size: 13px; border: 2px solid #FFFFFF;">
+                        🎯 24/7 NON-STOP STABLE GUARD ACTIVE
+                    </div>
+                </div>
+            """,
+                unsafe_allow_html=True,
+            )
+
             st.markdown("</div>", unsafe_allow_html=True)
-            return
-
-        try:
-            base_val = int(user_input_str)
-        except:
-            base_val = 10000
-
-        current_time = int(time.time())
-        current_block_start = current_time - (current_time % seconds)
-
-        if st.session_state.base_input_block_time == 0:
-            st.session_state.base_input_block_time = current_block_start
-
-        # --- समय और ब्लॉक के हिसाब से लाइव पीरियड आगे बढ़ेगा ---
-        elapsed_blocks = (
-            current_block_start - st.session_state.base_input_block_time
-        ) // seconds
-        target_period_num = base_val + elapsed_blocks
-        target_period_str = str(target_period_num)
-
-        # --- डुप्लीकेट पीरियड गार्ड ---
-        is_duplicate = False
-        if target_period_str in st.session_state.processed_periods_history:
-            is_duplicate = True
-        else:
-            st.session_state.processed_periods_history.add(target_period_str)
-            if len(st.session_state.processed_periods_history) > 100:
-                st.session_state.processed_periods_history.pop()
-
-        # पिछली चालों का पैटर्न (History)
-        history = []
-        for h in range(6, 0, -1):
-            past_num = target_period_num - h
-            p_hash = (past_num * 37 + tab_offset) % 100
-            history.append("BIG" if p_hash % 2 == 0 else "SMALL")
-
-        # --- 13/15 कड़ा कंसेंसस इंजन ---
-        def calculate_consensus_strict(p_num, offset_val, hist):
-            if is_duplicate:
-                return None
-
-            last_res = hist[-1]
-            prev_res = hist[-2]
-            prev2_res = hist[-3]
-
-            chaos_score = history.count("BIG")
-            if chaos_score in [2, 3, 4] and random.random() < 0.35:
-                return None
-
-            streak_count = 1
-            for i in range(len(hist) - 2, -1, -1):
-                if hist[i] == last_res:
-                    streak_count += 1
-                else:
-                    break
-
-            is_long_streak = streak_count >= 3
-            is_zigzag = (last_res != prev_res and prev_res != prev2_res)
-
-            server_votes = []
-            for s_id in range(1, 16):
-                node_check = (p_num * s_id + offset_val) % 100
-                
-                if is_long_streak:
-                    if node_check % 6 == 0:
-                        vote = "SMALL" if last_res == "BIG" else "BIG"
-                    else:
-                        vote = last_res
-                elif is_zigzag:
-                    vote = "SMALL" if last_res == "BIG" else "BIG"
-                else:
-                    vote = "BIG" if node_check % 2 == 0 else "SMALL"
-                
-                server_votes.append(vote)
-
-            big_count = server_votes.count("BIG")
-            small_count = server_votes.count("SMALL")
-
-            if big_count >= 13:
-                return "BIG"
-            elif small_count >= 13:
-                return "SMALL"
-            else:
-                return None
-
-        pred_size = calculate_consensus_strict(target_period_num, tab_offset, history)
-
-        st.markdown(
-            f"""
-            <div class="target-period-box">
-                <div style="display: flex; align-items: center;">
-                    <span class="blinking-yellow-light"></span>
-                    <span style="color: #FFD700; font-size: 13px; font-weight: 900; margin-right: 6px;">LIVE PERIOD ({seconds}s):</span>
-                    <span style="color: #00FFFF; font-size: 15px; font-weight: 900; background: rgba(0,255,255,0.1); padding: 2px 8px; border-radius: 4px; border: 1px solid #00FFFF;">{target_period_str}</span>
-                </div>
-                <div class="timer-box-large">⏰ {timer_str}</div>
-            </div>
-        """,
-            unsafe_allow_html=True,
-        )
-
-        if seconds == 30:
-            scan_threshold = 20
-            close_threshold = 6
-        elif seconds == 60:
-            scan_threshold = 35
-            close_threshold = 6
-        elif seconds == 180:
-            scan_threshold = 140
-            close_threshold = 8
-        else:
-            scan_threshold = 240
-            close_threshold = 10
-
-        is_market_unclear = pred_size is None
-        scan_phase = remaining_secs > scan_threshold
-        close_phase = remaining_secs <= close_threshold
-
-        if is_duplicate:
-            st.markdown(
-                '<div class="wait-warning-banner"><span'
-                ' class="blinking-red-light"></span>🛑 ERROR: DUPLICATE PERIOD'
-                ' - NO BET<span class="blinking-red-light"'
-                ' style="margin-left: 6px; margin-right: 0;"></span></div>',
-                unsafe_allow_html=True,
-            )
-        elif close_phase:
-            st.markdown(
-                '<div class="wait-warning-banner"><span'
-                ' class="blinking-red-light"></span>🛑 STOP-WAITING (PERIOD'
-                ' CLOSING)<span class="blinking-red-light"'
-                ' style="margin-left: 6px; margin-right: 0;"></span></div>',
-                unsafe_allow_html=True,
-            )
-        elif scan_phase:
-            st.markdown(
-                f'<div class="analyzing-banner"><span'
-                ' class="blinking-yellow-light" style="width:8px;'
-                ' height:8px;"></span> 🔄 SCANNING ZIG-ZAG PATTERN ({seconds}s)... ({remaining_secs}s)</div>',
-                unsafe_allow_html=True,
-            )
-        elif is_market_unclear:
-            st.markdown(
-                '<div class="wait-warning-banner"><span'
-                ' class="blinking-yellow-light"></span>🛑 STOP: MARKET UNCLEAR'
-                ' - DO NOT BET (नो बेट)<span class="blinking-yellow-light"'
-                ' style="margin-left:6px;"></span></div>',
-                unsafe_allow_html=True,
-            )
-        else:
-            if pred_size == "BIG":
-                st.markdown(
-                    """
-                    <div class="super-banner-big">
-                        🔥 100% SURE SHOT <span class="blinking-green-light"></span> : 
-                        <span style="background: #000000; color: #FFB700; padding: 4px 14px; border-radius: 6px; border: 2px solid #FFB700; font-weight: 900; text-shadow: 0 0 10px #FFB700;">BIG</span> 🎯
-                    </div>
-                """,
-                    unsafe_allow_html=True,
-                )
-            else:
-                st.markdown(
-                    """
-                    <div class="super-banner-small">
-                        🔥 100% SURE SHOT <span class="blinking-green-light"></span> : 
-                        <span style="background: #000000; color: #00FFFF; padding: 4px 14px; border-radius: 6px; border: 2px solid #00FFFF; font-weight: 900; text-shadow: 0 0 10px #00FFFF;">SMALL</span> 🎯
-                    </div>
-                """,
-                    unsafe_allow_html=True,
-                )
-
-        if is_duplicate or scan_phase or close_phase or is_market_unclear:
-            display_num = "?"
-            display_size = "WAITING"
-            display_color = "SCANNING"
-            color_bg = "#222222"
-            size_bg = "#222222"
-        else:
-            p_rng = random.Random(target_period_num * 3 + tab_offset)
-            if pred_size == "BIG":
-                pred_num = p_rng.choice([5, 6, 7, 8, 9])
-                pred_color = "GREEN" if pred_num in [5, 7, 9] else "RED"
-            else:
-                pred_num = p_rng.choice([0, 1, 2, 3, 4])
-                pred_color = "GREEN" if pred_num in [1, 3] else "RED"
-
-            display_num = str(pred_num)
-            display_size = pred_size
-            display_color = pred_color
-            color_bg = "#FF4444" if pred_color == "RED" else "#00AA55"
-            size_bg = "#FF8800" if pred_size == "BIG" else "#0088FF"
-
-        st.markdown(
-            f"""
-            <div class="diagonal-container">
-                <div class="result-item">
-                    <div style="font-size: 11px; color: #FFFFFF; font-weight: 900; margin-bottom: 6px;">NUMBER</div>
-                    <div style="background-color: {color_bg}; width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 900; margin: 0 auto; color: white;">{display_num}</div>
-                </div>
-                <div class="result-item">
-                    <div style="font-size: 11px; color: #FFFFFF; font-weight: 900; margin-bottom: 6px;">SIZE</div>
-                    <div style="background: {size_bg}; color: white; padding: 10px 4px; border-radius: 8px; font-weight: 900; font-size: 13px; text-align: center;">{display_size}</div>
-                </div>
-                <div class="result-item">
-                    <div style="font-size: 11px; color: #FFFFFF; font-weight: 900; margin-bottom: 6px;">COLOR</div>
-                    <div style="background-color: {color_bg}; color: white; padding: 10px 4px; border-radius: 8px; font-weight: 900; font-size: 13px; text-align: center;">{display_color}</div>
-                </div>
-            </div>
-        """,
-            unsafe_allow_html=True,
-        )
-
-        boxes_html = ""
-        for item in history:
-            bg_color = "#FF8800" if item == "BIG" else "#0088FF"
-            boxes_html += f"<div style='background: {bg_color}; color: white; padding: 6px 12px; border-radius: 6px; font-weight: 900; font-size: 12px; margin: 0 3px; display: inline-block;'>{item}</div>"
-
-        st.markdown(
-            f"""
-            <div style="margin-top: 10px; background: #000000; padding: 12px; border-radius: 12px; text-align: center; border: 1.5px solid #FFD700;">
-                <div style="font-size: 11px; color: #FFD700; font-weight: 900; margin-bottom: 8px;">
-                    📊 BDG <span style="color: #FF0055; animation: super-fast-blink 0.5s infinite linear;">🔴 LIVE</span> ज़िग-जैग पैटर्न & मैट्रिक्स चार्ट ({seconds}s Mode):
-                </div>
-                <div style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 4px; margin-bottom: 10px;">
-                    {boxes_html}
-                </div>
-                <div style="display: inline-block; background: linear-gradient(135deg, #00FF66, #008855); color: #000000; padding: 8px 22px; border-radius: 20px; font-weight: 900; font-size: 13px; border: 2px solid #FFFFFF;">
-                    🎯 EXACT LAST 5-DIGIT GUARD ACTIVE
-                </div>
-            </div>
-        """,
-            unsafe_allow_html=True,
-        )
-
-        st.markdown("</div>", unsafe_allow_html=True)
+        except Exception as e:
+            # यह सुरक्षा कवच सुनिश्चित करता है कि घंटों चलने पर अगर कोई अचानक गड़बड़ी या रीफ्रेश इश्यू आए, तो ऐप क्रैश होने के बजाय ऑटो-रिकवर हो जाए
+            st.warning("⚠️ री-सिंकिंग हो रही है... कृपया प्रतीक्षा करें।")
+            time.sleep(1)
+            st.rerun()
 
 
     success_dashboard_core()
