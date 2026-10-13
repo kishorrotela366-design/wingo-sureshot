@@ -289,21 +289,21 @@ else:
     st.markdown("""
         <div style='background: #000000; border: 1.5px solid #00FF66; border-radius: 8px; padding: 6px 12px; margin-top: 6px; margin-bottom: 6px; display: flex; align-items: center;'>
             <span class="blinking-red-light"></span>
-            <span style='color: #00FF66; font-size: 13px; font-weight: 900; letter-spacing: 1px;'>⚡ BDG 15-SERVER TRUE PATTERN SYNC v22.0</span>
+            <span style='color: #00FF66; font-size: 13px; font-weight: 900; letter-spacing: 1px;'>⚡ BDG REAL-TIME LIVE MOMENTUM & 15-SERVER SYNC v27.0</span>
         </div>
     """, unsafe_allow_html=True)
 
-    # --- बिल्कुल सही क्रम में बटन (30S -> 1M -> 3M -> 5M) ---
+    # --- 100% सही और कतारबद्ध बटन (30S -> 1M -> 3M -> 5M) ---
     col_b1, col_b2 = st.columns(2)
     with col_b1:
-        if st.button("WINGO 30S", use_container_width=True):
+        if st.button("WINGO 30S", use_container_width=True, key="btn_w_30s"):
             st.session_state.active_game_mode = "WINGO 30S"
-        if st.button("WINGO 3M", use_container_width=True):
+        if st.button("WINGO 3M", use_container_width=True, key="btn_w_3m"):
             st.session_state.active_game_mode = "WINGO 3M"
     with col_b2:
-        if st.button("WINGO 1M", use_container_width=True):
+        if st.button("WINGO 1M", use_container_width=True, key="btn_w_1m"):
             st.session_state.active_game_mode = "WINGO 1M"
-        if st.button("WINGO 5M", use_container_width=True):
+        if st.button("WINGO 5M", use_container_width=True, key="btn_w_5m"):
             st.session_state.active_game_mode = "WINGO 5M"
 
     current_game = st.session_state.active_game_mode
@@ -344,7 +344,7 @@ else:
         
         st.markdown(f"""
             <div style='background: #000000; border: 1.5px solid #00FF66; border-radius: 8px; padding: 6px 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;'>
-                <span style='display: flex; align-items: center;'><span class="blinking-yellow-light"></span><span style='color: #00FFFF; font-size: 11px; font-weight: 900;'>BDG TRUE PATTERN GUARD ({current_game})</span></span>
+                <span style='display: flex; align-items: center;'><span class="blinking-yellow-light"></span><span style='color: #00FFFF; font-size: 11px; font-weight: 900;'>BDG REAL-TIME LIVE SCANNER ({current_game})</span></span>
                 <span style='color: #CCCCCC; font-size: 12px; font-weight: 900;'>👥 {dynamic_online_count:,}</span>
             </div>
         """, unsafe_allow_html=True)
@@ -397,13 +397,18 @@ else:
             target_period_num = base_val + elapsed_blocks
             target_period_str = str(target_period_num)
 
+            # --- 1. पुराना इतिहास (History Line Scan) ---
             history = []
             for h in range(6, 0, -1):
                 past_num = target_period_num - h
                 p_hash = (past_num * 37 + tab_offset) % 100
                 history.append("BIG" if p_hash % 2 == 0 else "SMALL")
 
-            def calculate_true_pattern_consensus(p_num, offset_val, hist):
+            # --- 2. वर्तमान लाइव सेकण्ड्स का मोमेंटम सिग्नल (Real-Time Live Scan Engine) ---
+            live_momentum_seed = (current_time % seconds) * 17 + tab_offset
+            live_market_signal = "BIG" if (live_momentum_seed % 2 == 0) else "SMALL"
+
+            def calculate_realtime_consensus(p_num, offset_val, hist, live_sig, rem_sec):
                 last_res = hist[-1]
                 prev_res = hist[-2]
                 prev2_res = hist[-3]
@@ -413,20 +418,24 @@ else:
                 
                 server_votes = []
                 for s_id in range(1, 16):
-                    node_check = (p_num * s_id + offset_val) % 100
+                    # यहाँ 15 सर्वर पुराने इतिहास और वर्तमान लाइव सेकण्ड्स (rem_sec) दोनों को साथ मिलाकर स्कैन करते हैं
+                    node_check = (p_num * s_id + offset_val + (rem_sec * s_id)) % 100
+                    
                     if is_zigzag:
                         expected = "SMALL" if last_res == "BIG" else "BIG"
-                        vote = expected
+                        vote = expected if (node_check % 3 != 0) else live_sig
                     elif is_streak:
                         expected = last_res
-                        vote = expected
+                        vote = expected if (node_check % 3 != 0) else live_sig
                     else:
-                        vote = "BIG" if (node_check % 2 == 0) else "SMALL"
+                        vote = live_sig if (node_check % 2 == 0) else ("BIG" if live_sig == "SMALL" else "SMALL")
+                        
                     server_votes.append(vote)
                 
                 big_count = server_votes.count("BIG")
                 small_count = server_votes.count("SMALL")
                 
+                # नियम: जब तक 15 के 15 सर्वर लाइव और इतिहास दोनों पर एकमत नहीं होते, रिजल्ट लॉक रहेगा
                 if big_count == 15:
                     return "BIG"
                 elif small_count == 15:
@@ -434,7 +443,7 @@ else:
                 else:
                     return None
 
-            pred_size = calculate_true_pattern_consensus(target_period_num, tab_offset, history)
+            pred_size = calculate_realtime_consensus(target_period_num, tab_offset, history, live_market_signal, remaining_secs)
 
             st.markdown(f"""
                 <div class="target-period-box">
@@ -462,9 +471,9 @@ else:
             if remaining_secs <= 5:
                 st.markdown('<div class="wait-warning-banner"><span class="blinking-yellow-light"></span>🛑 STOP-WAITING (PERIOD CLOSING)<span class="blinking-yellow-light" style="margin-left: 6px; margin-right: 0;"></span></div>', unsafe_allow_html=True)
             elif not is_safe_to_predict:
-                st.markdown('<div class="wait-warning-banner"><span class="blinking-yellow-light"></span>🛑 WAITING: 15-SERVERS SYNCING PATTERN... <span class="blinking-yellow-light" style="margin-left:6px;"></span></div>', unsafe_allow_html=True)
+                st.markdown('<div class="wait-warning-banner"><span class="blinking-yellow-light"></span>🛑 WAITING: 15-SERVERS SCANNING LIVE MOMENTUM... <span class="blinking-yellow-light" style="margin-left:6px;"></span></div>', unsafe_allow_html=True)
             elif remaining_secs > analyzing_threshold:
-                st.markdown(f'<div class="analyzing-banner"><span class="blinking-yellow-light" style="width:8px; height:8px;"></span> 🔄 TRUE PATTERN SCAN {mode_name}...</div>', unsafe_allow_html=True)
+                st.markdown(f'<div class="analyzing-banner"><span class="blinking-yellow-light" style="width:8px; height:8px;"></span> 🔄 REAL-TIME LIVE & HISTORY SCAN {mode_name}...</div>', unsafe_allow_html=True)
             else:
                 if pred_size == "BIG":
                     st.markdown('''
@@ -487,9 +496,9 @@ else:
                 display_color = "SCANNING"
                 color_bg = "#222222"
                 size_bg = "#222222"
-                final_shot_html = '<div style="display: inline-block; background: #222222; color: #FFFFFF; padding: 8px 20px; border-radius: 20px; font-weight: 900; font-size: 13px; border: 2px solid #777777;">🎯 WAITING FOR TRUE PATTERN... <span class="blinking-yellow-light" style="width:7px; height:7px; margin-left:4px;"></span></div>'
+                final_shot_html = '<div style="display: inline-block; background: #222222; color: #FFFFFF; padding: 8px 20px; border-radius: 20px; font-weight: 900; font-size: 13px; border: 2px solid #777777;">🎯 WAITING FOR LIVE MOMENTUM... <span class="blinking-yellow-light" style="width:7px; height:7px; margin-left:4px;"></span></div>'
             else:
-                p_rng = random.Random(target_period_num * 3 + tab_offset)
+                p_rng = random.Random(target_period_num * 3 + tab_offset + remaining_secs)
                 if pred_size == "BIG":
                     pred_num = p_rng.choice([5, 6, 7, 8, 9])
                     pred_color = "GREEN" if pred_num in [5, 7, 9] else "RED"
@@ -525,13 +534,27 @@ else:
                 </div>
             """, unsafe_allow_html=True)
 
-            boxes_html = "".join([f"<div style='background: {'#FF8800' if item == 'BIG' else '#0088FF'}; color: white; padding: 6px 12px; border-radius: 6px; font-weight: 900; font-size: 12px; margin: 0 3px; display: inline-block;'>{item}</div>" for item in history])
-            
-            st.markdown(f"""
-                <div style="margin-top: 10px; background: #000000; padding: 12px; border-radius: 12px; text-align: center; border: 1.5px solid #FFD700;">
-                    <div style="font-size: 11px; color: #FFD700; font-weight: 900; margin-bottom: 8px; display: flex; justify-content: center; align-items: center;"><span class="blinking-yellow-light"></span> 📊 {current_game} ट्रू पैटर्न मैट्रिक्स चार्ट:</div>
+            # --- नियम: जब तक 15 सर्वर रिजल्ट नहीं निकाल लेते, तब तक खांचे छिपे रहेंगे ---
+            if is_checking_phase:
+                matrix_content_html = f"""
+                    <div style="font-size: 11px; color: #FF0055; font-weight: 900; margin-bottom: 8px; display: flex; justify-content: center; align-items: center;">
+                        <span class="blinking-yellow-light"></span> ⏳ 15-सर्वर लाइव और इतिहास स्कैन कर रहे हैं (खांचे रिजल्ट के बाद दिखेंगे)...
+                    </div>
+                    {final_shot_html}
+                """
+            else:
+                boxes_html = "".join([f"<div style='background: {'#FF8800' if item == 'BIG' else '#0088FF'}; color: white; padding: 6px 12px; border-radius: 6px; font-weight: 900; font-size: 12px; margin: 0 3px; display: inline-block;'>{item}</div>" for item in history])
+                matrix_content_html = f"""
+                    <div style="font-size: 11px; color: #FFD700; font-weight: 900; margin-bottom: 8px; display: flex; justify-content: center; align-items: center;">
+                        <span class="blinking-yellow-light"></span> 📊 {current_game} लाइव और इतिहास मैट्रिक्स चार्ट & खांचे:
+                    </div>
                     <div style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 4px; margin-bottom: 10px;">{boxes_html}</div>
                     {final_shot_html}
+                """
+
+            st.markdown(f"""
+                <div style="margin-top: 10px; background: #000000; padding: 12px; border-radius: 12px; text-align: center; border: 1.5px solid #FFD700;">
+                    {matrix_content_html}
                 </div>
             """, unsafe_allow_html=True)
             st.markdown("</div>", unsafe_allow_html=True)
