@@ -26,6 +26,12 @@ st.markdown(
         100% { opacity: 1; transform: scale(1.3); box-shadow: 0 0 15px #FF0055, 0 0 25px #FF0055; }
     }
     
+    @keyframes allow-glow {
+        0% { border-color: #00FF66; box-shadow: 0 0 30px #00FF66, inset 0 0 15px #00FF66; background: linear-gradient(135deg, #003311, #001a00); color: #00FF66; }
+        50% { border-color: #00FFFF; box-shadow: 0 0 15px #00FFFF, inset 0 0 5px #00FFFF; background: linear-gradient(135deg, #002244, #000a1a); color: #00FFFF; }
+        100% { border-color: #00FF66; box-shadow: 0 0 30px #00FF66, inset 0 0 15px #00FF66; background: linear-gradient(135deg, #003311, #001a00); color: #00FF66; }
+    }
+
     @keyframes super-win-glow-big {
         0% { border-color: #FFB700; box-shadow: 0 0 30px #FFB700, inset 0 0 15px #FFB700; background: linear-gradient(135deg, #3a2200, #150a00); }
         50% { border-color: #FF5500; box-shadow: 0 0 15px #FF5500, inset 0 0 5px #FF5500; background: linear-gradient(135deg, #4a0e00, #1a0500); }
@@ -79,6 +85,19 @@ st.markdown(
         border-radius: 50%;
         margin-right: 6px;
         animation: super-fast-blink 0.5s infinite linear;
+    }
+
+    .allowed-banner {
+        border: 3px solid #00FF66;
+        padding: 12px;
+        border-radius: 10px;
+        text-align: center;
+        font-size: 15px;
+        font-weight: 900;
+        margin: 10px 0;
+        text-transform: uppercase;
+        animation: allow-glow 0.8s infinite;
+        letter-spacing: 1px;
     }
     
     .target-period-box {
@@ -294,6 +313,12 @@ if not st.session_state.authenticated:
     st.markdown("</div>", unsafe_allow_html=True)
 
 else:
+    # एक्सेस मिलते ही चमकती हुई अलाउड पट्टी स्क्रीन पर सबसे ऊपर दिखेगी
+    st.markdown(
+        '<div class="allowed-banner"><span class="blinking-green-light"></span>✅ ACCESS UNLOCKED: PANEL ALLOWED & ACTIVE (एक्सेस मिल गया है)<span class="blinking-green-light" style="margin-left: 6px; margin-right: 0;"></span></div>',
+        unsafe_allow_html=True,
+    )
+
     if st.session_state.is_owner:
         st.markdown("<div class='admin-card'>", unsafe_allow_html=True)
         st.markdown(
@@ -362,13 +387,7 @@ else:
 
     seconds = st.session_state.selected_game_seconds
 
-    # एक्टिव मोड बटन को रंगीन और हाइलाइट दिखाने के लिए स्टाइल
     col_m1, col_m2, col_m3, col_m4 = st.columns(4)
-
-    b30_style = "background: linear-gradient(135deg, #FF4444, #880000); border: 2px solid #FFD700; color: #FFFFFF;" if seconds == 30 else "background: #111111; border: 1px solid #444444; color: #AAAAAA;"
-    b1_style  = "background: linear-gradient(135deg, #00AA55, #003311); border: 2px solid #00FF66; color: #FFFFFF;" if seconds == 60 else "background: #111111; border: 1px solid #444444; color: #AAAAAA;"
-    b3_style  = "background: linear-gradient(135deg, #0088FF, #002266); border: 2px solid #00FFFF; color: #FFFFFF;" if seconds == 180 else "background: #111111; border: 1px solid #444444; color: #AAAAAA;"
-    b5_style  = "background: linear-gradient(135deg, #FF8800, #552200); border: 2px solid #FFB700; color: #FFFFFF;" if seconds == 300 else "background: #111111; border: 1px solid #444444; color: #AAAAAA;"
 
     with col_m1:
         if st.button("30S MODE", key="btn_30s", use_container_width=True):
@@ -390,12 +409,17 @@ else:
             st.session_state.selected_game_seconds = 300
             st.rerun()
 
+    active_b30 = "background: linear-gradient(135deg, #FF4444, #880000) !important; border: 2.5px solid #FFD700 !important; color: #FFFFFF !important; box-shadow: 0 0 15px rgba(255,68,68,0.6);" if seconds == 30 else "background: #111111 !important; border: 1px solid #333333 !important; color: #888888 !important;"
+    active_b1  = "background: linear-gradient(135deg, #00AA55, #003311) !important; border: 2.5px solid #00FF66 !important; color: #FFFFFF !important; box-shadow: 0 0 15px rgba(0,255,102,0.6);" if seconds == 60 else "background: #111111 !important; border: 1px solid #333333 !important; color: #888888 !important;"
+    active_b3  = "background: linear-gradient(135deg, #0088FF, #002266) !important; border: 2.5px solid #00FFFF !important; color: #FFFFFF !important; box-shadow: 0 0 15px rgba(0,136,255,0.6);" if seconds == 180 else "background: #111111 !important; border: 1px solid #333333 !important; color: #888888 !important;"
+    active_b5  = "background: linear-gradient(135deg, #FF8800, #552200) !important; border: 2.5px solid #FFB700 !important; color: #FFFFFF !important; box-shadow: 0 0 15px rgba(255,136,0,0.6);" if seconds == 300 else "background: #111111 !important; border: 1px solid #333333 !important; color: #888888 !important;"
+
     st.markdown(f"""
         <style>
-        div[data-testid="column"]:nth-of-type(1) button {{ {b30_style} font-weight: 900; border-radius: 8px; }}
-        div[data-testid="column"]:nth-of-type(2) button {{ {b1_style} font-weight: 900; border-radius: 8px; }}
-        div[data-testid="column"]:nth-of-type(3) button {{ {b3_style} font-weight: 900; border-radius: 8px; }}
-        div[data-testid="column"]:nth-of-type(4) button {{ {b5_style} font-weight: 900; border-radius: 8px; }}
+        div[data-testid="column"]:nth-of-type(1) button {{ {active_b30} font-weight: 900; border-radius: 8px; }}
+        div[data-testid="column"]:nth-of-type(2) button {{ {active_b1} font-weight: 900; border-radius: 8px; }}
+        div[data-testid="column"]:nth-of-type(3) button {{ {active_b3} font-weight: 900; border-radius: 8px; }}
+        div[data-testid="column"]:nth-of-type(4) button {{ {active_b5} font-weight: 900; border-radius: 8px; }}
         </style>
     """, unsafe_allow_html=True)
 
@@ -487,225 +511,12 @@ else:
             target_period_num = base_val + elapsed_blocks
             target_period_str = str(target_period_num)
 
-            # ==========================================================
-            # 1. 81-नोड जिग-जैग और स्ट्रिक्ट 100% श्योर शॉट इंजन
-            # ==========================================================
             def calculate_strict_81_consensus(p_num, offset_val):
                 all_votes = []
-                
-                # A. 41 मेन सर्वर नोड्स
                 for node in range(1, 42):
                     v = (p_num * node * 31 + offset_val + (p_num % 17)) % 100
                     all_votes.append("BIG" if v % 2 == 0 else "SMALL")
 
-                # B. 25 ट्रेंड और जिग-जैग पैटर्न नोड्स
                 for t_node in range(1, 26):
                     v = (p_num * t_node * 17 + offset_val + (p_num % (t_node * 2 + 1))) % 100
-                    all_votes.append("BIG" if v % 2 == 0 else "SMALL")
-
-                # C. 15 हिस्टोरिकल चेन पॉइंट्स
-                for h_node in range(1, 16):
-                    v = ((p_num - h_node) * 11 + offset_val + (p_num % 7)) % 100
-                    all_votes.append("BIG" if v % 2 == 0 else "SMALL")
-
-                total_big = all_votes.count("BIG")
-                total_small = all_votes.count("SMALL")
-
-                # सख्त नियम: 81 में से 68+ नोड्स की भारी सहमति होने पर ही 100% SURE SHOT
-                if total_big >= 68:
-                    return ("BIG", True)
-                elif total_small >= 68:
-                    return ("SMALL", True)
-                elif total_big >= 42:
-                    return ("BIG", False)
-                elif total_small >= 42:
-                    return ("SMALL", False)
-                else:
-                    return (None, False)   # मार्केट खराब होने पर WAITING
-
-            pred_size, is_sure_shot = calculate_strict_81_consensus(target_period_num, tab_offset)
-
-            # ==========================================================
-            # 2. नीचे का 'नेक्स्ट शॉट' इंजन
-            # ==========================================================
-            def calculate_bottom_next_shot(p_num, offset_val):
-                next_all_votes = []
-                for n_id in range(1, 82):
-                    next_check = (p_num * n_id * 7 + offset_val + (p_num % 5)) % 100
-                    next_all_votes.append("BIG" if next_check % 2 == 0 else "SMALL")
-                
-                b_big = next_all_votes.count("BIG")
-                b_small = next_all_votes.count("SMALL")
-                return "BIG" if b_big >= b_small else "SMALL"
-
-            next_shot_val = calculate_bottom_next_shot(target_period_num, tab_offset)
-
-            # --- डायनामिक यूज़र काउंटर ---
-            rand_users = 140 + ((int(time.time()) // 3) % 45)
-            mode_label = f"{seconds}S" if seconds < 60 else f"{seconds//60}M"
-
-            st.markdown(
-                f"""
-                <div class="target-period-box">
-                    <div style="display: flex; align-items: center; gap: 4px;">
-                        <span class="blinking-red-light" style="margin-right: 2px;"></span>
-                        <span style="color: #FFD700; font-size: 12px; font-weight: 900;">LIVE PERIOD:</span>
-                        <span style="color: #00FFFF; font-size: 13px; font-weight: 900; background: rgba(0,255,255,0.1); padding: 1px 6px; border-radius: 4px; border: 1px solid #00FFFF;">{target_period_str}</span>
-                    </div>
-                    <div style="background: #081a10; border: 1px solid #00FF66; padding: 2px 6px; border-radius: 6px; display: flex; align-items: center; gap: 4px;">
-                        <span class="blinking-green-light" style="width: 7px; height: 7px; margin: 0;"></span>
-                        <span style="color: #00FF66; font-size: 11px; font-weight: 900;">{mode_label} LIVE</span>
-                        <span style="color: #FFFFFF; font-size: 11px; font-weight: 900;">| 👥 {rand_users}</span>
-                    </div>
-                    <div class="timer-box-large">⏰ {timer_str}</div>
-                </div>
-            """,
-                unsafe_allow_html=True,
-            )
-
-            # ==========================================================
-            # 3. सुरक्षित टाइमिंग और डिस्प्ले बैनर लॉजिक
-            # ==========================================================
-            if seconds == 30:
-                scan_active = remaining_secs > 20
-                close_phase = remaining_secs <= 8
-            elif seconds == 60:
-                scan_active = remaining_secs > 20  # पहले 40 सेकंड स्कैनिंग
-                close_phase = remaining_secs <= 12 # आखिरी 12 सेकंड सुरक्षित बिड टाइम
-            elif seconds == 180:
-                scan_active = remaining_secs > 120
-                close_phase = remaining_secs <= 20
-            else:
-                scan_active = remaining_secs > 200
-                close_phase = remaining_secs <= 30
-
-            if scan_active:
-                st.markdown(
-                    f'<div class="analyzing-banner"><span class="blinking-yellow-light" style="width:8px; height:8px;"></span> 🔄 CATCHING STREAK & ZIG-ZAG LINE (81 NODES)... ({remaining_secs}s left)</div>',
-                    unsafe_allow_html=True,
-                )
-            elif pred_size is None:
-                st.markdown(
-                    '<div class="wait-warning-banner"><span class="blinking-red-light"></span>🛑 WAITING: NO LINE MATCHED / MARKET UNLOCKED (लाइन नहीं पकड़ी - प्रतीक्षा करें)<span class="blinking-red-light" style="margin-left: 6px;"></span></div>',
-                    unsafe_allow_html=True,
-                )
-            elif close_phase:
-                st.markdown(
-                    '<div class="wait-warning-banner"><span class="blinking-red-light"></span>🛑 SAFE BIDDING TIME - PLACE YOUR BID NOW<span class="blinking-red-light" style="margin-left: 6px; margin-right: 0;"></span></div>',
-                    unsafe_allow_html=True,
-                )
-            elif is_sure_shot:
-                if pred_size == "BIG":
-                    st.markdown(
-                        """
-                        <div class="super-banner-big">
-                            🔥 100% SURE SHOT <span class="blinking-green-light"></span> : 
-                            <span style="background: #000000; color: #FFB700; padding: 4px 14px; border-radius: 6px; border: 2px solid #FFB700; font-weight: 900; text-shadow: 0 0 10px #FFB700;">BIG</span> 🎯
-                        </div>
-                    """,
-                        unsafe_allow_html=True,
-                    )
-                else:
-                    st.markdown(
-                        """
-                        <div class="super-banner-small">
-                            🔥 100% SURE SHOT <span class="blinking-green-light"></span> : 
-                            <span style="background: #000000; color: #00FFFF; padding: 4px 14px; border-radius: 6px; border: 2px solid #00FFFF; font-weight: 900; text-shadow: 0 0 10px #00FFFF;">SMALL</span> 🎯
-                        </div>
-                    """,
-                        unsafe_allow_html=True,
-                    )
-            else:
-                if pred_size == "BIG":
-                    st.markdown(
-                        """
-                        <div class="super-banner-big" style="animation: none; border-color: #FF8800;">
-                            🔥 STREAK / ZIG-ZAG LINE MATCHED : 
-                            <span style="background: #000000; color: #FFB700; padding: 2px 10px; border-radius: 4px; border: 1px solid #FFB700;">BIG</span> 🎯
-                        </div>
-                    """,
-                        unsafe_allow_html=True,
-                    )
-                else:
-                    st.markdown(
-                        """
-                        <div class="super-banner-small" style="animation: none; border-color: #0088FF;">
-                            🔥 STREAK / ZIG-ZAG LINE MATCHED : 
-                            <span style="background: #000000; color: #00FFFF; padding: 2px 10px; border-radius: 4px; border: 1px solid #00FFFF;">SMALL</span> 🎯
-                        </div>
-                    """,
-                        unsafe_allow_html=True,
-                    )
-
-            if scan_active or pred_size is None:
-                display_num = "—"
-                display_size = "WAITING"
-                display_color = "STANDBY"
-                color_bg = "#111111"
-                size_bg = "#111111"
-            else:
-                p_rng = random.Random(target_period_num * 3 + tab_offset)
-                if pred_size == "BIG":
-                    pred_num = p_rng.choice([5, 6, 7, 8, 9])
-                    pred_color = "GREEN" if pred_num in [5, 7, 9] else "RED"
-                else:
-                    pred_num = p_rng.choice([0, 1, 2, 3, 4])
-                    pred_color = "GREEN" if pred_num in [1, 3] else "RED"
-
-                display_num = str(pred_num)
-                display_size = pred_size
-                display_color = pred_color
-                color_bg = "#FF4444" if pred_color == "RED" else "#00AA55"
-                size_bg = "#FF8800" if pred_size == "BIG" else "#0088FF"
-
-            st.markdown(
-                f"""
-                <div class="diagonal-container">
-                    <div class="result-item">
-                        <div style="font-size: 11px; color: #FFFFFF; font-weight: 900; margin-bottom: 6px;">NUMBER</div>
-                        <div style="background-color: {color_bg}; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 900; margin: 0 auto; color: white;">{display_num}</div>
-                    </div>
-                    <div class="result-item">
-                        <div style="font-size: 11px; color: #FFFFFF; font-weight: 900; margin-bottom: 6px;">SIZE</div>
-                        <div style="background: {size_bg}; color: white; padding: 12px 4px; border-radius: 8px; font-weight: 900; font-size: 14px; text-align: center;">{display_size}</div>
-                    </div>
-                    <div class="result-item">
-                        <div style="font-size: 11px; color: #FFFFFF; font-weight: 900; margin-bottom: 6px;">COLOR</div>
-                        <div style="background-color: {color_bg}; color: white; padding: 12px 4px; border-radius: 8px; font-weight: 900; font-size: 14px; text-align: center;">{display_color}</div>
-                    </div>
-                </div>
-            """,
-                unsafe_allow_html=True,
-            )
-
-            if next_shot_val == "BIG":
-                next_shot_bg = "#FF8800"
-                next_shot_glow = "0 0 15px #FF8800"
-            else:
-                next_shot_bg = "#0088FF"
-                next_shot_glow = "0 0 15px #0088FF"
-
-            st.markdown(
-                f"""
-                <div style="margin-top: 12px; background: #000000; padding: 14px; border-radius: 12px; text-align: center; border: 2px solid #FFD700; box-shadow: 0 0 15px rgba(255,215,0,0.2); display: flex; justify-content: center; align-items: center; gap: 12px;">
-                    <div style="display: flex; align-items: center; gap: 6px;">
-                        <span class="blinking-red-light" style="width:10px; height:10px; margin:0;"></span>
-                        <span style="color: #00FF66; font-size: 14px; font-weight: 900; letter-spacing: 1px;">LIVE</span>
-                    </div>
-                    <span style="color: #FFD700; font-weight: 900;">|</span>
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <span style="color: #00FFFF; font-size: 14px; font-weight: 900; text-shadow: 0 0 8px rgba(0,255,255,0.5);">NEXT SHOT:</span>
-                        <span style="background: {next_shot_bg}; color: #FFFFFF; padding: 8px 24px; border-radius: 8px; font-weight: 900; font-size: 14px; border: 2px solid #FFFFFF; box-shadow: {next_shot_glow};">{next_shot_val}</span>
-                    </div>
-                </div>
-            """,
-                unsafe_allow_html=True,
-            )
-
-            st.markdown("</div>", unsafe_allow_html=True)
-        except Exception as e:
-            st.warning("⚠️ री-सिंकिंग हो रही है... कृपया प्रतीक्षा करें।")
-            time.sleep(1)
-            st.rerun()
-
-    success_dashboard_core()
+                    all_votes.append("
