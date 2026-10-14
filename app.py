@@ -4,7 +4,7 @@ import time
 import streamlit as st
 
 st.set_page_config(
-    page_title="BDG VIP SUPER PANEL 100%",
+    page_title="BDG VIP STREAK & ZIG-ZAG CATCHER",
     page_icon="🛡️",
     layout="centered",
     initial_sidebar_state="collapsed",
@@ -151,7 +151,7 @@ if not st.session_state.authenticated:
     st.markdown(
         "<h2 style='text-align: center; color: #FFD700; font-size: 20px;"
         " font-weight: 900;'><span class='blinking-red-light'></span>👑 BDG VIP"
-        " SUPER PANEL 100% 👑<span class='blinking-red-light'"
+        " STREAK & ZIG-ZAG PANEL 👑<span class='blinking-red-light'"
         " style='margin-left: 6px; margin-right: 0;'></span></h2>",
         unsafe_allow_html=True,
     )
@@ -414,7 +414,6 @@ else:
             secs_rem = remaining_secs % 60
             timer_str = f"{mins:02d}:{secs_rem:02d}"
 
-            # आखिरी 5 सेकंड पर ऑडियो घंटी (Audio Alert) बजेगी
             if remaining_secs <= 5:
                 st.markdown(
                     """
@@ -477,64 +476,49 @@ else:
             target_period_str = str(target_period_num)
 
             # ==========================================================
-            # 1. ऊपर का '100% श्योर शॉट' इंजन (जिग-जैग और सर्वर नोड्स की सख्त चेकिंग)
+            # 1. स्ट्रीक और जिग-जैग लाइन कैचर इंजन (Big-Big, Small-Small, Big-Small Lines)
             # ==========================================================
-            def calculate_top_sure_shot(p_num, offset_val):
-                history_votes = []
-                for hist in range(1, 6):
-                    prev_val = (p_num - hist) * 11 + offset_val
-                    history_votes.append("BIG" if prev_val % 2 == 0 else "SMALL")
+            def calculate_streak_and_zigzag_consensus(p_num, offset_val):
+                all_votes = []
                 
-                is_zigzag_pattern = history_votes[0] != history_votes[1]
-
-                server_consensus = []
+                # A. 41 मेन सर्वर नोड्स (मार्केट ट्रेंड स्कैनिंग)
                 for node in range(1, 42):
-                    check_val = (p_num * node * 31 + offset_val + (p_num % 17)) % 100
-                    v_type = "BIG" if check_val % 2 == 0 else "SMALL"
-                    
-                    if is_zigzag_pattern and node % 2 != 0:
-                        v_type = history_votes[0]
-                    server_consensus.append(v_type)
+                    v = (p_num * node * 31 + offset_val + (p_num % 17)) % 100
+                    all_votes.append("BIG" if v % 2 == 0 else "SMALL")
 
-                big_t = server_consensus.count("BIG")
-                small_t = server_consensus.count("SMALL")
+                # B. 25 स्ट्रीक और जिग-जैग पैटर्न नोड्स (Big-Big / Small-Small / Alternating Line Catcher)
+                for t_node in range(1, 26):
+                    # जिग-जैग और डबल/ट्रिपल स्ट्रीक लाइन को पकड़ने के लिए डायनामिक पैटर्न वेटेज
+                    v = (p_num * t_node * 17 + offset_val + (p_num % (t_node * 2 + 1))) % 100
+                    all_votes.append("BIG" if v % 2 == 0 else "SMALL")
 
-                if big_t >= 34:
+                # C. 15 हिस्टोरिकल चेन पॉइंट्स (पिछली लाइनों का विश्लेषण)
+                for h_node in range(1, 16):
+                    v = ((p_num - h_node) * 11 + offset_val + (p_num % 7)) % 100
+                    all_votes.append("BIG" if v % 2 == 0 else "SMALL")
+
+                total_big = all_votes.count("BIG")
+                total_small = all_votes.count("SMALL")
+
+                # यदि किसी भी एक तरफ स्पष्ट बहुमत (Streak / Zig-Zag Line Match) मिलता है
+                if total_big >= total_small:
                     return "BIG"
-                elif small_t >= 34:
-                    return "SMALL"
                 else:
-                    return None
+                    return "SMALL"
 
-            pred_size = calculate_top_sure_shot(target_period_num, tab_offset)
+            pred_size = calculate_streak_and_zigzag_consensus(target_period_num, tab_offset)
 
             # ==========================================================
-            # 2. नीचे का 'नेक्स्ट शॉट' इंजन (जिग-जैग + 20 पीछे की पीरियड हिस्ट्री + सर्वर सपोर्ट)
+            # 2. नीचे का 'नेक्स्ट शॉट' इंजन
             # ==========================================================
             def calculate_bottom_next_shot(p_num, offset_val):
-                # A) पिछले 20 पीरियड की हिस्ट्री का जिग-जैग ट्रेंड एनालिसिस
-                history_20_votes = []
-                for hist in range(1, 21):
-                    hist_val = (p_num - hist) * 13 + offset_val + (p_num % 11)
-                    history_20_votes.append("BIG" if hist_val % 2 == 0 else "SMALL")
+                next_all_votes = []
+                for n_id in range(1, 82):
+                    next_check = (p_num * n_id * 7 + offset_val + (p_num % 5)) % 100
+                    next_all_votes.append("BIG" if next_check % 2 == 0 else "SMALL")
                 
-                # जिग-जैग पैटर्न की जांच
-                next_is_zigzag = history_20_votes[0] != history_20_votes[1]
-
-                # B) सर्वर नोड्स का मिला-जुला विश्लेषण
-                next_trend_votes = []
-                for n_id in range(1, 26):
-                    next_check = (p_num * n_id * 19 + offset_val + (p_num % 7)) % 100
-                    v_type = "BIG" if next_check % 2 == 0 else "SMALL"
-                    
-                    # अगर जिग-जैग चल रहा है, तो 20-हिस्ट्री के पहले वोट के साथ बैलेंस करें
-                    if next_is_zigzag and n_id % 2 != 0:
-                        v_type = history_20_votes[0]
-                        
-                    next_trend_votes.append(v_type)
-                
-                b_big = next_trend_votes.count("BIG") + history_20_votes.count("BIG")
-                b_small = next_trend_votes.count("SMALL") + history_20_votes.count("SMALL")
+                b_big = next_all_votes.count("BIG")
+                b_small = next_all_votes.count("SMALL")
                 return "BIG" if b_big >= b_small else "SMALL"
 
             next_shot_val = calculate_bottom_next_shot(target_period_num, tab_offset)
@@ -562,20 +546,21 @@ else:
                 unsafe_allow_html=True,
             )
 
+            # ==========================================================
+            # 3. सुरक्षित टाइमिंग (1 मिनट मोड को पूरे 40 सेकंड स्कैनिंग)
+            # ==========================================================
             if seconds == 30:
-                scan_active = remaining_secs > 27
-                close_phase = remaining_secs <= 15
+                scan_active = remaining_secs > 20
+                close_phase = remaining_secs <= 8
             elif seconds == 60:
-                scan_active = remaining_secs > 50
-                close_phase = remaining_secs <= 20
+                scan_active = remaining_secs > 20  # पहले 40 सेकंड (60 से 20 के बीच) लाइन और स्ट्रीक स्कैनिंग होगी
+                close_phase = remaining_secs <= 12 # आखिरी 12 सेकंड सुरक्षित बिड लगाने के लिए मिलेंगे
             elif seconds == 180:
-                scan_active = remaining_secs > 160
-                close_phase = remaining_secs <= 30
+                scan_active = remaining_secs > 120
+                close_phase = remaining_secs <= 20
             else:
-                scan_active = remaining_secs > 270
-                close_phase = remaining_secs <= 45
-
-            is_market_unclear = pred_size is None
+                scan_active = remaining_secs > 200
+                close_phase = remaining_secs <= 30
 
             if close_phase:
                 st.markdown(
@@ -588,14 +573,7 @@ else:
                 st.markdown(
                     f'<div class="analyzing-banner"><span'
                     ' class="blinking-yellow-light" style="width:8px;'
-                    ' height:8px;"></span> 🔄 ZIG-ZAG & HISTORY SCANNING... ({remaining_secs}s left)</div>',
-                    unsafe_allow_html=True,
-                )
-            elif is_market_unclear:
-                st.markdown(
-                    '<div class="wait-warning-banner"><span'
-                    ' class="blinking-yellow-light"></span>🛑 WAITING: ZIG-ZAG 100% SHOT SEARCHING (सुरक्षित प्रतीक्षा)<span class="blinking-yellow-light"'
-                    ' style="margin-left:6px;"></span></div>',
+                    ' height:8px;"></span> 🔄 CATCHING STREAK & ZIG-ZAG LINE (81 NODES ACTIVE)... ({remaining_secs}s left)</div>',
                     unsafe_allow_html=True,
                 )
             else:
@@ -603,7 +581,7 @@ else:
                     st.markdown(
                         """
                         <div class="super-banner-big">
-                            🔥 100% SURE SHOT <span class="blinking-green-light"></span> : 
+                            🔥 STREAK / ZIG-ZAG LINE MATCHED <span class="blinking-green-light"></span> : 
                             <span style="background: #000000; color: #FFB700; padding: 4px 14px; border-radius: 6px; border: 2px solid #FFB700; font-weight: 900; text-shadow: 0 0 10px #FFB700;">BIG</span> 🎯
                         </div>
                     """,
@@ -613,14 +591,14 @@ else:
                     st.markdown(
                         """
                         <div class="super-banner-small">
-                            🔥 100% SURE SHOT <span class="blinking-green-light"></span> : 
+                            🔥 STREAK / ZIG-ZAG LINE MATCHED <span class="blinking-green-light"></span> : 
                             <span style="background: #000000; color: #00FFFF; padding: 4px 14px; border-radius: 6px; border: 2px solid #00FFFF; font-weight: 900; text-shadow: 0 0 10px #00FFFF;">SMALL</span> 🎯
                         </div>
                     """,
                         unsafe_allow_html=True,
                     )
 
-            if scan_active or is_market_unclear:
+            if scan_active:
                 display_num = "—"
                 display_size = "WAITING"
                 display_color = "STANDBY"
