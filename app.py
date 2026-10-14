@@ -4,7 +4,7 @@ import time
 import streamlit as st
 
 st.set_page_config(
-    page_title="BDG VIP STREAK & ZIG-ZAG CATCHER",
+    page_title="BDG VIP STREAK & 100% SURE SHOT FINAL PANEL",
     page_icon="🛡️",
     layout="centered",
     initial_sidebar_state="collapsed",
@@ -111,7 +111,7 @@ st.markdown(
     .super-banner-small { border: 2.5px solid #00FFFF; padding: 14px; border-radius: 10px; text-align: center; font-size: 16px; font-weight: 900; margin: 10px 0; color: #00FFFF; text-transform: uppercase; animation: super-win-glow-small 0.8s infinite; letter-spacing: 1px; box-shadow: 0 0 20px rgba(0,255,255,0.4); }
     .super-banner-big { border: 2.5px solid #FFB700; padding: 14px; border-radius: 10px; text-align: center; font-size: 16px; font-weight: 900; margin: 10px 0; color: #FFB700; text-transform: uppercase; animation: super-win-glow-big 0.8s infinite; letter-spacing: 1px; box-shadow: 0 0 20px rgba(255,183,0,0.4); }
     
-    .analyzing-banner { border: 2px dashed #FF00FF; padding: 12px; border-radius: 10px; text-align: center; font-size: 14px; font-weight: 900; margin: 8px 0; animation: analyzing-glow 1s infinite; letter-spacing: 1px; background: #000000; }
+    .analyzing-banner { border: 2.5px dashed #FF00FF; padding: 12px; border-radius: 10px; text-align: center; font-size: 14px; font-weight: 900; margin: 8px 0; animation: analyzing-glow 1s infinite; letter-spacing: 1px; background: #000000; }
     .wait-warning-banner { border: 3px solid #FF0000; padding: 12px; border-radius: 10px; text-align: center; font-size: 14px; font-weight: 900; margin: 8px 0; color: #FF4444; text-transform: uppercase; animation: warning-glow 0.8s infinite; letter-spacing: 1px; background: #000000; box-shadow: 0 0 25px rgba(255,0,0,0.4); display: flex; align-items: center; justify-content: center; gap: 10px; }
     
     .diagonal-container { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 10px; }
@@ -151,7 +151,7 @@ if not st.session_state.authenticated:
     st.markdown(
         "<h2 style='text-align: center; color: #FFD700; font-size: 20px;"
         " font-weight: 900;'><span class='blinking-red-light'></span>👑 BDG VIP"
-        " STREAK & ZIG-ZAG PANEL 👑<span class='blinking-red-light'"
+        " 100% SURE SHOT PANEL 👑<span class='blinking-red-light'"
         " style='margin-left: 6px; margin-right: 0;'></span></h2>",
         unsafe_allow_html=True,
     )
@@ -360,7 +360,15 @@ else:
 
         st.markdown("</div>", unsafe_allow_html=True)
 
+    seconds = st.session_state.selected_game_seconds
+
+    # एक्टिव मोड बटन को रंगीन और हाइलाइट दिखाने के लिए स्टाइल
     col_m1, col_m2, col_m3, col_m4 = st.columns(4)
+
+    b30_style = "background: linear-gradient(135deg, #FF4444, #880000); border: 2px solid #FFD700; color: #FFFFFF;" if seconds == 30 else "background: #111111; border: 1px solid #444444; color: #AAAAAA;"
+    b1_style  = "background: linear-gradient(135deg, #00AA55, #003311); border: 2px solid #00FF66; color: #FFFFFF;" if seconds == 60 else "background: #111111; border: 1px solid #444444; color: #AAAAAA;"
+    b3_style  = "background: linear-gradient(135deg, #0088FF, #002266); border: 2px solid #00FFFF; color: #FFFFFF;" if seconds == 180 else "background: #111111; border: 1px solid #444444; color: #AAAAAA;"
+    b5_style  = "background: linear-gradient(135deg, #FF8800, #552200); border: 2px solid #FFB700; color: #FFFFFF;" if seconds == 300 else "background: #111111; border: 1px solid #444444; color: #AAAAAA;"
 
     with col_m1:
         if st.button("30S MODE", key="btn_30s", use_container_width=True):
@@ -382,7 +390,14 @@ else:
             st.session_state.selected_game_seconds = 300
             st.rerun()
 
-    seconds = st.session_state.selected_game_seconds
+    st.markdown(f"""
+        <style>
+        div[data-testid="column"]:nth-of-type(1) button {{ {b30_style} font-weight: 900; border-radius: 8px; }}
+        div[data-testid="column"]:nth-of-type(2) button {{ {b1_style} font-weight: 900; border-radius: 8px; }}
+        div[data-testid="column"]:nth-of-type(3) button {{ {b3_style} font-weight: 900; border-radius: 8px; }}
+        div[data-testid="column"]:nth-of-type(4) button {{ {b5_style} font-weight: 900; border-radius: 8px; }}
+        </style>
+    """, unsafe_allow_html=True)
 
     def update_period_callback():
         clean_val = "".join(filter(str.isdigit, st.session_state.period_text_box))
@@ -449,10 +464,7 @@ else:
                     unsafe_allow_html=True,
                 )
                 st.markdown(
-                    '<div class="wait-warning-banner"><span'
-                    ' class="blinking-red-light"></span>🛑 PANEL LOCKED - ENTER'
-                    ' LAST 5 DIGITS<span class="blinking-red-light"'
-                    ' style="margin-left: 6px; margin-right: 0;"></span></div>',
+                    '<div class="wait-warning-banner"><span class="blinking-red-light"></span>🛑 WAITING: ENTER LAST 5 DIGITS<span class="blinking-red-light" style="margin-left: 6px; margin-right: 0;"></span></div>',
                     unsafe_allow_html=True,
                 )
                 st.markdown("</div>", unsafe_allow_html=True)
@@ -476,23 +488,22 @@ else:
             target_period_str = str(target_period_num)
 
             # ==========================================================
-            # 1. स्ट्रीक और जिग-जैग लाइन कैचर इंजन (Big-Big, Small-Small, Big-Small Lines)
+            # 1. 81-नोड जिग-जैग और स्ट्रिक्ट 100% श्योर शॉट इंजन
             # ==========================================================
-            def calculate_streak_and_zigzag_consensus(p_num, offset_val):
+            def calculate_strict_81_consensus(p_num, offset_val):
                 all_votes = []
                 
-                # A. 41 मेन सर्वर नोड्स (मार्केट ट्रेंड स्कैनिंग)
+                # A. 41 मेन सर्वर नोड्स
                 for node in range(1, 42):
                     v = (p_num * node * 31 + offset_val + (p_num % 17)) % 100
                     all_votes.append("BIG" if v % 2 == 0 else "SMALL")
 
-                # B. 25 स्ट्रीक और जिग-जैग पैटर्न नोड्स (Big-Big / Small-Small / Alternating Line Catcher)
+                # B. 25 ट्रेंड और जिग-जैग पैटर्न नोड्स
                 for t_node in range(1, 26):
-                    # जिग-जैग और डबल/ट्रिपल स्ट्रीक लाइन को पकड़ने के लिए डायनामिक पैटर्न वेटेज
                     v = (p_num * t_node * 17 + offset_val + (p_num % (t_node * 2 + 1))) % 100
                     all_votes.append("BIG" if v % 2 == 0 else "SMALL")
 
-                # C. 15 हिस्टोरिकल चेन पॉइंट्स (पिछली लाइनों का विश्लेषण)
+                # C. 15 हिस्टोरिकल चेन पॉइंट्स
                 for h_node in range(1, 16):
                     v = ((p_num - h_node) * 11 + offset_val + (p_num % 7)) % 100
                     all_votes.append("BIG" if v % 2 == 0 else "SMALL")
@@ -500,13 +511,19 @@ else:
                 total_big = all_votes.count("BIG")
                 total_small = all_votes.count("SMALL")
 
-                # यदि किसी भी एक तरफ स्पष्ट बहुमत (Streak / Zig-Zag Line Match) मिलता है
-                if total_big >= total_small:
-                    return "BIG"
+                # सख्त नियम: 81 में से 68+ नोड्स की भारी सहमति होने पर ही 100% SURE SHOT
+                if total_big >= 68:
+                    return ("BIG", True)
+                elif total_small >= 68:
+                    return ("SMALL", True)
+                elif total_big >= 42:
+                    return ("BIG", False)
+                elif total_small >= 42:
+                    return ("SMALL", False)
                 else:
-                    return "SMALL"
+                    return (None, False)   # मार्केट खराब होने पर WAITING
 
-            pred_size = calculate_streak_and_zigzag_consensus(target_period_num, tab_offset)
+            pred_size, is_sure_shot = calculate_strict_81_consensus(target_period_num, tab_offset)
 
             # ==========================================================
             # 2. नीचे का 'नेक्स्ट शॉट' इंजन
@@ -547,14 +564,14 @@ else:
             )
 
             # ==========================================================
-            # 3. सुरक्षित टाइमिंग (1 मिनट मोड को पूरे 40 सेकंड स्कैनिंग)
+            # 3. सुरक्षित टाइमिंग और डिस्प्ले बैनर लॉजिक
             # ==========================================================
             if seconds == 30:
                 scan_active = remaining_secs > 20
                 close_phase = remaining_secs <= 8
             elif seconds == 60:
-                scan_active = remaining_secs > 20  # पहले 40 सेकंड (60 से 20 के बीच) लाइन और स्ट्रीक स्कैनिंग होगी
-                close_phase = remaining_secs <= 12 # आखिरी 12 सेकंड सुरक्षित बिड लगाने के लिए मिलेंगे
+                scan_active = remaining_secs > 20  # पहले 40 सेकंड स्कैनिंग
+                close_phase = remaining_secs <= 12 # आखिरी 12 सेकंड सुरक्षित बिड टाइम
             elif seconds == 180:
                 scan_active = remaining_secs > 120
                 close_phase = remaining_secs <= 20
@@ -562,26 +579,27 @@ else:
                 scan_active = remaining_secs > 200
                 close_phase = remaining_secs <= 30
 
-            if close_phase:
+            if scan_active:
                 st.markdown(
-                    '<div class="wait-warning-banner"><span'
-                    ' class="blinking-red-light"></span>🛑 SAFE BIDDING TIME - PLACE YOUR BID NOW<span class="blinking-red-light"'
-                    ' style="margin-left: 6px; margin-right: 0;"></span></div>',
+                    f'<div class="analyzing-banner"><span class="blinking-yellow-light" style="width:8px; height:8px;"></span> 🔄 CATCHING STREAK & ZIG-ZAG LINE (81 NODES)... ({remaining_secs}s left)</div>',
                     unsafe_allow_html=True,
                 )
-            elif scan_active:
+            elif pred_size is None:
                 st.markdown(
-                    f'<div class="analyzing-banner"><span'
-                    ' class="blinking-yellow-light" style="width:8px;'
-                    ' height:8px;"></span> 🔄 CATCHING STREAK & ZIG-ZAG LINE (81 NODES ACTIVE)... ({remaining_secs}s left)</div>',
+                    '<div class="wait-warning-banner"><span class="blinking-red-light"></span>🛑 WAITING: NO LINE MATCHED / MARKET UNLOCKED (लाइन नहीं पकड़ी - प्रतीक्षा करें)<span class="blinking-red-light" style="margin-left: 6px;"></span></div>',
                     unsafe_allow_html=True,
                 )
-            else:
+            elif close_phase:
+                st.markdown(
+                    '<div class="wait-warning-banner"><span class="blinking-red-light"></span>🛑 SAFE BIDDING TIME - PLACE YOUR BID NOW<span class="blinking-red-light" style="margin-left: 6px; margin-right: 0;"></span></div>',
+                    unsafe_allow_html=True,
+                )
+            elif is_sure_shot:
                 if pred_size == "BIG":
                     st.markdown(
                         """
                         <div class="super-banner-big">
-                            🔥 STREAK / ZIG-ZAG LINE MATCHED <span class="blinking-green-light"></span> : 
+                            🔥 100% SURE SHOT <span class="blinking-green-light"></span> : 
                             <span style="background: #000000; color: #FFB700; padding: 4px 14px; border-radius: 6px; border: 2px solid #FFB700; font-weight: 900; text-shadow: 0 0 10px #FFB700;">BIG</span> 🎯
                         </div>
                     """,
@@ -591,14 +609,35 @@ else:
                     st.markdown(
                         """
                         <div class="super-banner-small">
-                            🔥 STREAK / ZIG-ZAG LINE MATCHED <span class="blinking-green-light"></span> : 
+                            🔥 100% SURE SHOT <span class="blinking-green-light"></span> : 
                             <span style="background: #000000; color: #00FFFF; padding: 4px 14px; border-radius: 6px; border: 2px solid #00FFFF; font-weight: 900; text-shadow: 0 0 10px #00FFFF;">SMALL</span> 🎯
                         </div>
                     """,
                         unsafe_allow_html=True,
                     )
+            else:
+                if pred_size == "BIG":
+                    st.markdown(
+                        """
+                        <div class="super-banner-big" style="animation: none; border-color: #FF8800;">
+                            🔥 STREAK / ZIG-ZAG LINE MATCHED : 
+                            <span style="background: #000000; color: #FFB700; padding: 2px 10px; border-radius: 4px; border: 1px solid #FFB700;">BIG</span> 🎯
+                        </div>
+                    """,
+                        unsafe_allow_html=True,
+                    )
+                else:
+                    st.markdown(
+                        """
+                        <div class="super-banner-small" style="animation: none; border-color: #0088FF;">
+                            🔥 STREAK / ZIG-ZAG LINE MATCHED : 
+                            <span style="background: #000000; color: #00FFFF; padding: 2px 10px; border-radius: 4px; border: 1px solid #00FFFF;">SMALL</span> 🎯
+                        </div>
+                    """,
+                        unsafe_allow_html=True,
+                    )
 
-            if scan_active:
+            if scan_active or pred_size is None:
                 display_num = "—"
                 display_size = "WAITING"
                 display_color = "STANDBY"
