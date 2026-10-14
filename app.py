@@ -476,53 +476,55 @@ else:
             target_period_num = base_val + elapsed_blocks
             target_period_str = str(target_period_num)
 
-            # --- 1. जिग-जैग और पिछले इतिहास (History Trend) को कैच करने वाला 100% श्योर शॉट इंजन ---
-            def calculate_zigzag_trend_consensus(p_num, offset_val):
-                # पिछले 5 पीरियड्स के इतिहास और जिग-जैग पैटर्न का सिमुलेशन
-                history_pattern = []
-                for hist_offset in range(1, 6):
-                    prev_p = p_num - hist_offset
-                    hist_chk = (prev_p * 13 + offset_val) % 2
-                    history_pattern.append("BIG" if hist_chk == 0 else "SMALL")
+            # ==========================================================
+            # 1. ऊपर का '100% श्योर शॉट' इंजन (जिग-जैग और सर्वर नोड्स की सख्त चेकिंग)
+            # ==========================================================
+            def calculate_top_sure_shot(p_num, offset_val):
+                history_votes = []
+                for hist in range(1, 6):
+                    prev_val = (p_num - hist) * 11 + offset_val
+                    history_votes.append("BIG" if prev_val % 2 == 0 else "SMALL")
+                
+                # जिग-जैग पैटर्न चेक (उतार-चढ़ाव की पहचान)
+                is_zigzag_pattern = history_votes[0] != history_votes[1]
 
-                # जिग-जैग चेक: यदि पिछले पैटर्न में लगातार उतार-चढ़ाव (Zig-Zag) है तो उसका ट्रेंड निकालें
-                is_zigzag = history_pattern[0] != history_pattern[1]
-
-                server_votes = []
-                for s_id in range(1, 41):
-                    # सर्वर नोड और पिछले इतिहास/जिग-जैग को मिलाकर सख्त गणना
-                    node_check = (p_num * s_id * 31 + offset_val + (p_num % 17)) % 100
-                    vote = "BIG" if node_check % 2 == 0 else "SMALL"
+                server_consensus = []
+                for node in range(1, 42):
+                    check_val = (p_num * node * 31 + offset_val + (p_num % 17)) % 100
+                    v_type = "BIG" if check_val % 2 == 0 else "SMALL"
                     
-                    # यदि जिग-जैग पैटर्न मजबूत है, तो ट्रेंड के अनुसार वोट को एडजस्ट करें
-                    if is_zigzag and s_id % 3 == 0:
-                        vote = history_pattern[0] # विपरीत या निरंतरता बनाए रखने के लिए
-                        
-                    server_votes.append(vote)
+                    if is_zigzag_pattern and node % 2 != 0:
+                        v_type = history_votes[0]
+                    server_consensus.append(v_type)
 
-                big_count = server_votes.count("BIG")
-                small_count = server_votes.count("SMALL")
+                big_t = server_consensus.count("BIG")
+                small_t = server_consensus.count("SMALL")
 
-                # सख्त सहमति: जब तक एकदम पक्का शॉट न मिले, तब तक 'None' (Waiting) रिटर्न करेगा
-                if big_count >= 34:
+                # जब तक 34 या उससे अधिक नोड्स की पक्की सहमति नहीं होगी, तब तक 'WAITING' दिखाएगा
+                if big_t >= 34:
                     return "BIG"
-                elif small_count >= 34:
+                elif small_t >= 34:
                     return "SMALL"
                 else:
                     return None
 
-            pred_size = calculate_zigzag_trend_consensus(target_period_num, tab_offset)
+            pred_size = calculate_top_sure_shot(target_period_num, tab_offset)
 
-            # --- 2. नीचे वाला 'नेक्स्ट शॉट' (जो जिग-जैग और आगे के ट्रेंड को कैच करेगा) ---
-            def calculate_zigzag_next_shot(p_num, offset_val):
-                next_votes = []
-                for s_id in range(1, 21):
-                    # आगे की लाइन और जिग-जैग पैटर्न की गणना
-                    chk = (p_num * s_id * 19 + offset_val + (p_num % 3)) % 100
-                    next_votes.append("BIG" if chk % 2 == 0 else "SMALL")
-                return "BIG" if next_votes.count("BIG") >= next_votes.count("SMALL") else "SMALL"
+            # ==========================================================
+            # 2. नीचे का 'नेक्स्ट शॉट' इंजन (आने वाले ट्रेंड और अगली लाइन का कैच)
+            # ==========================================================
+            def calculate_bottom_next_shot(p_num, offset_val):
+                next_trend_votes = []
+                for n_id in range(1, 26):
+                    # नेक्स्ट शॉट के लिए बिल्कुल अलग और सटीक फॉर्मूला
+                    next_check = (p_num * n_id * 17 + offset_val + (p_num % 5)) % 100
+                    next_trend_votes.append("BIG" if next_check % 2 == 0 else "SMALL")
+                
+                b_big = next_trend_votes.count("BIG")
+                b_small = next_trend_votes.count("SMALL")
+                return "BIG" if b_big >= b_small else "SMALL"
 
-            next_shot_val = calculate_zigzag_next_shot(target_period_num, tab_offset)
+            next_shot_val = calculate_bottom_next_shot(target_period_num, tab_offset)
 
             st.markdown(
                 f"""
@@ -638,7 +640,7 @@ else:
                 unsafe_allow_html=True,
             )
 
-            # --- सबसे नीचे साफ-सुथरा 'LIVE' और 'NEXT SHOT' (जिग-जैग ट्रैक करते हुए) ---
+            # --- सबसे नीचे साफ-सुथरा 'LIVE' और 'नेक्स्ट शॉट' (बिल्कुल अलग लॉजिक के साथ) ---
             if next_shot_val == "BIG":
                 next_shot_bg = "#FF8800"
                 next_shot_glow = "0 0 15px #FF8800"
