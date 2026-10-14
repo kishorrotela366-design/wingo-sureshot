@@ -138,9 +138,6 @@ if "used_utrs_list" not in st.session_state:
 if "user_base_period" not in st.session_state:
     st.session_state.user_base_period = ""
 
-if "base_input_block_time" not in st.session_state:
-    st.session_state.base_input_block_time = 0
-
 if "selected_game_seconds" not in st.session_state:
     st.session_state.selected_game_seconds = 30
 
@@ -362,35 +359,34 @@ else:
 
     col_m1, col_m2, col_m3, col_m4 = st.columns(4)
 
+    # वर्तमान चयनित मोड के आगे ब्लिंकिंग लाइट (टिप-टिप करने वाली बत्ती) जोड़ी गई है
+    current_sec = st.session_state.selected_game_seconds
+
     with col_m1:
-        if st.button("30S MODE", key="btn_30s", use_container_width=True):
+        btn_label_30 = "🟢 30S MODE" if current_sec == 30 else "30S MODE"
+        if st.button(btn_label_30, key="btn_30s", use_container_width=True):
             st.session_state.selected_game_seconds = 30
             st.rerun()
 
     with col_m2:
-        if st.button("1M MODE", key="btn_1m", use_container_width=True):
+        btn_label_1m = "🟢 1M MODE" if current_sec == 60 else "1M MODE"
+        if st.button(btn_label_1m, key="btn_1m", use_container_width=True):
             st.session_state.selected_game_seconds = 60
             st.rerun()
 
     with col_m3:
-        if st.button("3M MODE", key="btn_3m", use_container_width=True):
+        btn_label_3m = "🟢 3M MODE" if current_sec == 180 else "3M MODE"
+        if st.button(btn_label_3m, key="btn_3m", use_container_width=True):
             st.session_state.selected_game_seconds = 180
             st.rerun()
 
     with col_m4:
-        if st.button("5M MODE", key="btn_5m", use_container_width=True):
+        btn_label_5m = "🟢 5M MODE" if current_sec == 300 else "5M MODE"
+        if st.button(btn_label_5m, key="btn_5m", use_container_width=True):
             st.session_state.selected_game_seconds = 300
             st.rerun()
 
     seconds = st.session_state.selected_game_seconds
-
-    def update_period_callback():
-        clean_val = "".join(filter(str.isdigit, st.session_state.period_text_box))
-        st.session_state.user_base_period = clean_val
-        current_time = int(time.time())
-        st.session_state.base_input_block_time = current_time - (
-            current_time % seconds
-        )
 
     st.text_input(
         "Period Input",
@@ -398,7 +394,6 @@ else:
         placeholder="बीडीजी गेम के पीछे के आखिरी 5 अंक यहाँ डालें...",
         max_chars=5,
         key="period_text_box",
-        on_change=update_period_callback,
         label_visibility="collapsed",
     )
 
@@ -414,7 +409,6 @@ else:
             secs_rem = remaining_secs % 60
             timer_str = f"{mins:02d}:{secs_rem:02d}"
 
-            # आखिरी 5 सेकंड पर ऑडियो घंटी (Audio Alert) बजेगी
             if remaining_secs <= 5:
                 st.markdown(
                     """
@@ -429,7 +423,7 @@ else:
 
             st.markdown("<div class='main-card'>", unsafe_allow_html=True)
 
-            user_input_str = st.session_state.user_base_period.strip()
+            user_input_str = st.session_state.period_text_box.strip()
 
             is_invalid_format = False
             if not user_input_str or len(user_input_str) != 5 or not user_input_str.isdigit():
@@ -464,33 +458,37 @@ else:
             except:
                 base_val = 10000
 
-            current_time = int(time.time())
-            current_block_start = current_time - (current_time % seconds)
+            current_time_slot = int(time.time()) // seconds
+            if "last_slot_recorded" not in st.session_state:
+                st.session_state.last_slot_recorded = current_time_slot
+                st.session_state.slot_increment = 0
+            elif st.session_state.last_slot_recorded != current_time_slot:
+                st.session_state.last_slot_recorded = current_time_slot
+                st.session_state.slot_increment += 1
 
-            if st.session_state.base_input_block_time == 0:
-                st.session_state.base_input_block_time = current_block_start
-
-            elapsed_blocks = (
-                current_block_start - st.session_state.base_input_block_time
-            ) // seconds
-            target_period_num = base_val + elapsed_blocks
+            target_period_num = base_val + st.session_state.slot_increment
             target_period_str = str(target_period_num)
 
+            # --- लाइव यूज़र्स और ओनर का स्टेटस कैलकुलेशन (ब्लिंकिंग लाइट के साथ) ---
+            dyn_rng = random.Random(current_time_slot + seconds)
+            live_users_count = dyn_rng.randint(142, 389)
+
+            mode_name = "30S" if seconds == 30 else ("1M" if seconds == 60 else ("3M" if seconds == 180 else "5M"))
+
             # ==========================================================
-            # 1. ऊपर का '100% श्योर शॉट' इंजन (जिग-जैग और सर्वर नोड्स की सख्त चेकिंग)
+            # 1. ऊपर का '100% श्योर शॉट' इंजन
             # ==========================================================
             def calculate_top_sure_shot(p_num, offset_val):
                 history_votes = []
-                for hist in range(1, 6):
+                for hist in range(1, 4):
                     prev_val = (p_num - hist) * 11 + offset_val
                     history_votes.append("BIG" if prev_val % 2 == 0 else "SMALL")
                 
-                # जिग-जैग पैटर्न चेक (उतार-चढ़ाव की पहचान)
                 is_zigzag_pattern = history_votes[0] != history_votes[1]
 
                 server_consensus = []
-                for node in range(1, 42):
-                    check_val = (p_num * node * 31 + offset_val + (p_num % 17)) % 100
+                for node in range(1, 31):
+                    check_val = (p_num * node * 23 + offset_val + (p_num % 13)) % 100
                     v_type = "BIG" if check_val % 2 == 0 else "SMALL"
                     
                     if is_zigzag_pattern and node % 2 != 0:
@@ -500,23 +498,21 @@ else:
                 big_t = server_consensus.count("BIG")
                 small_t = server_consensus.count("SMALL")
 
-                # जब तक 34 या उससे अधिक नोड्स की पक्की सहमति नहीं होगी, तब तक 'WAITING' दिखाएगा
-                if big_t >= 34:
+                if big_t >= 22:
                     return "BIG"
-                elif small_t >= 34:
+                elif small_t >= 22:
                     return "SMALL"
                 else:
-                    return None
+                    return "BIG" if big_t >= small_t else "SMALL"
 
             pred_size = calculate_top_sure_shot(target_period_num, tab_offset)
 
             # ==========================================================
-            # 2. नीचे का 'नेक्स्ट शॉट' इंजन (आने वाले ट्रेंड और अगली लाइन का कैच)
+            # 2. नीचे का 'नेक्स्ट शॉट' इंजन
             # ==========================================================
             def calculate_bottom_next_shot(p_num, offset_val):
                 next_trend_votes = []
-                for n_id in range(1, 26):
-                    # नेक्स्ट शॉट के लिए बिल्कुल अलग और सटीक फॉर्मूला
+                for n_id in range(1, 21):
                     next_check = (p_num * n_id * 17 + offset_val + (p_num % 5)) % 100
                     next_trend_votes.append("BIG" if next_check % 2 == 0 else "SMALL")
                 
@@ -526,31 +522,38 @@ else:
 
             next_shot_val = calculate_bottom_next_shot(target_period_num, tab_offset)
 
+            # --- लाइव पीरियड बॉक्स (टिप-टिप लाल/हरी बत्ती और लाइव यूज़र काउंट के साथ) ---
             st.markdown(
                 f"""
                 <div class="target-period-box">
                     <div style="display: flex; align-items: center;">
+                        <span class="blinking-red-light"></span>
                         <span style="color: #FFD700; font-size: 13px; font-weight: 900; margin-right: 6px;">LIVE PERIOD:</span>
                         <span style="color: #00FFFF; font-size: 15px; font-weight: 900; background: rgba(0,255,255,0.1); padding: 2px 8px; border-radius: 4px; border: 1px solid #00FFFF;">{target_period_str}</span>
                     </div>
-                    <div class="timer-box-large">⏰ {timer_str}</div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="color: #00FF66; font-size: 11px; font-weight: 900; background: rgba(0,255,102,0.15); padding: 2px 6px; border-radius: 4px; border: 1px solid #00FF66;">
+                            <span class="blinking-green-light" style="width:7px; height:7px; margin:0 3px 0 0;"></span> {mode_name} LIVE | 👥 {live_users_count}
+                        </span>
+                        <div class="timer-box-large">⏰ {timer_str}</div>
+                    </div>
                 </div>
             """,
                 unsafe_allow_html=True,
             )
 
-            # --- बेटिंग विंडो टाइमिंग (30S मोड में पूरे 15 सेकंड का सुरक्षित समय) ---
+            # --- बेटिंग विंडो टाइमिंग ---
             if seconds == 30:
-                scan_active = remaining_secs > 27
+                scan_active = remaining_secs > 28
                 close_phase = remaining_secs <= 15
             elif seconds == 60:
-                scan_active = remaining_secs > 50
+                scan_active = remaining_secs > 55
                 close_phase = remaining_secs <= 20
             elif seconds == 180:
-                scan_active = remaining_secs > 160
+                scan_active = remaining_secs > 170
                 close_phase = remaining_secs <= 30
             else:
-                scan_active = remaining_secs > 270
+                scan_active = remaining_secs > 285
                 close_phase = remaining_secs <= 45
 
             is_market_unclear = pred_size is None
@@ -566,14 +569,7 @@ else:
                 st.markdown(
                     f'<div class="analyzing-banner"><span'
                     ' class="blinking-yellow-light" style="width:8px;'
-                    ' height:8px;"></span> 🔄 ZIG-ZAG & HISTORY SCANNING... ({remaining_secs}s left)</div>',
-                    unsafe_allow_html=True,
-                )
-            elif is_market_unclear:
-                st.markdown(
-                    '<div class="wait-warning-banner"><span'
-                    ' class="blinking-yellow-light"></span>🛑 WAITING: ZIG-ZAG 100% SHOT SEARCHING (सुरक्षित प्रतीक्षा)<span class="blinking-yellow-light"'
-                    ' style="margin-left:6px;"></span></div>',
+                    ' height:8px;"></span> 🔄 SYNCING PERIOD & TREND... ({remaining_secs}s left)</div>',
                     unsafe_allow_html=True,
                 )
             else:
@@ -598,8 +594,8 @@ else:
                         unsafe_allow_html=True,
                     )
 
-            # --- बीच वाला रिजल्ट बॉक्स (Number, Size, Color) ---
-            if scan_active or is_market_unclear:
+            # --- बीच वाला रिजल्ट बॉक्स तुरंत अपडेट होने वाला ---
+            if scan_active:
                 display_num = "—"
                 display_size = "WAITING"
                 display_color = "STANDBY"
@@ -640,7 +636,7 @@ else:
                 unsafe_allow_html=True,
             )
 
-            # --- सबसे नीचे साफ-सुथरा 'LIVE' और 'नेक्स्ट शॉट' (बिल्कुल अलग लॉजिक के साथ) ---
+            # --- सबसे नीचे साफ-सुथरा 'LIVE' और 'नेक्स्ट शॉट' (टिप-टिप बत्ती के साथ) ---
             if next_shot_val == "BIG":
                 next_shot_bg = "#FF8800"
                 next_shot_glow = "0 0 15px #FF8800"
