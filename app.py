@@ -210,9 +210,8 @@ if not st.session_state.authenticated:
                         )
                 else:
                     st.error(
-                        "🚨 समय समाप्त: आपके 2 दिन (48 घंटे) का प्लान खत्म हो"
-                        " चुका है! कृपया नीचे नया ₹1500 का भुगतान करके नया UTR"
-                        " दर्ज करें।"
+                        "🚨 समय समाप्त: आपके 15 दिन का प्लान खत्म हो चुका है!"
+                        " कृपया नीचे नया ₹2000 का भुगतान करके नया UTR दर्ज करें।"
                     )
             else:
                 st.error("❌ गलत पासवर्ड! कृपया सही पासवर्ड दर्ज करें।")
@@ -224,7 +223,7 @@ if not st.session_state.authenticated:
     st.markdown("---")
     st.markdown(
         "<h3 style='color: #FFD700; font-weight: 900; text-align: center;"
-        " font-size: 15px; margin-bottom: 5px;'>⚡ 1500 ₹ QR स्कैन और नया UTR दर्ज"
+        " font-size: 15px; margin-bottom: 5px;'>⚡ 2000 ₹ QR स्कैन और नया UTR दर्ज"
         " करें</h3>",
         unsafe_allow_html=True,
     )
@@ -242,10 +241,10 @@ if not st.session_state.authenticated:
     st.markdown(
         """
         <div style='background: linear-gradient(135deg, #113300, #001a00); border: 2px solid #00FF66; padding: 12px; border-radius: 10px; margin: 10px 0; text-align: center;'>
-            <p style='color: #00FF66; font-size: 14px; font-weight: 900; margin: 0;'>💎 2 दिन समाप्त होने पर ₹1500 का भुगतान करके नया UTR डालें</p>
+            <p style='color: #00FF66; font-size: 14px; font-weight: 900; margin: 0;'>💎 15 दिन समाप्त होने पर ₹2000 का भुगतान करके नया UTR डालें (15 Days Plan)</p>
             <p style='color: #CCCCCC; font-size: 11px; margin-top: 4px;'>नीचे दिए गए PhonePe QR को स्कैन करें:</p>
             <div style='background: #FFFFFF; padding: 10px; display: inline-block; border-radius: 8px; margin-top: 6px; box-shadow: 0 0 15px rgba(0,255,102,0.4);'>
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=170x170&data=upi://pay?pa=kishorsingh226105.wallet@phonepe&pn=KishorSinghRautela&am=1500" width="160" height="160">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=170x170&data=upi://pay?pa=kishorsingh226105.wallet@phonepe&pn=KishorSinghRautela&am=2000" width="160" height="160">
             </div>
             <p style='color: #FFD700; font-size: 12px; margin-top: 6px; font-weight: 900;'>UPI ID: kishorsingh226105.wallet@phonepe</p>
         </div>
@@ -284,12 +283,12 @@ if not st.session_state.authenticated:
                 "utr": clean_utr,
                 "password": renew_pass,
                 "status": "PENDING",
-                "expiry": datetime.now() + timedelta(days=2),
+                "expiry": datetime.now() + timedelta(days=15),
                 "time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             }
             st.success(
                 "📩 नया UTR सफलतापूर्वक सबमिट हो गया है! 🔴 (पेंडिंग)। ओनर द्वारा"
-                " वेरीफाई और अप्रूव होने के बाद आपका पैनल चालू होगा।"
+                " वेरीफाई और अप्रूव होने के बाद आपका 15 दिन का पैनल चालू होगा।"
             )
 
     st.markdown("</div>", unsafe_allow_html=True)
@@ -304,7 +303,7 @@ else:
         )
         st.markdown(
             "<p style='color: #00FFFF; text-align: center; font-size: 12px;'>यहाँ"
-            " यूज़र का नया UTR चेक करें और Approve (हरा टिक) दें:</p>",
+            " यूज़र का नया UTR चेक करें और Approve (हरा टिक) दें (15 Days Validation):</p>",
             unsafe_allow_html=True,
         )
 
@@ -341,10 +340,10 @@ else:
                             "APPROVED"
                         )
                         st.session_state.utr_requests[mob]["expiry"] = (
-                            datetime.now() + timedelta(days=2)
+                            datetime.now() + timedelta(days=15)
                         )
                         st.success(
-                            f"यूज़र {mob} को अप्रूव कर दिया गया है!"
+                            f"यूज़र {mob} को 15 दिनों के लिए अप्रूव कर दिया गया है!"
                         )
                         time.sleep(0.5)
                         st.rerun()
@@ -371,40 +370,40 @@ else:
         unsafe_allow_html=True,
     )
 
-    # --- मल्टी-मोड टाइमर बटन (30S, 1M, 3M, 5M) ---
     col_m1, col_m2, col_m3, col_m4 = st.columns(4)
 
     with col_m1:
-        label_30s = "🔴 30S" if st.session_state.selected_game_seconds == 30 else "30S"
-        if st.button(label_30s, key="btn_30s", use_container_width=True):
+        if st.button("30S MODE", key="btn_30s", use_container_width=True):
             st.session_state.selected_game_seconds = 30
             st.rerun()
 
     with col_m2:
-        label_1m = "🔴 1M" if st.session_state.selected_game_seconds == 60 else "1M"
-        if st.button(label_1m, key="btn_1m", use_container_width=True):
+        if st.button("1M MODE", key="btn_1m", use_container_width=True):
             st.session_state.selected_game_seconds = 60
             st.rerun()
 
     with col_m3:
-        label_3m = "🔴 3M" if st.session_state.selected_game_seconds == 180 else "3M"
-        if st.button(label_3m, key="btn_3m", use_container_width=True):
+        if st.button("3M MODE", key="btn_3m", use_container_width=True):
             st.session_state.selected_game_seconds = 180
             st.rerun()
 
     with col_m4:
-        label_5m = "🔴 5M" if st.session_state.selected_game_seconds == 300 else "5M"
-        if st.button(label_5m, key="btn_5m", use_container_width=True):
+        if st.button("5M MODE", key="btn_5m", use_container_width=True):
             st.session_state.selected_game_seconds = 300
             st.rerun()
 
     seconds = st.session_state.selected_game_seconds
+    mode_name_text = f"{seconds} SECONDS" if seconds < 300 else f"{seconds//60} MINUTE"
+    
     st.markdown(
-        f"<p style='color: #00FF66; font-size: 11px; font-weight: 900; margin:"
-        f" 2px 0;'>Active Timer Mode: {seconds}s (🔴 Blinking Active)</p>",
+        f"""
+        <div style='background: linear-gradient(135deg, #111111, #220011); border: 2px solid #FF0055; border-radius: 8px; padding: 8px 12px; margin-top: 4px; margin-bottom: 6px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 15px rgba(255,0,85,0.4);'>
+            <span class="blinking-red-light"></span>
+            <span style='color: #00FF66; font-size: 13px; font-weight: 900; letter-spacing: 1px;'>ACTIVE LIVE MODE: {mode_name_text} (RUNNING & BLINKING)</span>
+        </div>
+    """,
         unsafe_allow_html=True,
     )
-
 
     def update_period_callback():
         clean_val = "".join(filter(str.isdigit, st.session_state.period_text_box))
@@ -413,7 +412,6 @@ else:
         st.session_state.base_input_block_time = current_time - (
             current_time % seconds
         )
-
 
     st.text_input(
         "Period Input",
@@ -424,7 +422,6 @@ else:
         on_change=update_period_callback,
         label_visibility="collapsed",
     )
-
 
     @st.fragment(run_every=1)
     def success_dashboard_core():
@@ -440,10 +437,9 @@ else:
             total_seconds = now.hour * 3600 + now.minute * 60 + now.second
             remaining_secs = seconds - (total_seconds % seconds)
             mins = remaining_secs // 60
-            secs = remaining_secs % 60
-            timer_str = f"{mins:02d}:{secs:02d}"
+            secs_rem = remaining_secs % 60
+            timer_str = f"{mins:02d}:{secs_rem:02d}"
 
-            # --- अलार्म/बीप साउंड: चुने हुए मोड के आखिरी 5 सेकंड में बजेगा ---
             if remaining_secs <= 5:
                 st.markdown(
                     """
@@ -470,7 +466,6 @@ else:
 
             user_input_str = st.session_state.user_base_period.strip()
 
-            # --- सिर्फ ठीक 5 अंकों का नंबर होने पर ही खुलेगा ---
             is_invalid_format = False
             if not user_input_str or len(user_input_str) != 5 or not user_input_str.isdigit():
                 is_invalid_format = True
@@ -510,44 +505,45 @@ else:
             if st.session_state.base_input_block_time == 0:
                 st.session_state.base_input_block_time = current_block_start
 
-            # --- समय और ब्लॉक के हिसाब से लाइव पीरियड आगे बढ़ेगा ---
             elapsed_blocks = (
                 current_block_start - st.session_state.base_input_block_time
             ) // seconds
             target_period_num = base_val + elapsed_blocks
             target_period_str = str(target_period_num)
 
-            # --- पिछली चालों का पैटर्न (History) ---
             history = []
             for h in range(6, 0, -1):
                 past_num = target_period_num - h
-                p_hash = (past_num * 37 + tab_offset) % 100
+                p_hash = (past_num * 37 + tab_offset + (current_block_start % 99)) % 100
                 history.append("BIG" if p_hash % 2 == 0 else "SMALL")
 
-            # --- अत्यंत सख्त, गहरी जांच और 100% पक्का विनिंग कंसेंसस इंजन ---
             def calculate_ultimate_win_consensus(p_num, offset_val, hist):
+                if len(hist) < 6:
+                    return None
+                    
                 last_res = hist[-1]
                 prev_res = hist[-2]
                 prev2_res = hist[-3]
+                prev3_res = hist[-4]
 
-                trend_stability = history.count(last_res)
-                is_choppy_market = (last_res != prev_res and prev_res != prev2_res)
+                trend_stability = hist.count(last_res)
+                is_extreme_choppy = (last_res != prev_res and prev_res != prev2_res and prev2_res != prev3_res)
 
-                if is_choppy_market and trend_stability < 3 and random.random() < 0.50:
-                    return None  # सख्त रोक: STOP: MARKET UNCLEAR - DO NOT BET
+                if is_extreme_choppy and trend_stability < 3:
+                    return None  
 
                 server_votes = []
-                for s_id in range(1, 16):
-                    node_check = (p_num * s_id + offset_val + (p_num % 7)) % 100
+                for s_id in range(1, 21):
+                    node_check = (p_num * s_id * 17 + offset_val + (p_num % 11) + hash(last_res)) % 100
                     vote = "BIG" if node_check % 2 == 0 else "SMALL"
                     server_votes.append(vote)
 
                 big_count = server_votes.count("BIG")
                 small_count = server_votes.count("SMALL")
 
-                if big_count >= 13:
+                if big_count >= 16:
                     return "BIG"
-                elif small_count >= 13:
+                elif small_count >= 16:
                     return "SMALL"
                 else:
                     return None
@@ -558,8 +554,7 @@ else:
                 f"""
                 <div class="target-period-box">
                     <div style="display: flex; align-items: center;">
-                        <span class="blinking-yellow-light"></span>
-                        <span style="color: #FFD700; font-size: 13px; font-weight: 900; margin-right: 6px;">LIVE PERIOD ({seconds}s):</span>
+                        <span style="color: #FFD700; font-size: 13px; font-weight: 900; margin-right: 6px;">LIVE PERIOD:</span>
                         <span style="color: #00FFFF; font-size: 15px; font-weight: 900; background: rgba(0,255,255,0.1); padding: 2px 8px; border-radius: 4px; border: 1px solid #00FFFF;">{target_period_str}</span>
                     </div>
                     <div class="timer-box-large">⏰ {timer_str}</div>
@@ -568,9 +563,7 @@ else:
                 unsafe_allow_html=True,
             )
 
-            # --- एकदम सही टाइमिंग: 30s मोड में शुरू के 10s स्कैनिंग, बाकी 20s बेटिंग ---
             if seconds == 30:
-                # जैसे ही नया पीरियड शुरू होता है (remaining_secs 30 से घटकर 20 पर आता है), शुरुआती 10s स्कैनिंग होगी
                 scan_active = remaining_secs > 20
                 close_phase = remaining_secs <= 4
             elif seconds == 60:
@@ -674,19 +667,35 @@ else:
             boxes_html = ""
             for item in history:
                 bg_color = "#FF8800" if item == "BIG" else "#0088FF"
-                boxes_html += f"<div style='background: {bg_color}; color: white; padding: 6px 12px; border-radius: 6px; font-weight: 900; font-size: 12px; margin: 0 3px; display: inline-block;'>{item}</div>"
+                glow_effect = "box-shadow: 0 0 10px #FF8800;" if item == "BIG" else "box-shadow: 0 0 10px #0088FF;"
+                boxes_html += f"<div style='background: {bg_color}; color: white; padding: 8px 14px; border-radius: 8px; font-weight: 900; font-size: 13px; margin: 3px; display: inline-block; {glow_effect} border: 1.5px solid #FFFFFF;'>{item}</div>"
+
+            next_shot_val = pred_size if pred_size is not None else "SCANNING..."
+            if next_shot_val == "BIG":
+                next_shot_bg = "#FF8800"
+                next_shot_glow = "0 0 15px #FF8800"
+            elif next_shot_val == "SMALL":
+                next_shot_bg = "#0088FF"
+                next_shot_glow = "0 0 15px #0088FF"
+            else:
+                next_shot_bg = "#333333"
+                next_shot_glow = "none"
 
             st.markdown(
                 f"""
-                <div style="margin-top: 10px; background: #000000; padding: 12px; border-radius: 12px; text-align: center; border: 1.5px solid #FFD700;">
-                    <div style="font-size: 11px; color: #FFD700; font-weight: 900; margin-bottom: 8px;">
-                        📊 BDG <span style="color: #FF0055; animation: super-fast-blink 0.5s infinite linear;">🔴 LIVE</span> ज़िग-जैग पैटर्न & मैट्रिक्स चार्ट ({seconds}s Mode):
+                <div style="margin-top: 10px; background: #000000; padding: 14px; border-radius: 12px; text-align: center; border: 2px solid #FFD700; box-shadow: 0 0 15px rgba(255,215,0,0.2);">
+                    <div style="font-size: 13px; color: #FFD700; font-weight: 900; margin-bottom: 10px; display: flex; justify-content: center; align-items: center; gap: 6px;">
+                        <span>📊 BDG</span>
+                        <span class="blinking-red-light" style="width:10px; height:10px; margin:0;"></span>
+                        <span style="color: #00FF66; letter-spacing: 1px; font-size: 14px;">LIVE</span>
+                        <span style="color: #FFFFFF;">ज़िग-जैग पैटर्न & मैट्रिक्स चार्ट ({seconds}s Mode):</span>
                     </div>
-                    <div style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 4px; margin-bottom: 10px;">
+                    <div style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 12px;">
                         {boxes_html}
                     </div>
-                    <div style="display: inline-block; background: linear-gradient(135deg, #00FF66, #008855); color: #000000; padding: 8px 22px; border-radius: 20px; font-weight: 900; font-size: 13px; border: 2px solid #FFFFFF;">
-                        🎯 10S SCAN & 20S BETTING ACTIVE
+                    <div style="margin-top: 10px; display: flex; justify-content: center; align-items: center; gap: 12px; background: rgba(255,255,255,0.05); padding: 8px; border-radius: 10px; border: 1px dashed #FFD700;">
+                        <span style="color: #00FFFF; font-size: 14px; font-weight: 900; text-shadow: 0 0 8px rgba(0,255,255,0.5);">⚡ NEXT SHOT:</span>
+                        <span style="background: {next_shot_bg}; color: #FFFFFF; padding: 8px 22px; border-radius: 8px; font-weight: 900; font-size: 14px; border: 2px solid #FFFFFF; box-shadow: {next_shot_glow};">{next_shot_val}</span>
                     </div>
                 </div>
             """,
