@@ -1,4 +1,6 @@
 from datetime import datetime, timedelta
+import json
+import os
 import random
 import time
 import streamlit as st
@@ -123,124 +125,171 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+# --- सर्वर फाइल पर डेटा सेव और लोड करने के लिए फंक्शन ---
+DATA_FILE = "bdg_app_data.json"
+
+
+def load_shared_data():
+  if os.path.exists(DATA_FILE):
+    try:
+      with open(DATA_FILE, "r", encoding="utf-8") as f:
+        data = json.load(f)
+        # अगर डेट-टाइम स्ट्रिंग्स हैं तो उन्हें वापस datetime ऑब्जेक्ट में बदलें
+        for mob, val in data.get("utr_requests", {}).items():
+          if "expiry" in val and isinstance(val["expiry"], str):
+            try:
+              val["expiry"] = datetime.fromisoformat(val["expiry"])
+            except:
+              val["expiry"] = datetime.now() + timedelta(days=15)
+        return data
+    except:
+      pass
+  return {"utr_requests": {}, "used_utrs_list": []}
+
+
+def save_shared_data():
+  try:
+    serializable_data = {"utr_requests": {}, "used_utrs_list": st.session_state.used_utrs_list}
+    for mob, val in st.session_state.utr_requests.items():
+      val_copy = val.copy()
+      if "expiry" in val_copy and isinstance(val_copy["expiry"], datetime):
+        val_copy["expiry"] = val_copy["expiry"].isoformat()
+      serializable_data["utr_requests"][mob] = val_copy
+
+    with open(DATA_FILE, "w", encoding="utf-8") as f:
+      json.dump(serializable_data, f, ensure_ascii=False, indent=4)
+  except:
+    pass
+
+
+# इनिशियलाइज़ेशन (डेटा लोड करें)
+initial_data = load_shared_data()
+
 if "authenticated" not in st.session_state:
-    st.session_state.authenticated = False
+  st.session_state.authenticated = False
 
 if "is_owner" not in st.session_state:
-    st.session_state.is_owner = False
+  st.session_state.is_owner = False
 
 if "utr_requests" not in st.session_state:
-    st.session_state.utr_requests = {}
+  st.session_state.utr_requests = initial_data["utr_requests"]
 
 if "used_utrs_list" not in st.session_state:
-    st.session_state.used_utrs_list = []
+  st.session_state.used_utrs_list = initial_data["used_utrs_list"]
 
 if "user_base_period" not in st.session_state:
-    st.session_state.user_base_period = ""
+  st.session_state.user_base_period = ""
 
 if "base_input_block_time" not in st.session_state:
-    st.session_state.base_input_block_time = 0
+  st.session_state.base_input_block_time = 0
 
 if "selected_game_seconds" not in st.session_state:
-    st.session_state.selected_game_seconds = 30
+  st.session_state.selected_game_seconds = 30
 
 MASTER_MOBILE = "9011997944"
 MASTER_PASSWORD = "KISHOR90"
 
 if not st.session_state.authenticated:
-    st.markdown(
-        "<h2 style='text-align: center; color: #FFD700; font-size: 20px;"
-        " font-weight: 900;'><span class='blinking-red-light'></span>👑 BDG VIP"
-        " 100% SURE SHOT PANEL 👑<span class='blinking-red-light'"
-        " style='margin-left: 6px; margin-right: 0;'></span></h2>",
-        unsafe_allow_html=True,
-    )
+  st.markdown(
+      "<h2 style='text-align: center; color: #FFD700; font-size: 20px;"
+      " font-weight: 900;'><span class='blinking-red-light'></span>👑 BDG VIP"
+      " 100% SURE SHOT PANEL 👑<span class='blinking-red-light'"
+      " style='margin-left: 6px; margin-right: 0;'></span></h2>",
+      unsafe_allow_html=True,
+  )
 
-    st.markdown("<div class='auth-card'>", unsafe_allow_html=True)
-    st.markdown(
-        "<h4 style='color: #00FFFF; text-align: center; font-weight: 900;"
-        " font-size: 14px;'>रजिस्टर्ड मोबाइल नंबर और पासवर्ड से लॉगिन करें</h4>",
-        unsafe_allow_html=True,
-    )
+  st.markdown("<div class='auth-card'>", unsafe_allow_html=True)
+  st.markdown(
+      "<h4 style='color: #00FFFF; text-align: center; font-weight: 900;"
+      " font-size: 14px;'>रजिस्टर्ड मोबाइल नंबर और पासवर्ड से लॉगिन करें</h4>",
+      unsafe_allow_html=True,
+  )
 
-    login_mob = st.text_input(
-        "📱 मोबाइल नंबर", placeholder="Enter mobile number", key="login_mob_input"
-    )
-    login_pass = st.text_input(
-        "🔒 पासवर्ड",
-        type="password",
-        placeholder="Enter password",
-        key="login_pass_input",
-    )
+  login_mob = st.text_input(
+      "📱 मोबाइल नंबर", placeholder="Enter mobile number", key="login_mob_input"
+  )
+  login_pass = st.text_input(
+      "🔒 पासवर्ड",
+      type="password",
+      placeholder="Enter password",
+      key="login_pass_input",
+  )
 
-    if st.button(
-        "🚀 UNLOCK PANEL (LOGIN)", use_container_width=True, key="login_btn"
-    ):
-        clean_l_mob = "".join(filter(str.isdigit, login_mob))
+  if st.button(
+      "🚀 UNLOCK PANEL (LOGIN)", use_container_width=True, key="login_btn"
+  ):
+    # ताजा डेटा री-लोड करें ताकि ओनर के अप्रूव करते ही यूज़र को तुरंत एक्सेस मिले
+    latest_data = load_shared_data()
+    st.session_state.utr_requests = latest_data["utr_requests"]
+    st.session_state.used_utrs_list = latest_data["used_utrs_list"]
 
-        if clean_l_mob == MASTER_MOBILE and login_pass == MASTER_PASSWORD:
+    clean_l_mob = "".join(filter(str.isdigit, login_mob))
+
+    if clean_l_mob == MASTER_MOBILE and login_pass == MASTER_PASSWORD:
+      st.session_state.authenticated = True
+      st.session_state.is_owner = True
+      st.success("👑 ओनर एक्सेस सफल! कंट्रोल पैनल खुल रहा है...")
+      time.sleep(0.8)
+      st.rerun()
+
+    elif clean_l_mob in st.session_state.utr_requests:
+      user_data = st.session_state.utr_requests[clean_l_mob]
+      if user_data["password"] == login_pass:
+        # सुनिश्चित करें कि expiry datetime ऑब्जेक्ट है
+        exp_time = user_data["expiry"]
+        if isinstance(exp_time, str):
+          try:
+            exp_time = datetime.fromisoformat(exp_time)
+          except:
+            exp_time = datetime.now() + timedelta(days=15)
+
+        if datetime.now() < exp_time:
+          if user_data["status"] == "APPROVED":
             st.session_state.authenticated = True
-            st.session_state.is_owner = True
-            st.success("👑 ओनर एक्सेस सफल! कंट्रोल पैनल खुल रहा है...")
+            st.session_state.is_owner = False
+            st.success(
+                "🟢 Verified: आपका प्लान सक्रिय है, डैशबोर्ड खुल रहा है..."
+            )
             time.sleep(0.8)
             st.rerun()
-
-        elif clean_l_mob in st.session_state.utr_requests:
-            user_data = st.session_state.utr_requests[clean_l_mob]
-            if user_data["password"] == login_pass:
-                if datetime.now() < user_data["expiry"]:
-                    if user_data["status"] == "APPROVED":
-                        st.session_state.authenticated = True
-                        st.session_state.is_owner = False
-                        st.success(
-                            "🟢 Verified: आपका प्लान सक्रिय है, डैशबोर्ड खुल"
-                            " रहा है..."
-                        )
-                        time.sleep(0.8)
-                        st.rerun()
-                    elif user_data["status"] == "REJECTED":
-                        st.error(
-                            "🔴 रिजेक्टेड: आपका UTR ओनर द्वारा रिजेक्ट कर दिया"
-                            " गया है!"
-                        )
-                    else:
-                        st.warning(
-                            "🔴 पेंडिंग: आपका UTR अभी ओनर द्वारा अप्रूव नहीं हुआ"
-                            " है!"
-                        )
-                else:
-                    st.error(
-                        "🚨 समय समाप्त: आपके 15 दिन का प्लान खत्म हो चुका है!"
-                        " कृपया नीचे नया ₹2000 का भुगतान करके नया UTR दर्ज करें।"
-                    )
-            else:
-                st.error("❌ गलत पासवर्ड! कृपया सही पासवर्ड दर्ज करें।")
+          elif user_data["status"] == "REJECTED":
+            st.error(
+                "🔴 रिजेक्टेड: आपका UTR ओनर द्वारा रिजेक्ट कर दिया गया है!"
+            )
+          else:
+            st.warning(
+                "🔴 पेंडिंग: आपका UTR अभी ओनर द्वारा अप्रूव नहीं हुआ है!"
+            )
         else:
-                        st.error(
-                            "❌ यह मोबाइल नंबर रजिस्टर्ड नहीं है! कृपया नया UTR"
-                            " दर्ज करें।"
-                        )
+          st.error(
+              "🚨 समय समाप्त: आपके 15 दिन का प्लान खत्म हो चुका है! कृपया नीचे"
+              " नया ₹2000 का भुगतान करके नया UTR दर्ज करें।"
+          )
+      else:
+        st.error("❌ गलत पासवर्ड! कृपया सही पासवर्ड दर्ज करें।")
+    else:
+      st.error("❌ यह मोबाइल नंबर रजिस्टर्ड नहीं है! कृपया नया UTR दर्ज करें।")
 
-    st.markdown("---")
-    st.markdown(
-        "<h3 style='color: #FFD700; font-weight: 900; text-align: center;"
-        " font-size: 15px; margin-bottom: 5px;'>⚡ 2000 ₹ QR स्कैन और नया UTR दर्ज"
-        " करें</h3>",
-        unsafe_allow_html=True,
-    )
+  st.markdown("---")
+  st.markdown(
+      "<h3 style='color: #FFD700; font-weight: 900; text-align: center;"
+      " font-size: 15px; margin-bottom: 5px;'>⚡ 2000 ₹ QR स्कैन और नया UTR दर्ज"
+      " करें</h3>",
+      unsafe_allow_html=True,
+  )
 
-    renew_mob = st.text_input(
-        "📱 रजिस्टर्ड मोबाइल नंबर", placeholder="Enter mobile", key="renew_mob_input"
-    )
-    renew_pass = st.text_input(
-        "🔒 पासवर्ड",
-        type="password",
-        placeholder="Enter password",
-        key="renew_pass_input",
-    )
+  renew_mob = st.text_input(
+      "📱 रजिस्टर्ड मोबाइल नंबर", placeholder="Enter mobile", key="renew_mob_input"
+  )
+  renew_pass = st.text_input(
+      "🔒 पासवर्ड",
+      type="password",
+      placeholder="Enter password",
+      key="renew_pass_input",
+  )
 
-    st.markdown(
-        """
+  st.markdown(
+      """
         <div style='background: linear-gradient(135deg, #113300, #001a00); border: 2px solid #00FF66; padding: 12px; border-radius: 10px; margin: 10px 0; text-align: center;'>
             <p style='color: #00FF66; font-size: 14px; font-weight: 900; margin: 0;'>💎 15 दिन समाप्त होने पर ₹2000 का भुगतान करके नया UTR डालें (15 Days Plan)</p>
             <p style='color: #CCCCCC; font-size: 11px; margin-top: 4px;'>नीचे दिए गए PhonePe QR को स्कैन करें:</p>
@@ -250,208 +299,222 @@ if not st.session_state.authenticated:
             <p style='color: #FFD700; font-size: 12px; margin-top: 6px; font-weight: 900;'>UPI ID: kishorsingh226105.wallet@phonepe</p>
         </div>
     """,
+      unsafe_allow_html=True,
+  )
+
+  renew_utr_input = st.text_input(
+      "📝 नया 12-Digit UTR Number",
+      placeholder="Enter new 12-digit UTR",
+      max_chars=12,
+      key="renew_utr_input",
+  )
+
+  if st.button(
+      "🔄 नया UTR सबमिट करें (RENEW REQUEST)",
+      use_container_width=True,
+      key="user_renew_btn",
+  ):
+    # लेटेस्ट डेटा लोड करें
+    latest_data = load_shared_data()
+    st.session_state.utr_requests = latest_data["utr_requests"]
+    st.session_state.used_utrs_list = latest_data["used_utrs_list"]
+
+    clean_r_mob = "".join(filter(str.isdigit, renew_mob))
+    clean_utr = "".join(filter(str.isdigit, renew_utr_input))
+
+    if len(clean_r_mob) < 10:
+      st.error("⚠️ कृपया सही 10 अंकों का मोबाइल नंबर दर्ज करें!")
+    elif not renew_pass:
+      st.error("⚠️ कृपया अपना पासवर्ड दर्ज करें!")
+    elif len(clean_utr) != 12:
+      st.error("⚠️ अमान्य UTR! कृपया ठीक 12 अंकों का सही UTR नंबर डालें!")
+    elif clean_utr in st.session_state.used_utrs_list:
+      st.error(
+          "🚨 सुरक्षा चेतावनी: यह UTR नंबर पहले ही इस्तेमाल किया जा चुका है!"
+          " कृपया कोई नया UTR नंबर डालें।"
+      )
+    else:
+      st.session_state.utr_requests[clean_r_mob] = {
+          "utr": clean_utr,
+          "password": renew_pass,
+          "status": "PENDING",
+          "expiry": datetime.now() + timedelta(days=15),
+          "time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+      }
+      # सर्वर फाइल में तुरंत सेव करें ताकि ओनर को दिखने लगे
+      save_shared_data()
+      st.success(
+          "📩 नया UTR सफलतापूर्वक सबमिट हो गया है! 🔴 (पेंडिंग)। ओनर द्वारा"
+          " वेरीफाई और अप्रूव होने के बाद आपका 15 दिन का पैनल चालू होगा।"
+      )
+
+  st.markdown("</div>", unsafe_allow_html=True)
+
+else:
+  # ओनर पैनल खोलते ही ताजा डेटा लोड करें
+  latest_data = load_shared_data()
+  st.session_state.utr_requests = latest_data["utr_requests"]
+  st.session_state.used_utrs_list = latest_data["used_utrs_list"]
+
+  if st.session_state.is_owner:
+    st.markdown("<div class='admin-card'>", unsafe_allow_html=True)
+    st.markdown(
+        "<h3 style='color: #FFD700; text-align: center; margin: 0;'>👑"
+        " OWNER / ADMIN APPROVAL PANEL</h3>",
+        unsafe_allow_html=True,
+    )
+    st.markdown(
+        "<p style='color: #00FFFF; text-align: center; font-size: 12px;'>यहाँ"
+        " यूज़र का नया UTR चेक करें और Approve (हरा टिक) दें (15 Days"
+        " Validation):</p>",
         unsafe_allow_html=True,
     )
 
-    renew_utr_input = st.text_input(
-        "📝 नया 12-Digit UTR Number",
-        placeholder="Enter new 12-digit UTR",
-        max_chars=12,
-        key="renew_utr_input",
-    )
-
-    if st.button(
-        "🔄 नया UTR सबमिट करें (RENEW REQUEST)",
-        use_container_width=True,
-        key="user_renew_btn",
-    ):
-        clean_r_mob = "".join(filter(str.isdigit, renew_mob))
-        clean_utr = "".join(filter(str.isdigit, renew_utr_input))
-
-        if len(clean_r_mob) < 10:
-            st.error("⚠️ कृपया सही 10 अंकों का मोबाइल नंबर दर्ज करें!")
-        elif not renew_pass:
-            st.error("⚠️ कृपया अपना पासवर्ड दर्ज करें!")
-        elif len(clean_utr) != 12:
-            st.error("⚠️ अमान्य UTR! कृपया ठीक 12 अंकों का सही UTR नंबर डालें!")
-        elif clean_utr in st.session_state.used_utrs_list:
-            st.error(
-                "🚨 सुरक्षा चेतावनी: यह UTR नंबर पहले ही इस्तेमाल किया जा चुका"
-                " है! कृपया कोई नया UTR नंबर डालें।"
-            )
-        else:
-            st.session_state.utr_requests[clean_r_mob] = {
-                "utr": clean_utr,
-                "password": renew_pass,
-                "status": "PENDING",
-                "expiry": datetime.now() + timedelta(days=15),
-                "time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            }
-            st.success(
-                "📩 नया UTR सफलतापूर्वक सबमिट हो गया है! 🔴 (पेंडिंग)। ओनर द्वारा"
-                " वेरीफाई और अप्रूव होने के बाद आपका 15 दिन का पैनल चालू होगा।"
-            )
-
-    st.markdown("</div>", unsafe_allow_html=True)
-
-else:
-    if st.session_state.is_owner:
-        st.markdown("<div class='admin-card'>", unsafe_allow_html=True)
-        st.markdown(
-            "<h3 style='color: #FFD700; text-align: center; margin: 0;'>👑"
-            " OWNER / ADMIN APPROVAL PANEL</h3>",
-            unsafe_allow_html=True,
+    if not st.session_state.utr_requests:
+      st.info("अभी तक कोई UTR रिक्वेस्ट नहीं आई है।")
+    else:
+      for mob, req in list(st.session_state.utr_requests.items()):
+        status_icon = (
+            "🟢 (रिचार्ज स्वीकृत - ग्रीन टिक)"
+            if req["status"] == "APPROVED"
+            else "🔴 (रिचार्ज पेंडिंग)"
         )
+        border_color = "#00FF66" if req["status"] == "APPROVED" else "#FF0000"
+
         st.markdown(
-            "<p style='color: #00FFFF; text-align: center; font-size: 12px;'>यहाँ"
-            " यूज़र का नया UTR चेक करें और Approve (हरा टिक) दें (15 Days Validation):</p>",
-            unsafe_allow_html=True,
-        )
-
-        if not st.session_state.utr_requests:
-            st.info("अभी तक कोई UTR रिक्वेस्ट नहीं आई है।")
-        else:
-            for mob, req in list(st.session_state.utr_requests.items()):
-                status_icon = (
-                    "🟢 (रिचार्ज स्वीकृत - ग्रीन टिक)"
-                    if req["status"] == "APPROVED"
-                    else "🔴 (रिचार्ज पेंडिंग)"
-                )
-                border_color = (
-                    "#00FF66" if req["status"] == "APPROVED" else "#FF0000"
-                )
-
-                st.markdown(
-                    f"""
+            f"""
                     <div style='border: 1.5px solid {border_color}; padding: 10px; border-radius: 8px; margin-bottom: 8px; background: #000000;'>
                         <p style='margin:0; font-weight:900; color:#FFFFFF;'>📱 मोबाइल: <span style='color:#00FFFF;'>{mob}</span> | {status_icon}</p>
                         <p style='margin:0; font-size:12px; color:#FFD700;'>📝 UTR No: {req['utr']} | ⏰ समय: {req['time']}</p>
                     </div>
                 """,
-                    unsafe_allow_html=True,
-                )
+            unsafe_allow_html=True,
+        )
 
-                col_app, col_rej = st.columns(2)
-                with col_app:
-                    if st.button(f"✅ Approve", key=f"app_{mob}"):
-                        if req["utr"] not in st.session_state.used_utrs_list:
-                            st.session_state.used_utrs_list.append(req["utr"])
+        col_app, col_rej = st.columns(2)
+        with col_app:
+          if st.button(f"✅ Approve", key=f"app_{mob}"):
+            if req["utr"] not in st.session_state.used_utrs_list:
+              st.session_state.used_utrs_list.append(req["utr"])
 
-                        st.session_state.utr_requests[mob]["status"] = (
-                            "APPROVED"
-                        )
-                        st.session_state.utr_requests[mob]["expiry"] = (
-                            datetime.now() + timedelta(days=15)
-                        )
-                        st.success(
-                            f"यूज़र {mob} को 15 दिनों के लिए अप्रूव कर दिया गया है!"
-                        )
-                        time.sleep(0.5)
-                        st.rerun()
-                with col_rej:
-                    if st.button(f"❌ Reject", key=f"rej_{mob}"):
-                        st.session_state.utr_requests[mob]["status"] = (
-                            "REJECTED"
-                        )
-                        st.error(
-                            f"यूज़र {mob} का UTR रिजेक्ट कर दिया गया।"
-                        )
-                        time.sleep(0.5)
-                        st.rerun()
-
-        st.markdown("</div>", unsafe_allow_html=True)
-
-    seconds = st.session_state.selected_game_seconds
-
-    col_m1, col_m2, col_m3, col_m4 = st.columns(4)
-
-    with col_m1:
-        if st.button("30S MODE", key="btn_30s", use_container_width=True):
-            st.session_state.selected_game_seconds = 30
+            st.session_state.utr_requests[mob]["status"] = "APPROVED"
+            st.session_state.utr_requests[mob]["expiry"] = datetime.now() + timedelta(days=15)
+            # बदलाव को फाइल में सेव करें
+            save_shared_data()
+            st.success(f"यूज़र {mob} को 15 दिनों के लिए अप्रूव कर दिया गया है!")
+            time.sleep(0.5)
+            st.rerun()
+        with col_rej:
+          if st.button(f"❌ Reject", key=f"rej_{mob}"):
+            st.session_state.utr_requests[mob]["status"] = "REJECTED"
+            save_shared_data()
+            st.error(f"यूज़र {mob} का UTR रिजेक्ट कर दिया गया।")
+            time.sleep(0.5)
             st.rerun()
 
-    with col_m2:
-        if st.button("1M MODE", key="btn_1m", use_container_width=True):
-            st.session_state.selected_game_seconds = 60
-            st.rerun()
+    st.markdown("</div>", unsafe_allow_html=True)
 
-    with col_m3:
-        if st.button("3M MODE", key="btn_3m", use_container_width=True):
-            st.session_state.selected_game_seconds = 180
-            st.rerun()
+  seconds = st.session_state.selected_game_seconds
 
-    with col_m4:
-        if st.button("5M MODE", key="btn_5m", use_container_width=True):
-            st.session_state.selected_game_seconds = 300
-            st.rerun()
+  col_m1, col_m2, col_m3, col_m4 = st.columns(4)
 
-    active_b30 = "background: linear-gradient(135deg, #FF4444, #880000) !important; border: 2.5px solid #FFD700 !important; color: #FFFFFF !important; box-shadow: 0 0 15px rgba(255,68,68,0.6);" if seconds == 30 else "background: #111111 !important; border: 1px solid #333333 !important; color: #888888 !important;"
-    active_b1  = "background: linear-gradient(135deg, #00AA55, #003311) !important; border: 2.5px solid #00FF66 !important; color: #FFFFFF !important; box-shadow: 0 0 15px rgba(0,255,102,0.6);" if seconds == 60 else "background: #111111 !important; border: 1px solid #333333 !important; color: #888888 !important;"
-    active_b3  = "background: linear-gradient(135deg, #0088FF, #002266) !important; border: 2.5px solid #00FFFF !important; color: #FFFFFF !important; box-shadow: 0 0 15px rgba(0,136,255,0.6);" if seconds == 180 else "background: #111111 !important; border: 1px solid #333333 !important; color: #888888 !important;"
-    active_b5  = "background: linear-gradient(135deg, #FF8800, #552200) !important; border: 2.5px solid #FFB700 !important; color: #FFFFFF !important; box-shadow: 0 0 15px rgba(255,136,0,0.6);" if seconds == 300 else "background: #111111 !important; border: 1px solid #333333 !important; color: #888888 !important;"
+  with col_m1:
+    if st.button("30S MODE", key="btn_30s", use_container_width=True):
+      st.session_state.selected_game_seconds = 30
+      st.rerun()
 
-    st.markdown(f"""
+  with col_m2:
+    if st.button("1M MODE", key="btn_1m", use_container_width=True):
+      st.session_state.selected_game_seconds = 60
+      st.rerun()
+
+  with col_m3:
+    if st.button("3M MODE", key="btn_3m", use_container_width=True):
+      st.session_state.selected_game_seconds = 180
+      st.rerun()
+
+  with col_m4:
+    if st.button("5M MODE", key="btn_5m", use_container_width=True):
+      st.session_state.selected_game_seconds = 300
+      st.rerun()
+
+  active_b30 = "background: linear-gradient(135deg, #FF4444, #880000) !important; border: 2.5px solid #FFD700 !important; color: #FFFFFF !important; box-shadow: 0 0 15px rgba(255,68,68,0.6);" if seconds == 30 else "background: #111111 !important; border: 1px solid #333333 !important; color: #888888 !important;"
+  active_b1 = "background: linear-gradient(135deg, #00AA55, #003311) !important; border: 2.5px solid #00FF66 !important; color: #FFFFFF !important; box-shadow: 0 0 15px rgba(0,255,102,0.6);" if seconds == 60 else "background: #111111 !important; border: 1px solid #333333 !important; color: #888888 !important;"
+  active_b3 = "background: linear-gradient(135deg, #0088FF, #002266) !important; border: 2.5px solid #00FFFF !important; color: #FFFFFF !important; box-shadow: 0 0 15px rgba(0,136,255,0.6);" if seconds == 180 else "background: #111111 !important; border: 1px solid #333333 !important; color: #888888 !important;"
+  active_b5 = "background: linear-gradient(135deg, #FF8800, #552200) !important; border: 2.5px solid #FFB700 !important; color: #FFFFFF !important; box-shadow: 0 0 15px rgba(255,136,0,0.6);" if seconds == 300 else "background: #111111 !important; border: 1px solid #333333 !important; color: #888888 !important;"
+
+  st.markdown(
+      f"""
         <style>
         div[data-testid="column"]:nth-of-type(1) button {{ {active_b30} font-weight: 900; border-radius: 8px; }}
         div[data-testid="column"]:nth-of-type(2) button {{ {active_b1} font-weight: 900; border-radius: 8px; }}
         div[data-testid="column"]:nth-of-type(3) button {{ {active_b3} font-weight: 900; border-radius: 8px; }}
         div[data-testid="column"]:nth-of-type(4) button {{ {active_b5} font-weight: 900; border-radius: 8px; }}
         </style>
-    """, unsafe_allow_html=True)
+    """,
+      unsafe_allow_html=True,
+  )
 
-    def update_period_callback():
-        clean_val = "".join(filter(str.isdigit, st.session_state.period_text_box))
-        st.session_state.user_base_period = clean_val
-        current_time = int(time.time())
-        st.session_state.base_input_block_time = current_time - (
-            current_time % seconds
-        )
 
-    st.text_input(
-        "Period Input",
-        value=st.session_state.user_base_period,
-        placeholder="बीडीजी गेम के पीछे के आखिरी 5 अंक यहाँ डालें...",
-        max_chars=5,
-        key="period_text_box",
-        on_change=update_period_callback,
-        label_visibility="collapsed",
+  def update_period_callback():
+    clean_val = "".join(filter(str.isdigit, st.session_state.period_text_box))
+    st.session_state.user_base_period = clean_val
+    current_time = int(time.time())
+    st.session_state.base_input_block_time = current_time - (
+        current_time % seconds
     )
 
-    @st.fragment(run_every=1)
-    def success_dashboard_core():
-        try:
-            now = datetime.now()
-            tab_offset = 23
 
-            total_seconds = now.hour * 3600 + now.minute * 60 + now.second
-            remaining_secs = seconds - (total_seconds % seconds)
-            mins = remaining_secs // 60
-            secs_rem = remaining_secs % 60
-            timer_str = f"{mins:02d}:{secs_rem:02d}"
+  st.text_input(
+      "Period Input",
+      value=st.session_state.user_base_period,
+      placeholder="बीडीजी गेम के पीछे के आखिरी 5 अंक यहाँ डालें...",
+      max_chars=5,
+      key="period_text_box",
+      on_change=update_period_callback,
+      label_visibility="collapsed",
+  )
 
-            if remaining_secs <= 5:
-                st.markdown(
-                    """
+
+  @st.fragment(run_every=1)
+  def success_dashboard_core():
+    try:
+      now = datetime.now()
+      tab_offset = 23
+
+      total_seconds = now.hour * 3600 + now.minute * 60 + now.second
+      remaining_secs = seconds - (total_seconds % seconds)
+      mins = remaining_secs // 60
+      secs_rem = remaining_secs % 60
+      timer_str = f"{mins:02d}:{secs_rem:02d}"
+
+      if remaining_secs <= 5:
+        st.markdown(
+            """
                     <div style="display:none; width:0; height:0; overflow:hidden;">
                         <audio autoplay>
                             <source src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" type="audio/mpeg">
                         </audio>
                     </div>
                 """,
-                    unsafe_allow_html=True,
-                )
+            unsafe_allow_html=True,
+        )
 
-            st.markdown("<div class='main-card'>", unsafe_allow_html=True)
+      st.markdown("<div class='main-card'>", unsafe_allow_html=True)
 
-            user_input_str = st.session_state.user_base_period.strip()
+      user_input_str = st.session_state.user_base_period.strip()
 
-            is_invalid_format = False
-            if not user_input_str or len(user_input_str) != 5 or not user_input_str.isdigit():
-                is_invalid_format = True
+      is_invalid_format = False
+      if (
+          not user_input_str
+          or len(user_input_str) != 5
+          or not user_input_str.isdigit()
+      ):
+        is_invalid_format = True
 
-            if is_invalid_format:
-                st.markdown(
-                    f"""
+      if is_invalid_format:
+        st.markdown(
+            f"""
                     <div class="target-period-box">
                         <div style="display: flex; align-items: center;">
                             <span class="blinking-red-light"></span>
@@ -461,90 +524,105 @@ else:
                         <div class="timer-box-large">⏰ {timer_str}</div>
                     </div>
                 """,
-                    unsafe_allow_html=True,
-                )
-                st.markdown(
-                    '<div class="wait-warning-banner"><span class="blinking-red-light"></span>🛑 WAITING: ENTER LAST 5 DIGITS<span class="blinking-red-light" style="margin-left: 6px; margin-right: 0;"></span></div>',
-                    unsafe_allow_html=True,
-                )
-                st.markdown("</div>", unsafe_allow_html=True)
-                return
+            unsafe_allow_html=True,
+        )
+        st.markdown(
+            '<div class="wait-warning-banner"><span'
+            ' class="blinking-red-light"></span>🛑 WAITING: ENTER LAST 5'
+            ' DIGITS<span class="blinking-red-light" style="margin-left: 6px;'
+            ' margin-right: 0;"></span></div>',
+            unsafe_allow_html=True,
+        )
+        st.markdown("</div>", unsafe_allow_html=True)
+        return
 
-            try:
-                base_val = int(user_input_str)
-            except:
-                base_val = 10000
+      try:
+        base_val = int(user_input_str)
+      except:
+        base_val = 10000
 
-            current_time = int(time.time())
-            current_block_start = current_time - (current_time % seconds)
+      current_time = int(time.time())
+      current_block_start = current_time - (current_time % seconds)
 
-            if st.session_state.base_input_block_time == 0:
-                st.session_state.base_input_block_time = current_block_start
+      if st.session_state.base_input_block_time == 0:
+        st.session_state.base_input_block_time = current_block_start
 
-            elapsed_blocks = (
-                current_block_start - st.session_state.base_input_block_time
-            ) // seconds
-            target_period_num = base_val + elapsed_blocks
-            target_period_str = str(target_period_num)
+      elapsed_blocks = (
+          current_block_start - st.session_state.base_input_block_time
+      ) // seconds
+      target_period_num = base_val + elapsed_blocks
+      target_period_str = str(target_period_num)
 
-            # ==========================================================
-            # 1. 81-नोड जिग-जैग और ऑप्टिमाइज़्ड 100% श्योर शॉट इंजन
-            # ==========================================================
-            def calculate_strict_81_consensus(p_num, offset_val):
-                all_votes = []
-                
-                # A. 41 मेन सर्वर नोड्स
-                for node in range(1, 42):
-                    v = (p_num * node * 31 + offset_val + (p_num % 17)) % 100
-                    all_votes.append("BIG" if v % 2 == 0 else "SMALL")
 
-                # B. 25 ट्रेंड और जिग-जैग पैटर्न नोड्स
-                for t_node in range(1, 26):
-                    v = (p_num * t_node * 17 + offset_val + (p_num % (t_node * 2 + 1))) % 100
-                    all_votes.append("BIG" if v % 2 == 0 else "SMALL")
+      # ==========================================================
+      # 1. 81-नोड जिग-जैग और ऑप्टिमाइज़्ड 100% श्योर शॉट इंजन
+      # ==========================================================
+      def calculate_strict_81_consensus(p_num, offset_val):
+        all_votes = []
 
-                # C. 15 हिस्टोरिकल चेन पॉइंट्स
-                for h_node in range(1, 16):
-                    v = ((p_num - h_node) * 11 + offset_val + (p_num % 7)) % 100
-                    all_votes.append("BIG" if v % 2 == 0 else "SMALL")
+        # A. 41 मेन सर्वर नोड्स
+        for node in range(1, 42):
+          v = (p_num * node * 31 + offset_val + (p_num % 17)) % 100
+          all_votes.append("BIG" if v % 2 == 0 else "SMALL")
 
-                total_big = all_votes.count("BIG")
-                total_small = all_votes.count("SMALL")
+        # B. 25 ट्रेंड और जिग-जैग पैटर्न नोड्स
+        for t_node in range(1, 26):
+          v = (
+              p_num * t_node * 17
+              + offset_val
+              + (p_num % (t_node * 2 + 1))
+          ) % 100
+          all_votes.append("BIG" if v % 2 == 0 else "SMALL")
 
-                if total_big >= 58:
-                    return ("BIG", True)
-                elif total_small >= 58:
-                    return ("SMALL", True)
-                elif total_big >= 42:
-                    return ("BIG", False)
-                elif total_small >= 42:
-                    return ("SMALL", False)
-                else:
-                    return (None, False)   # मार्केट स्पष्ट न होने पर WAITING
+        # C. 15 हिस्टोरिकल चेन पॉइंट्स
+        for h_node in range(1, 16):
+          v = ((p_num - h_node) * 11 + offset_val + (p_num % 7)) % 100
+          all_votes.append("BIG" if v % 2 == 0 else "SMALL")
 
-            pred_size, is_sure_shot = calculate_strict_81_consensus(target_period_num, tab_offset)
+        total_big = all_votes.count("BIG")
+        total_small = all_votes.count("SMALL")
 
-            # ==========================================================
-            # 2. नीचे का 'नेक्स्ट शॉट' इंजन
-            # ==========================================================
-            def calculate_bottom_next_shot(p_num, offset_val):
-                next_all_votes = []
-                for n_id in range(1, 82):
-                    next_check = (p_num * n_id * 7 + offset_val + (p_num % 5)) % 100
-                    next_all_votes.append("BIG" if next_check % 2 == 0 else "SMALL")
-                
-                b_big = next_all_votes.count("BIG")
-                b_small = next_all_votes.count("SMALL")
-                return "BIG" if b_big >= b_small else "SMALL"
+        if total_big >= 58:
+          return ("BIG", True)
+        elif total_small >= 58:
+          return ("SMALL", True)
+        elif total_big >= 42:
+          return ("BIG", False)
+        elif total_small >= 42:
+          return ("SMALL", False)
+        else:
+          return (None, False)  # मार्केट स्पष्ट न होने पर WAITING
 
-            next_shot_val = calculate_bottom_next_shot(target_period_num, tab_offset)
 
-            # --- डायनामिक यूज़र काउंटर ---
-            rand_users = 140 + ((int(time.time()) // 3) % 45)
-            mode_label = f"{seconds}S" if seconds < 60 else f"{seconds//60}M"
+      pred_size, is_sure_shot = calculate_strict_81_consensus(
+          target_period_num, tab_offset
+      )
 
-            st.markdown(
-                f"""
+
+      # ==========================================================
+      # 2. नीचे का 'नेक्स्ट शॉट' इंजन
+      # ==========================================================
+      def calculate_bottom_next_shot(p_num, offset_val):
+        next_all_votes = []
+        for n_id in range(1, 82):
+          next_check = (p_num * n_id * 7 + offset_val + (p_num % 5)) % 100
+          next_all_votes.append("BIG" if next_check % 2 == 0 else "SMALL")
+
+        b_big = next_all_votes.count("BIG")
+        b_small = next_all_votes.count("SMALL")
+        return "BIG" if b_big >= b_small else "SMALL"
+
+
+      next_shot_val = calculate_bottom_next_shot(
+          target_period_num, tab_offset
+      )
+
+      # --- डायनामिक यूज़र काउंटर ---
+      rand_users = 140 + ((int(time.time()) // 3) % 45)
+      mode_label = f"{seconds}S" if seconds < 60 else f"{seconds//60}M"
+
+      st.markdown(
+          f"""
                 <div class="target-period-box">
                     <div style="display: flex; align-items: center; gap: 4px;">
                         <span class="blinking-red-light" style="margin-right: 2px;"></span>
@@ -559,106 +637,116 @@ else:
                     <div class="timer-box-large">⏰ {timer_str}</div>
                 </div>
             """,
-                unsafe_allow_html=True,
-            )
+          unsafe_allow_html=True,
+      )
 
-            # ==========================================================
-            # 3. सुरक्षित टाइमिंग और डिस्प्ले बैनर लॉजिक
-            # ==========================================================
-            if seconds == 30:
-                scan_active = remaining_secs > 20
-                close_phase = remaining_secs <= 8
-            elif seconds == 60:
-                scan_active = remaining_secs > 20
-                close_phase = remaining_secs <= 12
-            elif seconds == 180:
-                scan_active = remaining_secs > 120
-                close_phase = remaining_secs <= 20
-            else:
-                scan_active = remaining_secs > 200
-                close_phase = remaining_secs <= 30
 
-            if scan_active:
-                st.markdown(
-                    f'<div class="analyzing-banner"><span class="blinking-yellow-light" style="width:8px; height:8px;"></span> 🔄 CATCHING STREAK & ZIG-ZAG LINE (81 NODES)... ({remaining_secs}s left)</div>',
-                    unsafe_allow_html=True,
-                )
-            elif pred_size is None:
-                st.markdown(
-                    '<div class="wait-warning-banner"><span class="blinking-red-light"></span>🛑 WAITING: NO LINE MATCHED / MARKET UNLOCKED (लाइन नहीं पकड़ी - प्रतीक्षा करें)<span class="blinking-red-light" style="margin-left: 6px;"></span></div>',
-                    unsafe_allow_html=True,
-                )
-            elif close_phase:
-                st.markdown(
-                    '<div class="wait-warning-banner"><span class="blinking-red-light"></span>🛑 SAFE BIDDING TIME - PLACE YOUR BID NOW<span class="blinking-red-light" style="margin-left: 6px; margin-right: 0;"></span></div>',
-                    unsafe_allow_html=True,
-                )
-            elif is_sure_shot:
-                if pred_size == "BIG":
-                    st.markdown(
-                        """
+      # ==========================================================
+      # 3. सुरक्षित टाइमिंग और डिस्प्ले बैनर लॉजिक
+      # ==========================================================
+      if seconds == 30:
+        scan_active = remaining_secs > 20
+        close_phase = remaining_secs <= 8
+      elif seconds == 60:
+        scan_active = remaining_secs > 20
+        close_phase = remaining_secs <= 12
+      elif seconds == 180:
+        scan_active = remaining_secs > 120
+        close_phase = remaining_secs <= 20
+      else:
+        scan_active = remaining_secs > 200
+        close_phase = remaining_secs <= 30
+
+      if scan_active:
+        st.markdown(
+            f'<div class="analyzing-banner"><span'
+            ' class="blinking-yellow-light" style="width:8px; height:8px;"></span>'
+            f' 🔄 CATCHING STREAK & ZIG-ZAG LINE (81 NODES)... ({remaining_secs}s'
+            ' left)</div>',
+            unsafe_allow_html=True,
+        )
+      elif pred_size is None:
+        st.markdown(
+            '<div class="wait-warning-banner"><span'
+            ' class="blinking-red-light"></span>🛑 WAITING: NO LINE MATCHED /'
+            ' MARKET UNLOCKED (लाइन नहीं पकड़ी - प्रतीक्षा करें)<span'
+            ' class="blinking-red-light" style="margin-left: 6px;"></span></div>',
+            unsafe_allow_html=True,
+        )
+      elif close_phase:
+        st.markdown(
+            '<div class="wait-warning-banner"><span'
+            ' class="blinking-red-light"></span>🛑 SAFE BIDDING TIME - PLACE'
+            ' YOUR BID NOW<span class="blinking-red-light" style="margin-left:'
+            ' 6px; margin-right: 0;"></span></div>',
+            unsafe_allow_html=True,
+        )
+      elif is_sure_shot:
+        if pred_size == "BIG":
+          st.markdown(
+              """
                         <div class="super-banner-big">
                             🔥 100% SURE SHOT <span class="blinking-green-light"></span> : 
                             <span style="background: #000000; color: #FFB700; padding: 4px 14px; border-radius: 6px; border: 2px solid #FFB700; font-weight: 900; text-shadow: 0 0 10px #FFB700;">BIG</span> 🎯
                         </div>
                     """,
-                        unsafe_allow_html=True,
-                    )
-                else:
-                    st.markdown(
-                        """
+              unsafe_allow_html=True,
+          )
+        else:
+          st.markdown(
+              """
                         <div class="super-banner-small">
                             🔥 100% SURE SHOT <span class="blinking-green-light"></span> : 
                             <span style="background: #000000; color: #00FFFF; padding: 4px 14px; border-radius: 6px; border: 2px solid #00FFFF; font-weight: 900; text-shadow: 0 0 10px #00FFFF;">SMALL</span> 🎯
                         </div>
                     """,
-                        unsafe_allow_html=True,
-                    )
-            else:
-                if pred_size == "BIG":
-                    st.markdown(
-                        """
+              unsafe_allow_html=True,
+          )
+      else:
+        if pred_size == "BIG":
+          st.markdown(
+              """
                         <div class="super-banner-big" style="animation: none; border-color: #FF8800;">
                             🔥 STREAK / ZIG-ZAG LINE MATCHED : 
                             <span style="background: #000000; color: #FFB700; padding: 2px 10px; border-radius: 4px; border: 1px solid #FFB700;">BIG</span> 🎯
                         </div>
                     """,
-                        unsafe_allow_html=True,
-                    )
-                else:
-                    st.markdown(
-                        """
+              unsafe_allow_html=True,
+          )
+        else:
+          st.markdown(
+              """
                         <div class="super-banner-small" style="animation: none; border-color: #0088FF;">
                             🔥 STREAK / ZIG-ZAG LINE MATCHED : 
                             <span style="background: #000000; color: #00FFFF; padding: 2px 10px; border-radius: 4px; border: 1px solid #00FFFF;">SMALL</span> 🎯
                         </div>
                     """,
-                        unsafe_allow_html=True,
-                    )
+              unsafe_allow_html=True,
+          )
 
-            if scan_active or pred_size is None:
-                display_num = "—"
-                display_size = "WAITING"
-                display_color = "STANDBY"
-                color_bg = "#111111"
-                size_bg = "#111111"
-            else:
-                p_rng = random.Random(target_period_num * 3 + tab_offset)
-                if pred_size == "BIG":
-                    pred_num = p_rng.choice([5, 6, 7, 8, 9])
-                    pred_color = "GREEN" if pred_num in [5, 7, 9] else "RED"
-                else:
-                    pred_num = p_rng.choice([0, 1, 2, 3, 4])
-                    pred_color = "GREEN" if pred_num in [1, 3] else "RED"
+      if scan_active or pred_size is None:
+        display_num = "—"
+        display_size = "WAITING"
+        display_color = "STANDBY"
+        color_bg = "#111111"
+        size_bg = "#111111"
+      else:
+        p_rng = random.Random(target_period_num * 3 + tab_offset)
+        if pred_size == "BIG":
+          pred_num = p_rng.choice([5, 6, 7, 8, 9])
+          pred_color = "GREEN" if pred_num in [5, 7, 9] else "RED"
+        else:
+          pred_num = p_rng.choice([0, 1, 2, 3, 4])
+          pred_color = "GREEN" if pred_num in [1, 3] else "RED"
 
-                display_num = str(pred_num)
-                display_size = pred_size
-                display_color = pred_color
-                color_bg = "#FF4444" if pred_color == "RED" else "#00AA55"
-                size_bg = "#FF8800" if pred_size == "BIG" else "#0088FF"
+        display_num = str(pred_num)
+        display_size = pred_size
+        display_color = pred_color
+        color_bg = "#FF4444" if pred_color == "RED" else "#00AA55"
+        size_bg = "#FF8800" if pred_size == "BIG" else "#0088FF"
 
-            st.markdown(
-                f"""
+      st.markdown(
+          f"""
                 <div class="diagonal-container">
                     <div class="result-item">
                         <div style="font-size: 11px; color: #FFFFFF; font-weight: 900; margin-bottom: 6px;">NUMBER</div>
@@ -674,18 +762,18 @@ else:
                     </div>
                 </div>
             """,
-                unsafe_allow_html=True,
-            )
+          unsafe_allow_html=True,
+      )
 
-            if next_shot_val == "BIG":
-                next_shot_bg = "#FF8800"
-                next_shot_glow = "0 0 15px #FF8800"
-            else:
-                next_shot_bg = "#0088FF"
-                next_shot_glow = "0 0 15px #0088FF"
+      if next_shot_val == "BIG":
+        next_shot_bg = "#FF8800"
+        next_shot_glow = "0 0 15px #FF8800"
+      else:
+        next_shot_bg = "#0088FF"
+        next_shot_glow = "0 0 15px #0088FF"
 
-            st.markdown(
-                f"""
+      st.markdown(
+          f"""
                 <div style="margin-top: 12px; background: #000000; padding: 14px; border-radius: 12px; text-align: center; border: 2px solid #FFD700; box-shadow: 0 0 15px rgba(255,215,0,0.2); display: flex; justify-content: center; align-items: center; gap: 12px;">
                     <div style="display: flex; align-items: center; gap: 6px;">
                         <span class="blinking-red-light" style="width:10px; height:10px; margin:0;"></span>
@@ -698,13 +786,14 @@ else:
                     </div>
                 </div>
             """,
-                unsafe_allow_html=True,
-            )
+          unsafe_allow_html=True,
+      )
 
-            st.markdown("</div>", unsafe_allow_html=True)
-        except Exception as e:
-            st.warning("⚠️ री-सिंकिंग हो रही है... कृपया प्रतीक्षा करें।")
-            time.sleep(1)
-            st.rerun()
+      st.markdown("</div>", unsafe_allow_html=True)
+    except Exception as e:
+      st.warning("⚠️ री-सिंकिंग हो रही है... कृपया प्रतीक्षा करें।")
+      time.sleep(1)
+      st.rerun()
 
-    success_dashboard_core()
+
+  success_dashboard_core()
