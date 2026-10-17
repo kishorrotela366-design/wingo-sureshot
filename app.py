@@ -6,7 +6,7 @@ import time
 import streamlit as st
 
 st.set_page_config(
-    page_title="BDG VIP WAITING & REVERSAL PANEL",
+    page_title="BDG VIP PERFECT SYNC PANEL",
     page_icon="🛡️",
     layout="centered",
     initial_sidebar_state="collapsed",
@@ -188,8 +188,8 @@ if not st.session_state.authenticated:
     st.markdown(
         "<h2 style='text-align: center; color: #FFD700; font-size: 20px;"
         " font-weight: 900;'><span class='blinking-red-light'></span>👑 BDG VIP"
-        " WAITING PANEL 👑<span class='blinking-red-light' style='margin-left:"
-        " 6px; margin-right: 0;'></span></h2>",
+        " PERFECT SYNC PANEL 👑<span class='blinking-red-light'"
+        " style='margin-left: 6px; margin-right: 0;'></span></h2>",
         unsafe_allow_html=True,
     )
 
@@ -530,8 +530,8 @@ else:
             target_period_num = base_val + elapsed_blocks
             target_period_str = str(target_period_num)
 
-            # --- मास्टर इंजन (रिर्वसल और वेटिंग के साथ) ---
-            def calculate_master_waiting_engine(p_num, offset_val):
+            # --- मास्टर इंजन ---
+            def calculate_perfect_sync_engine(p_num, offset_val):
                 server_score = 0
                 for node in range(1, 83):
                     val = (p_num * node * 31 + offset_val + (p_num % 17)) % 100
@@ -545,7 +545,6 @@ else:
 
                 is_alternating = (p_num % 2 == 0)
 
-                # यदि मार्केट अनस्टेबल है, तो WAITING और लाल वार्निंग साथ आएगी
                 if abs(final_score) < 4:
                     return (None, False, True)
 
@@ -559,12 +558,7 @@ else:
                 else:
                     return ("BIG" if final_score > 0 else "SMALL", False, False)
 
-            pred_size, is_sure_shot, is_market_bad = calculate_master_waiting_engine(target_period_num, tab_offset)
-
-            def calculate_bottom_next_shot(p_num, offset_val):
-                return pred_size if pred_size in ["BIG", "SMALL"] else ("BIG" if (p_num % 2 == 0) else "SMALL")
-
-            next_shot_val = calculate_bottom_next_shot(target_period_num, tab_offset)
+            pred_size, is_sure_shot, is_market_bad = calculate_perfect_sync_engine(target_period_num, tab_offset)
 
             rand_users = 140 + ((int(time.time()) // 3) % 45)
             mode_label = f"{seconds}S" if seconds < 60 else f"{seconds//60}M"
@@ -701,14 +695,20 @@ else:
                 unsafe_allow_html=True,
             )
 
-            if next_shot_val == "BIG":
-                next_shot_bg = "#FF8800"
-                next_shot_glow = "0 0 15px #FF8800"
-                next_shot_text = "BIG"
+            # --- यहाँ सुधार किया गया है: जब तक स्कैनिंग चलेगी, नीचे "WAITING" या "SCANNING" रहेगा ---
+            if scan_active or is_market_bad:
+                next_shot_bg = "#111111"
+                next_shot_glow = "0 0 10px rgba(255,255,255,0.1)"
+                next_shot_text = "WAITING..."
             else:
-                next_shot_bg = "#0088FF"
-                next_shot_glow = "0 0 15px #0088FF"
-                next_shot_text = "SMALL"
+                if pred_size == "BIG":
+                    next_shot_bg = "#FF8800"
+                    next_shot_glow = "0 0 15px #FF8800"
+                    next_shot_text = "BIG"
+                else:
+                    next_shot_bg = "#0088FF"
+                    next_shot_glow = "0 0 15px #0088FF"
+                    next_shot_text = "SMALL"
 
             st.markdown(
                 f"""
