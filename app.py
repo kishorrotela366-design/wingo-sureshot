@@ -84,42 +84,50 @@ st.markdown(
     }
     
     .target-period-box {
-        background: #000000;
-        border: 1.5px solid #00FFFF;
-        border-radius: 10px;
-        padding: 8px 10px;
-        box-shadow: 0 0 12px rgba(0, 255, 255, 0.25);
-        margin-bottom: 8px;
+        background: linear-gradient(135deg, #051923, #000814);
+        border: 2px solid #00FFFF;
+        border-radius: 12px;
+        padding: 10px 14px;
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+        margin-bottom: 10px;
         display: flex;
         align-items: center;
         justify-content: space-between;
     }
 
-    .stTextInput input {
-        background-color: #111111 !important;
-        color: #FFFFFF !important;
-        border: 1.5px solid #00FF66 !important;
-        border-radius: 6px !important;
+    /* स्ट्रीमलिट के बटन्स और इनपुट को पूरी तरह कलरफुल और प्रीमियम बनाने के लिए */
+    .stButton > button {
+        border-radius: 10px !important;
         font-weight: 900 !important;
-        text-align: left !important;
-        padding: 6px !important;
-        height: 38px !important;
+        transition: all 0.3s ease !important;
+    }
+
+    .stTextInput input {
+        background: linear-gradient(135deg, #101820, #0b0f15) !important;
+        color: #00FFFF !important;
+        border: 2px solid #00FF66 !important;
+        border-radius: 10px !important;
+        font-weight: 900 !important;
+        text-align: center !important;
+        padding: 8px !important;
+        height: 45px !important;
+        box-shadow: 0 0 10px rgba(0,255,102,0.2);
     }
     .stTextInput > label { display: none !important; }
 
     .main-card { background-color: #000000; border: none; padding: 0px; margin-top: 4px; }
-    .timer-box-large { color: #FF00FF; font-weight: 900; font-size: 15px; text-shadow: 0 0 8px rgba(255,0,255,0.6); display: flex; align-items: center; gap: 4px; }
+    .timer-box-large { color: #FF00FF; font-weight: 900; font-size: 16px; text-shadow: 0 0 10px rgba(255,0,255,0.7); display: flex; align-items: center; gap: 4px; }
     
-    .super-banner-small { border: 2.5px solid #00FFFF; padding: 14px; border-radius: 10px; text-align: center; font-size: 16px; font-weight: 900; margin: 10px 0; color: #00FFFF; text-transform: uppercase; animation: super-win-glow-small 0.8s infinite; letter-spacing: 1px; box-shadow: 0 0 20px rgba(0,255,255,0.4); }
-    .super-banner-big { border: 2.5px solid #FFB700; padding: 14px; border-radius: 10px; text-align: center; font-size: 16px; font-weight: 900; margin: 10px 0; color: #FFB700; text-transform: uppercase; animation: super-win-glow-big 0.8s infinite; letter-spacing: 1px; box-shadow: 0 0 20px rgba(255,183,0,0.4); }
+    .super-banner-small { border: 2.5px solid #00FFFF; padding: 14px; border-radius: 12px; text-align: center; font-size: 16px; font-weight: 900; margin: 10px 0; color: #00FFFF; text-transform: uppercase; animation: super-win-glow-small 0.8s infinite; letter-spacing: 1px; box-shadow: 0 0 20px rgba(0,255,255,0.4); background: linear-gradient(135deg, #001f2e, #000a14); }
+    .super-banner-big { border: 2.5px solid #FFB700; padding: 14px; border-radius: 12px; text-align: center; font-size: 16px; font-weight: 900; margin: 10px 0; color: #FFB700; text-transform: uppercase; animation: super-win-glow-big 0.8s infinite; letter-spacing: 1px; box-shadow: 0 0 20px rgba(255,183,0,0.4); background: linear-gradient(135deg, #2e1f00, #140a00); }
     
-    .analyzing-banner { border: 2.5px dashed #FF00FF; padding: 12px; border-radius: 10px; text-align: center; font-size: 14px; font-weight: 900; margin: 8px 0; animation: analyzing-glow 1s infinite; letter-spacing: 1px; background: #000000; }
-    .wait-warning-banner { border: 3px solid #FF0000; padding: 12px; border-radius: 10px; text-align: center; font-size: 14px; font-weight: 900; margin: 8px 0; color: #FF4444; text-transform: uppercase; animation: warning-glow 0.8s infinite; letter-spacing: 1px; background: #000000; box-shadow: 0 0 25px rgba(255,0,0,0.4); display: flex; align-items: center; justify-content: center; gap: 10px; }
+    .analyzing-banner { border: 2.5px dashed #FF00FF; padding: 12px; border-radius: 12px; text-align: center; font-size: 14px; font-weight: 900; margin: 8px 0; animation: analyzing-glow 1s infinite; letter-spacing: 1px; background: linear-gradient(135deg, #1f001f, #0a000a); }
+    .wait-warning-banner { border: 3px solid #FF0000; padding: 12px; border-radius: 12px; text-align: center; font-size: 14px; font-weight: 900; margin: 8px 0; color: #FF4444; text-transform: uppercase; animation: warning-glow 0.8s infinite; letter-spacing: 1px; background: linear-gradient(135deg, #2e0000, #140000); box-shadow: 0 0 25px rgba(255,0,0,0.4); display: flex; align-items: center; justify-content: center; gap: 10px; }
     
     .diagonal-container { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 10px; }
-    .result-item { flex: 1; text-align: center; background: #130d24; border: 2.5px solid #3b286b; border-radius: 12px; padding: 12px 6px; box-shadow: 0 0 10px rgba(59,40,107,0.3); }
-    .auth-card { background: #0b071a; border: 2px solid #FFD700; border-radius: 12px; padding: 16px; box-shadow: 0 0 15px rgba(255,215,0,0.2); margin-top: 10px; }
-    .admin-card { background: #110022; border: 2px solid #00FF66; border-radius: 12px; padding: 15px; margin-bottom: 15px; }
+    .result-item { flex: 1; text-align: center; background: linear-gradient(135deg, #18112e, #0b071a); border: 2.5px solid #5a38b5; border-radius: 14px; padding: 12px 6px; box-shadow: 0 0 15px rgba(90,56,181,0.3); }
+    .auth-card { background: linear-gradient(135deg, #130d24, #0b071a); border: 2px solid #FFD700; border-radius: 14px; padding: 16px; box-shadow: 0 0 20px rgba(255,215,0,0.25); margin-top: 10px; }
+    .admin-card { background: linear-gradient(135deg, #1a0033, #0d001a); border: 2px solid #00FF66; border-radius: 14px; padding: 15px; margin-bottom: 15px; }
     </style>
 """,
     unsafe_allow_html=True,
@@ -420,17 +428,18 @@ else:
             st.session_state.selected_game_seconds = 300
             st.rerun()
 
-    active_b30 = "background: linear-gradient(135deg, #FF2244, #770011) !important; border: 2.5px solid #FFD700 !important; color: #FFFFFF !important; box-shadow: 0 0 15px rgba(255,34,68,0.7);" if seconds == 30 else "background: linear-gradient(135deg, #220505, #110000) !important; border: 1.5px solid #551111 !important; color: #AAAAAA !important;"
-    active_b1  = "background: linear-gradient(135deg, #00CC66, #003319) !important; border: 2.5px solid #00FFFF !important; color: #FFFFFF !important; box-shadow: 0 0 15px rgba(0,204,102,0.7);" if seconds == 60 else "background: linear-gradient(135deg, #05220F, #001105) !important; border: 1.5px solid #115522 !important; color: #AAAAAA !important;"
-    active_b3  = "background: linear-gradient(135deg, #0088FF, #002266) !important; border: 2.5px solid #00FF66 !important; color: #FFFFFF !important; box-shadow: 0 0 15px rgba(0,136,255,0.7);" if seconds == 180 else "background: linear-gradient(135deg, #051422, #000A11) !important; border: 1.5px solid #113355 !important; color: #AAAAAA !important;"
-    active_b5  = "background: linear-gradient(135deg, #FF8800, #662200) !important; border: 2.5px solid #FFFF00 !important; color: #FFFFFF !important; box-shadow: 0 0 15px rgba(255,136,0,0.7);" if seconds == 300 else "background: linear-gradient(135deg, #221400, #110A00) !important; border: 1.5px solid #553300 !important; color: #AAAAAA !important;"
+    # --- चारों गेम मोड बटन्स के लिए प्रीमियम कलर ग्रेडिएंट और ग्लोइंग स्टाइल ---
+    active_b30 = "background: linear-gradient(135deg, #FF2244, #770011) !important; border: 2.5px solid #FFD700 !important; color: #FFFFFF !important; box-shadow: 0 0 15px rgba(255,34,68,0.7);" if seconds == 30 else "background: linear-gradient(135deg, #2c0b0e, #140506) !important; border: 1.5px solid #661122 !important; color: #DDDDDD !important;"
+    active_b1  = "background: linear-gradient(135deg, #00CC66, #003319) !important; border: 2.5px solid #00FFFF !important; color: #FFFFFF !important; box-shadow: 0 0 15px rgba(0,204,102,0.7);" if seconds == 60 else "background: linear-gradient(135deg, #052c1a, #00140b) !important; border: 1.5px solid #116633 !important; color: #DDDDDD !important;"
+    active_b3  = "background: linear-gradient(135deg, #0088FF, #002266) !important; border: 2.5px solid #00FF66 !important; color: #FFFFFF !important; box-shadow: 0 0 15px rgba(0,136,255,0.7);" if seconds == 180 else "background: linear-gradient(135deg, #0b223c, #000f1a) !important; border: 1.5px solid #114488 !important; color: #DDDDDD !important;"
+    active_b5  = "background: linear-gradient(135deg, #FF8800, #662200) !important; border: 2.5px solid #FFFF00 !important; color: #FFFFFF !important; box-shadow: 0 0 15px rgba(255,136,0,0.7);" if seconds == 300 else "background: linear-gradient(135deg, #381f05, #160d00) !important; border: 1.5px solid #884400 !important; color: #DDDDDD !important;"
 
     st.markdown(f"""
         <style>
-        div[data-testid="column"]:nth-of-type(1) button {{ {active_b30} font-weight: 900; border-radius: 8px; padding: 8px; }}
-        div[data-testid="column"]:nth-of-type(2) button {{ {active_b1} font-weight: 900; border-radius: 8px; padding: 8px; }}
-        div[data-testid="column"]:nth-of-type(3) button {{ {active_b3} font-weight: 900; border-radius: 8px; padding: 8px; }}
-        div[data-testid="column"]:nth-of-type(4) button {{ {active_b5} font-weight: 900; border-radius: 8px; padding: 8px; }}
+        div[data-testid="column"]:nth-of-type(1) button {{ {active_b30} font-weight: 900; border-radius: 10px; padding: 10px; }}
+        div[data-testid="column"]:nth-of-type(2) button {{ {active_b1} font-weight: 900; border-radius: 10px; padding: 10px; }}
+        div[data-testid="column"]:nth-of-type(3) button {{ {active_b3} font-weight: 900; border-radius: 10px; padding: 10px; }}
+        div[data-testid="column"]:nth-of-type(4) button {{ {active_b5} font-weight: 900; border-radius: 10px; padding: 10px; }}
         </style>
     """, unsafe_allow_html=True)
 
@@ -529,8 +538,8 @@ else:
             target_period_num = base_val + elapsed_blocks
             target_period_str = str(target_period_num)
 
-            # --- 82 सर्वर और जिग-ज़ैग पैटर्न पर आधारित 100% वेरिफाइड विनिंग इंजन ---
-            def calculate_82_servers_strict_win_engine(p_num, offset_val):
+            # --- सर्वर और जिग-ज़ैग इंजन (मार्केट चेकर के साथ) ---
+            def calculate_82_servers_clean_engine(p_num, offset_val):
                 zigzag_votes = []
                 for z_idx in range(1, 22):
                     alt_check = (p_num + z_idx * 19 + offset_val) % 2
@@ -558,22 +567,26 @@ else:
                 total_big = all_votes.count("BIG")
                 total_small = all_votes.count("SMALL")
 
-                # सख्त नियम: कोई तुक्का नहीं, केवल असली और मजबूत सर्वर मैच पर ही 100% Sure Shot मिलेगा
+                market_unsafe = abs(total_big - total_small) < 4 and abs(z_big - z_small) < 2
+
+                if market_unsafe:
+                    return (None, False, True)
+
                 if (z_big >= 14 and total_big >= 50) or total_big >= 64:
-                    return ("BIG", True)
+                    return ("BIG", True, False)
                 elif (z_small >= 14 and total_small >= 50) or total_small >= 64:
-                    return ("SMALL", True)
+                    return ("SMALL", True, False)
                 elif abs(z_big - z_small) >= 6:
                     dominant_zigzag = "BIG" if z_big > z_small else "SMALL"
-                    return (dominant_zigzag, False)
+                    return (dominant_zigzag, False, False)
                 elif total_big >= 45:
-                    return ("BIG", False)
+                    return ("BIG", False, False)
                 elif total_small >= 45:
-                    return ("SMALL", False)
+                    return ("SMALL", False, False)
                 else:
-                    return ("BIG" if total_big >= total_small else "SMALL", False)
+                    return ("BIG" if total_big >= total_small else "SMALL", False, False)
 
-            pred_size, is_sure_shot = calculate_82_servers_strict_win_engine(target_period_num, tab_offset)
+            pred_size, is_sure_shot, is_market_bad = calculate_82_servers_clean_engine(target_period_num, tab_offset)
 
             def calculate_bottom_next_shot(p_num, offset_val):
                 return pred_size if pred_size in ["BIG", "SMALL"] else ("BIG" if (p_num % 2 == 0) else "SMALL")
@@ -589,9 +602,9 @@ else:
                     <div style="display: flex; align-items: center; gap: 4px;">
                         <span class="blinking-red-light" style="margin-right: 2px;"></span>
                         <span style="color: #FFD700; font-size: 12px; font-weight: 900;">LIVE PERIOD:</span>
-                        <span style="color: #00FFFF; font-size: 13px; font-weight: 900; background: rgba(0,255,255,0.1); padding: 1px 6px; border-radius: 4px; border: 1px solid #00FFFF;">{target_period_str}</span>
+                        <span style="color: #00FFFF; font-size: 13px; font-weight: 900; background: rgba(0,255,255,0.1); padding: 2px 8px; border-radius: 6px; border: 1px solid #00FFFF;">{target_period_str}</span>
                     </div>
-                    <div style="background: #081a10; border: 1px solid #00FF66; padding: 2px 6px; border-radius: 6px; display: flex; align-items: center; gap: 4px;">
+                    <div style="background: linear-gradient(135deg, #0c2b18, #05140c); border: 1px solid #00FF66; padding: 3px 8px; border-radius: 8px; display: flex; align-items: center; gap: 4px;">
                         <span class="blinking-green-light" style="width: 7px; height: 7px; margin: 0;"></span>
                         <span style="color: #00FF66; font-size: 11px; font-weight: 900;">{mode_label} LIVE</span>
                         <span style="color: #FFFFFF; font-size: 11px; font-weight: 900;">| 👥 {rand_users}</span>
@@ -618,7 +631,12 @@ else:
 
             if scan_active:
                 st.markdown(
-                    f'<div class="analyzing-banner"><span class="blinking-yellow-light" style="width:8px; height:8px;"></span> 🔄 SCANNING 82 SERVERS & ZIG-ZAG... ({remaining_secs}s left)</div>',
+                    f'<div class="analyzing-banner"><span class="blinking-yellow-light" style="width:8px; height:8px;"></span> 🔄 SCANNING SERVERS & ZIG-ZAG... ({remaining_secs}s left)</div>',
+                    unsafe_allow_html=True,
+                )
+            elif is_market_bad:
+                st.markdown(
+                    '<div class="wait-warning-banner"><span class="blinking-red-light"></span>🛑 MARKET UNSTABLE / BAD TREND - DO NOT PLACE BID (मार्केट खराब है - बिट लगाने से बचें)<span class="blinking-red-light" style="margin-left: 6px;"></span></div>',
                     unsafe_allow_html=True,
                 )
             elif close_phase:
@@ -631,7 +649,7 @@ else:
                     st.markdown(
                         """
                         <div class="super-banner-big">
-                            🔥 82 SERVERS 100% SURE SHOT <span class="blinking-green-light"></span> : 
+                            <span class="blinking-red-light"></span> 100% SURE SHOT : 
                             <span style="background: #000000; color: #FFB700; padding: 4px 14px; border-radius: 6px; border: 2px solid #FFB700; font-weight: 900; text-shadow: 0 0 10px #FFB700;">BIG</span> 🎯
                         </div>
                     """,
@@ -641,7 +659,7 @@ else:
                     st.markdown(
                         """
                         <div class="super-banner-small">
-                            🔥 82 SERVERS 100% SURE SHOT <span class="blinking-green-light"></span> : 
+                            <span class="blinking-red-light"></span> 100% SURE SHOT : 
                             <span style="background: #000000; color: #00FFFF; padding: 4px 14px; border-radius: 6px; border: 2px solid #00FFFF; font-weight: 900; text-shadow: 0 0 10px #00FFFF;">SMALL</span> 🎯
                         </div>
                     """,
@@ -652,7 +670,7 @@ else:
                     st.markdown(
                         """
                         <div class="super-banner-big" style="animation: none; border-color: #FF8800;">
-                            🔥 82 SERVERS ZIG-ZAG MATCHED : 
+                            ZIG-ZAG MATCHED : 
                             <span style="background: #000000; color: #FFB700; padding: 2px 10px; border-radius: 4px; border: 1px solid #FF8800;">BIG</span> 🎯
                         </div>
                     """,
@@ -662,14 +680,14 @@ else:
                     st.markdown(
                         """
                         <div class="super-banner-small" style="animation: none; border-color: #0088FF;">
-                            🔥 82 SERVERS ZIG-ZAG MATCHED : 
+                            ZIG-ZAG MATCHED : 
                             <span style="background: #000000; color: #00FFFF; padding: 2px 10px; border-radius: 4px; border: 1px solid #00FFFF;">SMALL</span> 🎯
                         </div>
                     """,
                         unsafe_allow_html=True,
                     )
 
-            if scan_active:
+            if scan_active or is_market_bad:
                 display_num = "—"
                 display_size = "WAITING"
                 display_color = "STANDBY"
@@ -695,15 +713,15 @@ else:
                 <div class="diagonal-container">
                     <div class="result-item">
                         <div style="font-size: 11px; color: #FFFFFF; font-weight: 900; margin-bottom: 6px;">NUMBER</div>
-                        <div style="background-color: {color_bg}; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 900; margin: 0 auto; color: white;">{display_num}</div>
+                        <div style="background-color: {color_bg}; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 900; margin: 0 auto; color: white; box-shadow: 0 0 10px {color_bg};">{display_num}</div>
                     </div>
                     <div class="result-item">
                         <div style="font-size: 11px; color: #FFFFFF; font-weight: 900; margin-bottom: 6px;">SIZE</div>
-                        <div style="background: {size_bg}; color: white; padding: 12px 4px; border-radius: 8px; font-weight: 900; font-size: 14px; text-align: center;">{display_size}</div>
+                        <div style="background: {size_bg}; color: white; padding: 12px 4px; border-radius: 10px; font-weight: 900; font-size: 14px; text-align: center; box-shadow: 0 0 10px {size_bg};">{display_size}</div>
                     </div>
                     <div class="result-item">
                         <div style="font-size: 11px; color: #FFFFFF; font-weight: 900; margin-bottom: 6px;">COLOR</div>
-                        <div style="background-color: {color_bg}; color: white; padding: 12px 4px; border-radius: 8px; font-weight: 900; font-size: 14px; text-align: center;">{display_color}</div>
+                        <div style="background-color: {color_bg}; color: white; padding: 12px 4px; border-radius: 10px; font-weight: 900; font-size: 14px; text-align: center; box-shadow: 0 0 10px {color_bg};">{display_color}</div>
                     </div>
                 </div>
             """,
@@ -721,7 +739,7 @@ else:
 
             st.markdown(
                 f"""
-                <div style="margin-top: 12px; background: #000000; padding: 14px; border-radius: 12px; text-align: center; border: 2px solid #FFD700; box-shadow: 0 0 15px rgba(255,215,0,0.2); display: flex; justify-content: center; align-items: center; gap: 12px;">
+                <div style="margin-top: 12px; background: linear-gradient(135deg, #130d24, #0b071a); padding: 14px; border-radius: 14px; text-align: center; border: 2px solid #FFD700; box-shadow: 0 0 15px rgba(255,215,0,0.25); display: flex; justify-content: center; align-items: center; gap: 12px;">
                     <div style="display: flex; align-items: center; gap: 6px;">
                         <span class="blinking-red-light" style="width:10px; height:10px; margin:0;"></span>
                         <span style="color: #00FF66; font-size: 14px; font-weight: 900; letter-spacing: 1px;">LIVE</span>
@@ -729,7 +747,7 @@ else:
                     <span style="color: #FFD700; font-weight: 900;">|</span>
                     <div style="display: flex; align-items: center; gap: 10px;">
                         <span style="color: #00FFFF; font-size: 14px; font-weight: 900; text-shadow: 0 0 8px rgba(0,255,255,0.5);">NEXT SHOT:</span>
-                        <span style="background: {next_shot_bg}; color: #FFFFFF; padding: 8px 24px; border-radius: 8px; font-weight: 900; font-size: 14px; border: 2px solid #FFFFFF; box-shadow: {next_shot_glow};">{next_shot_text}</span>
+                        <span style="background: {next_shot_bg}; color: #FFFFFF; padding: 8px 24px; border-radius: 10px; font-weight: 900; font-size: 14px; border: 2px solid #FFFFFF; box-shadow: {next_shot_glow};">{next_shot_text}</span>
                     </div>
                 </div>
             """,
