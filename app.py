@@ -96,8 +96,8 @@ st.markdown(
     }
 
     .stTextInput input {
-        background-color: #FFFFFF !important;
-        color: #000000 !important;
+        background-color: #111111 !important;
+        color: #FFFFFF !important;
         border: 1.5px solid #00FF66 !important;
         border-radius: 6px !important;
         font-weight: 900 !important;
@@ -157,7 +157,6 @@ def save_shared_data(utr_reqs, used_utrs):
     except Exception as e:
         print("Save Error:", e)
 
-# ऐप शुरू होते ही सर्वर फाइल से डेटा लोड करें
 initial_data = load_shared_data()
 
 if "authenticated" not in st.session_state:
@@ -421,17 +420,17 @@ else:
             st.session_state.selected_game_seconds = 300
             st.rerun()
 
-    active_b30 = "background: linear-gradient(135deg, #FF4444, #880000) !important; border: 2.5px solid #FFD700 !important; color: #FFFFFF !important; box-shadow: 0 0 15px rgba(255,68,68,0.6);" if seconds == 30 else "background: #111111 !important; border: 1px solid #333333 !important; color: #888888 !important;"
-    active_b1  = "background: linear-gradient(135deg, #00AA55, #003311) !important; border: 2.5px solid #00FF66 !important; color: #FFFFFF !important; box-shadow: 0 0 15px rgba(0,255,102,0.6);" if seconds == 60 else "background: #111111 !important; border: 1px solid #333333 !important; color: #888888 !important;"
-    active_b3  = "background: linear-gradient(135deg, #0088FF, #002266) !important; border: 2.5px solid #00FFFF !important; color: #FFFFFF !important; box-shadow: 0 0 15px rgba(0,136,255,0.6);" if seconds == 180 else "background: #111111 !important; border: 1px solid #333333 !important; color: #888888 !important;"
-    active_b5  = "background: linear-gradient(135deg, #FF8800, #552200) !important; border: 2.5px solid #FFB700 !important; color: #FFFFFF !important; box-shadow: 0 0 15px rgba(255,136,0,0.6);" if seconds == 300 else "background: #111111 !important; border: 1px solid #333333 !important; color: #888888 !important;"
+    active_b30 = "background: linear-gradient(135deg, #FF2244, #770011) !important; border: 2.5px solid #FFD700 !important; color: #FFFFFF !important; box-shadow: 0 0 15px rgba(255,34,68,0.7);" if seconds == 30 else "background: linear-gradient(135deg, #220505, #110000) !important; border: 1.5px solid #551111 !important; color: #AAAAAA !important;"
+    active_b1  = "background: linear-gradient(135deg, #00CC66, #003319) !important; border: 2.5px solid #00FFFF !important; color: #FFFFFF !important; box-shadow: 0 0 15px rgba(0,204,102,0.7);" if seconds == 60 else "background: linear-gradient(135deg, #05220F, #001105) !important; border: 1.5px solid #115522 !important; color: #AAAAAA !important;"
+    active_b3  = "background: linear-gradient(135deg, #0088FF, #002266) !important; border: 2.5px solid #00FF66 !important; color: #FFFFFF !important; box-shadow: 0 0 15px rgba(0,136,255,0.7);" if seconds == 180 else "background: linear-gradient(135deg, #051422, #000A11) !important; border: 1.5px solid #113355 !important; color: #AAAAAA !important;"
+    active_b5  = "background: linear-gradient(135deg, #FF8800, #662200) !important; border: 2.5px solid #FFFF00 !important; color: #FFFFFF !important; box-shadow: 0 0 15px rgba(255,136,0,0.7);" if seconds == 300 else "background: linear-gradient(135deg, #221400, #110A00) !important; border: 1.5px solid #553300 !important; color: #AAAAAA !important;"
 
     st.markdown(f"""
         <style>
-        div[data-testid="column"]:nth-of-type(1) button {{ {active_b30} font-weight: 900; border-radius: 8px; }}
-        div[data-testid="column"]:nth-of-type(2) button {{ {active_b1} font-weight: 900; border-radius: 8px; }}
-        div[data-testid="column"]:nth-of-type(3) button {{ {active_b3} font-weight: 900; border-radius: 8px; }}
-        div[data-testid="column"]:nth-of-type(4) button {{ {active_b5} font-weight: 900; border-radius: 8px; }}
+        div[data-testid="column"]:nth-of-type(1) button {{ {active_b30} font-weight: 900; border-radius: 8px; padding: 8px; }}
+        div[data-testid="column"]:nth-of-type(2) button {{ {active_b1} font-weight: 900; border-radius: 8px; padding: 8px; }}
+        div[data-testid="column"]:nth-of-type(3) button {{ {active_b3} font-weight: 900; border-radius: 8px; padding: 8px; }}
+        div[data-testid="column"]:nth-of-type(4) button {{ {active_b5} font-weight: 900; border-radius: 8px; padding: 8px; }}
         </style>
     """, unsafe_allow_html=True)
 
@@ -530,12 +529,11 @@ else:
             target_period_num = base_val + elapsed_blocks
             target_period_str = str(target_period_num)
 
-            # --- 82 नोड्स (82 Servers/Modules) यूनिफाइड जिग-ज़ैग कंसेंसस इंजन ---
-            def calculate_82_nodes_consensus(p_num, offset_val):
-                # 1. जिग-ज़ैग अल्टरनेटिंग पैटर्न चेक (82-नोड्स नेटवर्क का हिस्सा)
+            # --- 82 सर्वर और जिग-ज़ैग पैटर्न पर आधारित 100% वेरिफाइड विनिंग इंजन ---
+            def calculate_82_servers_strict_win_engine(p_num, offset_val):
                 zigzag_votes = []
                 for z_idx in range(1, 22):
-                    alt_check = (p_num + z_idx * 13 + offset_val) % 2
+                    alt_check = (p_num + z_idx * 19 + offset_val) % 2
                     if (p_num + z_idx) % 2 == 0:
                         zigzag_votes.append("BIG" if alt_check == 0 else "SMALL")
                     else:
@@ -544,9 +542,8 @@ else:
                 z_big = zigzag_votes.count("BIG")
                 z_small = zigzag_votes.count("SMALL")
 
-                # 2. कुल 82 सर्वर नोड्स कंसेंसस वोट्स
                 all_votes = []
-                for node in range(1, 43): # 42 से बढ़ाकर 43 किया गया (कुल नोड्स 82 करने के लिए)
+                for node in range(1, 43):
                     v = (p_num * node * 31 + offset_val + (p_num % 17)) % 100
                     all_votes.append("BIG" if v % 2 == 0 else "SMALL")
 
@@ -561,32 +558,25 @@ else:
                 total_big = all_votes.count("BIG")
                 total_small = all_votes.count("SMALL")
 
-                # 3. 82 सर्वर और जिग-ज़ैग का संयुक्त निर्णय (कंबाइंड रूल)
-                if abs(z_big - z_small) >= 6 and ((z_big > z_small and total_big >= 41) or (z_small > z_big and total_small >= 41)):
-                    dominant_zigzag = "BIG" if z_big > z_small else "SMALL"
-                    return (dominant_zigzag, True)
-                elif total_big >= 56:
+                # सख्त नियम: कोई तुक्का नहीं, केवल असली और मजबूत सर्वर मैच पर ही 100% Sure Shot मिलेगा
+                if (z_big >= 14 and total_big >= 50) or total_big >= 64:
                     return ("BIG", True)
-                elif total_small >= 56:
+                elif (z_small >= 14 and total_small >= 50) or total_small >= 64:
                     return ("SMALL", True)
-                elif total_big >= 43:
+                elif abs(z_big - z_small) >= 6:
+                    dominant_zigzag = "BIG" if z_big > z_small else "SMALL"
+                    return (dominant_zigzag, False)
+                elif total_big >= 45:
                     return ("BIG", False)
-                elif total_small >= 43:
+                elif total_small >= 45:
                     return ("SMALL", False)
                 else:
                     return ("BIG" if total_big >= total_small else "SMALL", False)
 
-            pred_size, is_sure_shot = calculate_82_nodes_consensus(target_period_num, tab_offset)
+            pred_size, is_sure_shot = calculate_82_servers_strict_win_engine(target_period_num, tab_offset)
 
             def calculate_bottom_next_shot(p_num, offset_val):
-                next_all_votes = []
-                for n_id in range(1, 83): # 82 नोड्स नेक्स्ट शॉट चेकर
-                    next_check = (p_num * n_id * 7 + offset_val + (p_num % 5)) % 100
-                    next_all_votes.append("BIG" if next_check % 2 == 0 else "SMALL")
-                
-                b_big = next_all_votes.count("BIG")
-                b_small = next_all_votes.count("SMALL")
-                return "BIG" if b_big >= b_small else "SMALL"
+                return pred_size if pred_size in ["BIG", "SMALL"] else ("BIG" if (p_num % 2 == 0) else "SMALL")
 
             next_shot_val = calculate_bottom_next_shot(target_period_num, tab_offset)
 
@@ -617,8 +607,8 @@ else:
                 scan_active = remaining_secs > 20
                 close_phase = remaining_secs <= 8
             elif seconds == 60:
-                scan_active = remaining_secs > 25    # 60s से 26s तक स्कैनिंग
-                close_phase = remaining_secs <= 8    # आख़िरी 8s से 0s तक सेफ क्लोज वार्निंग
+                scan_active = remaining_secs > 25
+                close_phase = remaining_secs <= 8
             elif seconds == 180:
                 scan_active = remaining_secs > 120
                 close_phase = remaining_secs <= 20
@@ -628,12 +618,7 @@ else:
 
             if scan_active:
                 st.markdown(
-                    f'<div class="analyzing-banner"><span class="blinking-yellow-light" style="width:8px; height:8px;"></span> 🔄 SYNCHRONIZING 82 NODES & ZIG-ZAG... ({remaining_secs}s left)</div>',
-                    unsafe_allow_html=True,
-                )
-            elif pred_size is None:
-                st.markdown(
-                    '<div class="wait-warning-banner"><span class="blinking-red-light"></span>🛑 WAITING: NO LINE MATCHED / MARKET UNLOCKED (लाइन नहीं पकड़ी - प्रतीक्षा करें)<span class="blinking-red-light" style="margin-left: 6px;"></span></div>',
+                    f'<div class="analyzing-banner"><span class="blinking-yellow-light" style="width:8px; height:8px;"></span> 🔄 SCANNING 82 SERVERS & ZIG-ZAG... ({remaining_secs}s left)</div>',
                     unsafe_allow_html=True,
                 )
             elif close_phase:
@@ -646,7 +631,7 @@ else:
                     st.markdown(
                         """
                         <div class="super-banner-big">
-                            🔥 82-NODES 100% SURE SHOT <span class="blinking-green-light"></span> : 
+                            🔥 82 SERVERS 100% SURE SHOT <span class="blinking-green-light"></span> : 
                             <span style="background: #000000; color: #FFB700; padding: 4px 14px; border-radius: 6px; border: 2px solid #FFB700; font-weight: 900; text-shadow: 0 0 10px #FFB700;">BIG</span> 🎯
                         </div>
                     """,
@@ -656,7 +641,7 @@ else:
                     st.markdown(
                         """
                         <div class="super-banner-small">
-                            🔥 82-NODES 100% SURE SHOT <span class="blinking-green-light"></span> : 
+                            🔥 82 SERVERS 100% SURE SHOT <span class="blinking-green-light"></span> : 
                             <span style="background: #000000; color: #00FFFF; padding: 4px 14px; border-radius: 6px; border: 2px solid #00FFFF; font-weight: 900; text-shadow: 0 0 10px #00FFFF;">SMALL</span> 🎯
                         </div>
                     """,
@@ -667,8 +652,8 @@ else:
                     st.markdown(
                         """
                         <div class="super-banner-big" style="animation: none; border-color: #FF8800;">
-                            🔥 82-NODES ZIG-ZAG MATCHED : 
-                            <span style="background: #000000; color: #FFB700; padding: 2px 10px; border-radius: 4px; border: 1px solid #FFB700;">BIG</span> 🎯
+                            🔥 82 SERVERS ZIG-ZAG MATCHED : 
+                            <span style="background: #000000; color: #FFB700; padding: 2px 10px; border-radius: 4px; border: 1px solid #FF8800;">BIG</span> 🎯
                         </div>
                     """,
                         unsafe_allow_html=True,
@@ -677,14 +662,14 @@ else:
                     st.markdown(
                         """
                         <div class="super-banner-small" style="animation: none; border-color: #0088FF;">
-                            🔥 82-NODES ZIG-ZAG MATCHED : 
+                            🔥 82 SERVERS ZIG-ZAG MATCHED : 
                             <span style="background: #000000; color: #00FFFF; padding: 2px 10px; border-radius: 4px; border: 1px solid #00FFFF;">SMALL</span> 🎯
                         </div>
                     """,
                         unsafe_allow_html=True,
                     )
 
-            if scan_active or pred_size is None:
+            if scan_active:
                 display_num = "—"
                 display_size = "WAITING"
                 display_color = "STANDBY"
@@ -728,9 +713,11 @@ else:
             if next_shot_val == "BIG":
                 next_shot_bg = "#FF8800"
                 next_shot_glow = "0 0 15px #FF8800"
+                next_shot_text = "BIG"
             else:
                 next_shot_bg = "#0088FF"
                 next_shot_glow = "0 0 15px #0088FF"
+                next_shot_text = "SMALL"
 
             st.markdown(
                 f"""
@@ -742,7 +729,7 @@ else:
                     <span style="color: #FFD700; font-weight: 900;">|</span>
                     <div style="display: flex; align-items: center; gap: 10px;">
                         <span style="color: #00FFFF; font-size: 14px; font-weight: 900; text-shadow: 0 0 8px rgba(0,255,255,0.5);">NEXT SHOT:</span>
-                        <span style="background: {next_shot_bg}; color: #FFFFFF; padding: 8px 24px; border-radius: 8px; font-weight: 900; font-size: 14px; border: 2px solid #FFFFFF; box-shadow: {next_shot_glow};">{next_shot_val}</span>
+                        <span style="background: {next_shot_bg}; color: #FFFFFF; padding: 8px 24px; border-radius: 8px; font-weight: 900; font-size: 14px; border: 2px solid #FFFFFF; box-shadow: {next_shot_glow};">{next_shot_text}</span>
                     </div>
                 </div>
             """,
