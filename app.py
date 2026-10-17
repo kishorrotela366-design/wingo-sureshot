@@ -6,7 +6,7 @@ import time
 import streamlit as st
 
 st.set_page_config(
-    page_title="BDG VIP STREAK & 100% SURE SHOT FINAL PANEL",
+    page_title="BDG VIP WAITING & REVERSAL PANEL",
     page_icon="🛡️",
     layout="centered",
     initial_sidebar_state="collapsed",
@@ -93,13 +93,6 @@ st.markdown(
         display: flex;
         align-items: center;
         justify-content: space-between;
-    }
-
-    /* स्ट्रीमलिट के बटन्स और इनपुट को पूरी तरह कलरफुल और प्रीमियम बनाने के लिए */
-    .stButton > button {
-        border-radius: 10px !important;
-        font-weight: 900 !important;
-        transition: all 0.3s ease !important;
     }
 
     .stTextInput input {
@@ -195,8 +188,8 @@ if not st.session_state.authenticated:
     st.markdown(
         "<h2 style='text-align: center; color: #FFD700; font-size: 20px;"
         " font-weight: 900;'><span class='blinking-red-light'></span>👑 BDG VIP"
-        " 100% SURE SHOT PANEL 👑<span class='blinking-red-light'"
-        " style='margin-left: 6px; margin-right: 0;'></span></h2>",
+        " WAITING PANEL 👑<span class='blinking-red-light' style='margin-left:"
+        " 6px; margin-right: 0;'></span></h2>",
         unsafe_allow_html=True,
     )
 
@@ -428,7 +421,6 @@ else:
             st.session_state.selected_game_seconds = 300
             st.rerun()
 
-    # --- चारों गेम मोड बटन्स के लिए प्रीमियम कलर ग्रेडिएंट और ग्लोइंग स्टाइल ---
     active_b30 = "background: linear-gradient(135deg, #FF2244, #770011) !important; border: 2.5px solid #FFD700 !important; color: #FFFFFF !important; box-shadow: 0 0 15px rgba(255,34,68,0.7);" if seconds == 30 else "background: linear-gradient(135deg, #2c0b0e, #140506) !important; border: 1.5px solid #661122 !important; color: #DDDDDD !important;"
     active_b1  = "background: linear-gradient(135deg, #00CC66, #003319) !important; border: 2.5px solid #00FFFF !important; color: #FFFFFF !important; box-shadow: 0 0 15px rgba(0,204,102,0.7);" if seconds == 60 else "background: linear-gradient(135deg, #052c1a, #00140b) !important; border: 1.5px solid #116633 !important; color: #DDDDDD !important;"
     active_b3  = "background: linear-gradient(135deg, #0088FF, #002266) !important; border: 2.5px solid #00FF66 !important; color: #FFFFFF !important; box-shadow: 0 0 15px rgba(0,136,255,0.7);" if seconds == 180 else "background: linear-gradient(135deg, #0b223c, #000f1a) !important; border: 1.5px solid #114488 !important; color: #DDDDDD !important;"
@@ -473,7 +465,7 @@ else:
             secs_rem = remaining_secs % 60
             timer_str = f"{mins:02d}:{secs_rem:02d}"
 
-            # 1M Mode में ठीक 25वें सेकंड पर अलार्म बजने का सटीक लॉजिक
+            # Alarm Logic
             should_play_alarm = False
             if seconds == 60 and remaining_secs == 25:
                 should_play_alarm = True
@@ -538,55 +530,36 @@ else:
             target_period_num = base_val + elapsed_blocks
             target_period_str = str(target_period_num)
 
-            # --- सर्वर और जिग-ज़ैग इंजन (मार्केट चेकर के साथ) ---
-            def calculate_82_servers_clean_engine(p_num, offset_val):
-                zigzag_votes = []
-                for z_idx in range(1, 22):
-                    alt_check = (p_num + z_idx * 19 + offset_val) % 2
-                    if (p_num + z_idx) % 2 == 0:
-                        zigzag_votes.append("BIG" if alt_check == 0 else "SMALL")
+            # --- मास्टर इंजन (रिर्वसल और वेटिंग के साथ) ---
+            def calculate_master_waiting_engine(p_num, offset_val):
+                server_score = 0
+                for node in range(1, 83):
+                    val = (p_num * node * 31 + offset_val + (p_num % 17)) % 100
+                    if val % 2 == 0:
+                        server_score += 1
                     else:
-                        zigzag_votes.append("SMALL" if alt_check == 0 else "BIG")
-                
-                z_big = zigzag_votes.count("BIG")
-                z_small = zigzag_votes.count("SMALL")
+                        server_score -= 1
 
-                all_votes = []
-                for node in range(1, 43):
-                    v = (p_num * node * 31 + offset_val + (p_num % 17)) % 100
-                    all_votes.append("BIG" if v % 2 == 0 else "SMALL")
+                reversal_factor = (p_num % 5) - 2
+                final_score = server_score + (reversal_factor * 5)
 
-                for t_node in range(1, 26):
-                    v = (p_num * t_node * 17 + offset_val + (p_num % (t_node * 2 + 1))) % 100
-                    all_votes.append("BIG" if v % 2 == 0 else "SMALL")
+                is_alternating = (p_num % 2 == 0)
 
-                for h_node in range(1, 15):
-                    v = ((p_num - h_node) * 11 + offset_val + (p_num % 7)) % 100
-                    all_votes.append("BIG" if v % 2 == 0 else "SMALL")
-
-                total_big = all_votes.count("BIG")
-                total_small = all_votes.count("SMALL")
-
-                market_unsafe = abs(total_big - total_small) < 4 and abs(z_big - z_small) < 2
-
-                if market_unsafe:
+                # यदि मार्केट अनस्टेबल है, तो WAITING और लाल वार्निंग साथ आएगी
+                if abs(final_score) < 4:
                     return (None, False, True)
 
-                if (z_big >= 14 and total_big >= 50) or total_big >= 64:
+                if abs(final_score) >= 10:
+                    choice = "BIG" if final_score > 0 else "SMALL"
+                    return (choice, True, False)
+                elif is_alternating and final_score > 0:
                     return ("BIG", True, False)
-                elif (z_small >= 14 and total_small >= 50) or total_small >= 64:
+                elif not is_alternating and final_score < 0:
                     return ("SMALL", True, False)
-                elif abs(z_big - z_small) >= 6:
-                    dominant_zigzag = "BIG" if z_big > z_small else "SMALL"
-                    return (dominant_zigzag, False, False)
-                elif total_big >= 45:
-                    return ("BIG", False, False)
-                elif total_small >= 45:
-                    return ("SMALL", False, False)
                 else:
-                    return ("BIG" if total_big >= total_small else "SMALL", False, False)
+                    return ("BIG" if final_score > 0 else "SMALL", False, False)
 
-            pred_size, is_sure_shot, is_market_bad = calculate_82_servers_clean_engine(target_period_num, tab_offset)
+            pred_size, is_sure_shot, is_market_bad = calculate_master_waiting_engine(target_period_num, tab_offset)
 
             def calculate_bottom_next_shot(p_num, offset_val):
                 return pred_size if pred_size in ["BIG", "SMALL"] else ("BIG" if (p_num % 2 == 0) else "SMALL")
@@ -615,7 +588,7 @@ else:
                 unsafe_allow_html=True,
             )
 
-            # --- 1M (60s) मोड का टाइमर लॉजिक ---
+            # Phase Timing Logic
             if seconds == 30:
                 scan_active = remaining_secs > 20
                 close_phase = remaining_secs <= 8
@@ -631,12 +604,12 @@ else:
 
             if scan_active:
                 st.markdown(
-                    f'<div class="analyzing-banner"><span class="blinking-yellow-light" style="width:8px; height:8px;"></span> 🔄 SCANNING SERVERS & ZIG-ZAG... ({remaining_secs}s left)</div>',
+                    f'<div class="analyzing-banner"><span class="blinking-yellow-light" style="width:8px; height:8px;"></span> 🔄 WAITING & SCANNING SERVERS... ({remaining_secs}s left)</div>',
                     unsafe_allow_html=True,
                 )
             elif is_market_bad:
                 st.markdown(
-                    '<div class="wait-warning-banner"><span class="blinking-red-light"></span>🛑 MARKET UNSTABLE / BAD TREND - DO NOT PLACE BID (मार्केट खराब है - बिट लगाने से बचें)<span class="blinking-red-light" style="margin-left: 6px;"></span></div>',
+                    '<div class="wait-warning-banner"><span class="blinking-red-light"></span>🛑 WAITING / MARKET UNSTABLE - STOP BID<span class="blinking-red-light" style="margin-left: 6px;"></span></div>',
                     unsafe_allow_html=True,
                 )
             elif close_phase:
@@ -670,7 +643,7 @@ else:
                     st.markdown(
                         """
                         <div class="super-banner-big" style="animation: none; border-color: #FF8800;">
-                            ZIG-ZAG MATCHED : 
+                            TREND MATCHED : 
                             <span style="background: #000000; color: #FFB700; padding: 2px 10px; border-radius: 4px; border: 1px solid #FF8800;">BIG</span> 🎯
                         </div>
                     """,
@@ -680,7 +653,7 @@ else:
                     st.markdown(
                         """
                         <div class="super-banner-small" style="animation: none; border-color: #0088FF;">
-                            ZIG-ZAG MATCHED : 
+                            TREND MATCHED : 
                             <span style="background: #000000; color: #00FFFF; padding: 2px 10px; border-radius: 4px; border: 1px solid #00FFFF;">SMALL</span> 🎯
                         </div>
                     """,
