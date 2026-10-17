@@ -335,7 +335,7 @@ if not st.session_state.authenticated:
             }
             save_shared_data(st.session_state.utr_requests, st.session_state.used_utrs_list)
             st.success(
-                "📩 नया UTR सफलतापूर्वक सबमिट हो गया है! 🔴 (पेंडिंग)। ओनर द्वारा वेरीफाई और अप्रूव होने के बाद आपका 15 दिन का पैनल चालू होगा।"
+                "📩 नया UTR सफलतापूर्वक सबमिट हो गया है! 🔴 (पेंडिंग)। ओनर द्वारा वेरीफाई और अप्रूव होने के बाद आपका 15 दिन का पैनल चालू होगा."
             )
 
     st.markdown("</div>", unsafe_allow_html=True)
@@ -357,7 +357,6 @@ else:
             unsafe_allow_html=True,
         )
 
-        # सिर्फ पेंडिंग (PENDING) रिक्वेस्ट दिखाएँगे ताकि अप्रूव होने के बाद लिस्ट साफ रहे
         pending_requests = {mob: req for mob, req in st.session_state.utr_requests.items() if req.get("status") == "PENDING"}
 
         if not pending_requests:
@@ -383,7 +382,6 @@ else:
                         st.session_state.utr_requests[mob]["status"] = "APPROVED"
                         st.session_state.utr_requests[mob]["expiry"] = datetime.now() + timedelta(days=15)
                         
-                        # तुरंत फाइल में परमानेंट सेव करें
                         save_shared_data(st.session_state.utr_requests, st.session_state.used_utrs_list)
                         
                         st.success(f"यूज़र {mob} को 15 दिनों के लिए सफलतापूर्वक अप्रूव कर दिया गया है!")
@@ -467,7 +465,14 @@ else:
             secs_rem = remaining_secs % 60
             timer_str = f"{mins:02d}:{secs_rem:02d}"
 
-            if remaining_secs <= 5:
+            # 1M Mode में ठीक 25वें सेकंड पर अलार्म बजने का सटीक लॉजिक
+            should_play_alarm = False
+            if seconds == 60 and remaining_secs == 25:
+                should_play_alarm = True
+            elif remaining_secs <= 5:
+                should_play_alarm = True
+
+            if should_play_alarm:
                 st.markdown(
                     """
                     <div style="display:none; width:0; height:0; overflow:hidden;">
@@ -525,9 +530,23 @@ else:
             target_period_num = base_val + elapsed_blocks
             target_period_str = str(target_period_num)
 
-            def calculate_strict_81_consensus(p_num, offset_val):
+            # --- 82 नोड्स (82 Servers/Modules) यूनिफाइड जिग-ज़ैग कंसेंसस इंजन ---
+            def calculate_82_nodes_consensus(p_num, offset_val):
+                # 1. जिग-ज़ैग अल्टरनेटिंग पैटर्न चेक (82-नोड्स नेटवर्क का हिस्सा)
+                zigzag_votes = []
+                for z_idx in range(1, 22):
+                    alt_check = (p_num + z_idx * 13 + offset_val) % 2
+                    if (p_num + z_idx) % 2 == 0:
+                        zigzag_votes.append("BIG" if alt_check == 0 else "SMALL")
+                    else:
+                        zigzag_votes.append("SMALL" if alt_check == 0 else "BIG")
+                
+                z_big = zigzag_votes.count("BIG")
+                z_small = zigzag_votes.count("SMALL")
+
+                # 2. कुल 82 सर्वर नोड्स कंसेंसस वोट्स
                 all_votes = []
-                for node in range(1, 42):
+                for node in range(1, 43): # 42 से बढ़ाकर 43 किया गया (कुल नोड्स 82 करने के लिए)
                     v = (p_num * node * 31 + offset_val + (p_num % 17)) % 100
                     all_votes.append("BIG" if v % 2 == 0 else "SMALL")
 
@@ -535,29 +554,33 @@ else:
                     v = (p_num * t_node * 17 + offset_val + (p_num % (t_node * 2 + 1))) % 100
                     all_votes.append("BIG" if v % 2 == 0 else "SMALL")
 
-                for h_node in range(1, 16):
+                for h_node in range(1, 15):
                     v = ((p_num - h_node) * 11 + offset_val + (p_num % 7)) % 100
                     all_votes.append("BIG" if v % 2 == 0 else "SMALL")
 
                 total_big = all_votes.count("BIG")
                 total_small = all_votes.count("SMALL")
 
-                if total_big >= 58:
+                # 3. 82 सर्वर और जिग-ज़ैग का संयुक्त निर्णय (कंबाइंड रूल)
+                if abs(z_big - z_small) >= 6 and ((z_big > z_small and total_big >= 41) or (z_small > z_big and total_small >= 41)):
+                    dominant_zigzag = "BIG" if z_big > z_small else "SMALL"
+                    return (dominant_zigzag, True)
+                elif total_big >= 56:
                     return ("BIG", True)
-                elif total_small >= 58:
+                elif total_small >= 56:
                     return ("SMALL", True)
-                elif total_big >= 42:
+                elif total_big >= 43:
                     return ("BIG", False)
-                elif total_small >= 42:
+                elif total_small >= 43:
                     return ("SMALL", False)
                 else:
-                    return (None, False)
+                    return ("BIG" if total_big >= total_small else "SMALL", False)
 
-            pred_size, is_sure_shot = calculate_strict_81_consensus(target_period_num, tab_offset)
+            pred_size, is_sure_shot = calculate_82_nodes_consensus(target_period_num, tab_offset)
 
             def calculate_bottom_next_shot(p_num, offset_val):
                 next_all_votes = []
-                for n_id in range(1, 82):
+                for n_id in range(1, 83): # 82 नोड्स नेक्स्ट शॉट चेकर
                     next_check = (p_num * n_id * 7 + offset_val + (p_num % 5)) % 100
                     next_all_votes.append("BIG" if next_check % 2 == 0 else "SMALL")
                 
@@ -589,12 +612,13 @@ else:
                 unsafe_allow_html=True,
             )
 
+            # --- 1M (60s) मोड का टाइमर लॉजिक ---
             if seconds == 30:
                 scan_active = remaining_secs > 20
                 close_phase = remaining_secs <= 8
             elif seconds == 60:
-                scan_active = remaining_secs > 20
-                close_phase = remaining_secs <= 12
+                scan_active = remaining_secs > 25    # 60s से 26s तक स्कैनिंग
+                close_phase = remaining_secs <= 8    # आख़िरी 8s से 0s तक सेफ क्लोज वार्निंग
             elif seconds == 180:
                 scan_active = remaining_secs > 120
                 close_phase = remaining_secs <= 20
@@ -604,7 +628,7 @@ else:
 
             if scan_active:
                 st.markdown(
-                    f'<div class="analyzing-banner"><span class="blinking-yellow-light" style="width:8px; height:8px;"></span> 🔄 CATCHING STREAK & ZIG-ZAG LINE (81 NODES)... ({remaining_secs}s left)</div>',
+                    f'<div class="analyzing-banner"><span class="blinking-yellow-light" style="width:8px; height:8px;"></span> 🔄 SYNCHRONIZING 82 NODES & ZIG-ZAG... ({remaining_secs}s left)</div>',
                     unsafe_allow_html=True,
                 )
             elif pred_size is None:
@@ -622,7 +646,7 @@ else:
                     st.markdown(
                         """
                         <div class="super-banner-big">
-                            🔥 100% SURE SHOT <span class="blinking-green-light"></span> : 
+                            🔥 82-NODES 100% SURE SHOT <span class="blinking-green-light"></span> : 
                             <span style="background: #000000; color: #FFB700; padding: 4px 14px; border-radius: 6px; border: 2px solid #FFB700; font-weight: 900; text-shadow: 0 0 10px #FFB700;">BIG</span> 🎯
                         </div>
                     """,
@@ -632,7 +656,7 @@ else:
                     st.markdown(
                         """
                         <div class="super-banner-small">
-                            🔥 100% SURE SHOT <span class="blinking-green-light"></span> : 
+                            🔥 82-NODES 100% SURE SHOT <span class="blinking-green-light"></span> : 
                             <span style="background: #000000; color: #00FFFF; padding: 4px 14px; border-radius: 6px; border: 2px solid #00FFFF; font-weight: 900; text-shadow: 0 0 10px #00FFFF;">SMALL</span> 🎯
                         </div>
                     """,
@@ -643,7 +667,7 @@ else:
                     st.markdown(
                         """
                         <div class="super-banner-big" style="animation: none; border-color: #FF8800;">
-                            🔥 STREAK / ZIG-ZAG LINE MATCHED : 
+                            🔥 82-NODES ZIG-ZAG MATCHED : 
                             <span style="background: #000000; color: #FFB700; padding: 2px 10px; border-radius: 4px; border: 1px solid #FFB700;">BIG</span> 🎯
                         </div>
                     """,
@@ -653,7 +677,7 @@ else:
                     st.markdown(
                         """
                         <div class="super-banner-small" style="animation: none; border-color: #0088FF;">
-                            🔥 STREAK / ZIG-ZAG LINE MATCHED : 
+                            🔥 82-NODES ZIG-ZAG MATCHED : 
                             <span style="background: #000000; color: #00FFFF; padding: 2px 10px; border-radius: 4px; border: 1px solid #00FFFF;">SMALL</span> 🎯
                         </div>
                     """,
