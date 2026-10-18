@@ -528,12 +528,36 @@ else:
             target_period_num = base_val + elapsed_blocks
             target_period_str = str(target_period_num)
 
+            # STRICT LIVE PERIOD RANGE VERIFICATION
+            current_day_secs = now.hour * 3600 + now.minute * 60 + now.second
+            expected_elapsed = current_day_secs // seconds
+            expected_base_approx = 10000 + expected_elapsed
+
+            if abs(target_period_num - expected_base_approx) > 25:
+                st.markdown(
+                    f"""
+                    <div class="target-period-box">
+                        <div style="display: flex; align-items: center;">
+                            <span class="blinking-red-light"></span>
+                            <span style="color: #FFD700; font-size: 12px; font-weight: 900;">LIVE PERIOD:</span>
+                            <span style="color: #FF4444; font-size: 12px; font-weight: 900;">🚨 गलत या फर्जी पीरियड! बीडीजी का सही लाइव नंबर डालें।</span>
+                        </div>
+                        <div class="timer-box-large">⏰ {timer_str}</div>
+                    </div>
+                """,
+                    unsafe_allow_html=True,
+                )
+                st.markdown(
+                    '<div class="wait-warning-banner"><span class="blinking-red-light"></span>🛑 INVALID PERIOD NUMBER - ENTER LIVE BDG PERIOD<span class="blinking-red-light" style="margin-left: 6px; margin-right: 0;"></span></div>',
+                    unsafe_allow_html=True,
+                )
+                st.markdown("</div>", unsafe_allow_html=True)
+                return
+
             # ==========================================================
-            # 87-NODES STRICT 80+ CONSENSUS ENGINE (80+ बहुमत होने पर ही 100% Sure Shot)
+            # 87-NODES STRICT 80+ CONSENSUS ENGINE
             # ==========================================================
             def calculate_87_nodes_consensus(p_num, offset_val):
-                
-                # 1. जिग-ज़ैग अल्टरनेटिंग पैटर्न नेटवर्क (21 नोड्स)
                 zigzag_votes = []
                 for z_idx in range(1, 22):
                     alt_check = (p_num + z_idx * 13 + offset_val) % 2
@@ -545,7 +569,6 @@ else:
                 z_big = zigzag_votes.count("BIG")
                 z_small = zigzag_votes.count("SMALL")
 
-                # 2. मूल 82 नोड्स सर्वर नेटवर्क
                 all_votes = []
                 for node in range(1, 43):
                     v = (p_num * node * 31 + offset_val + (p_num % 17)) % 100
@@ -559,26 +582,19 @@ else:
                     v = ((p_num - h_node) * 11 + offset_val + (p_num % 7)) % 100
                     all_votes.append("BIG" if v % 2 == 0 else "SMALL")
 
-                # 3. 5 एडवांस्ड एल्गोरिदम्स (Markov, HMM, EMA/MACD, ARIMA, Fourier) -> कुल 87 नोड्स
                 advanced_ai_votes = []
-
-                # Node 83: Markov Chain State Model
                 mc_val = (p_num * 19 + offset_val) % 100
                 advanced_ai_votes.append("BIG" if mc_val > 48 else "SMALL")
 
-                # Node 84: Hidden Markov Model - HMM
                 hmm_val = ((p_num // 3) * 23 + offset_val) % 100
                 advanced_ai_votes.append("BIG" if hmm_val % 2 == 0 else "SMALL")
 
-                # Node 85: Moving Average / EMA Crossover
                 ma_val = (p_num * 7 + (p_num % 11)) % 100
                 advanced_ai_votes.append("BIG" if ma_val >= 50 else "SMALL")
 
-                # Node 86: ARIMA Time-Series Model
                 arima_val = (p_num - 5) * 13 + offset_val
                 advanced_ai_votes.append("BIG" if arima_val % 3 == 0 else "SMALL")
 
-                # Node 87: Fourier Transform Frequency Wave
                 ft_val = int((p_num ** 0.5) * 100 + offset_val) % 100
                 advanced_ai_votes.append("BIG" if ft_val % 2 == 0 else "SMALL")
 
@@ -587,9 +603,6 @@ else:
                 total_big = all_votes.count("BIG")
                 total_small = all_votes.count("SMALL")
 
-                # ==========================================================
-                # 80+ STRICT THRESHOLD RULE (जब तक 80+ या मजबूत जिग-जैग न हो, श्योर शॉट नहीं)
-                # ==========================================================
                 if abs(z_big - z_small) >= 8 and ((z_big > z_small and total_big >= 75) or (z_small > z_big and total_small >= 75)):
                     dominant_zigzag = "BIG" if z_big > z_small else "SMALL"
                     return (dominant_zigzag, True)
@@ -752,12 +765,20 @@ else:
                 unsafe_allow_html=True,
             )
 
-            if next_shot_val == "BIG":
-                next_shot_bg = "#FF8800"
-                next_shot_glow = "0 0 15px #FF8800"
+            # ==========================================================
+            # नीचे वाले 'NEXT SHOT' को स्कैनिंग के दौरान 'WAITING' रखने का नियम
+            # ==========================================================
+            if scan_active:
+                next_shot_val = "WAITING..."
+                next_shot_bg = "#111111"
+                next_shot_glow = "none"
             else:
-                next_shot_bg = "#0088FF"
-                next_shot_glow = "0 0 15px #0088FF"
+                if next_shot_val == "BIG":
+                    next_shot_bg = "#FF8800"
+                    next_shot_glow = "0 0 15px #FF8800"
+                else:
+                    next_shot_bg = "#0088FF"
+                    next_shot_glow = "0 0 15px #0088FF"
 
             st.markdown(
                 f"""
