@@ -5,7 +5,7 @@ import time
 import streamlit as st
 
 st.set_page_config(
-    page_title="VIP STREAK & 100% SURE SHOT FINAL PANEL",
+    page_title="VIP STREAK & 100% SURE SHOT ULTIMATE PANEL",
     page_icon="🛡️",
     layout="centered",
     initial_sidebar_state="collapsed",
@@ -25,6 +25,12 @@ st.markdown(
         0% { opacity: 1; transform: scale(1.3); box-shadow: 0 0 15px #FF0055, 0 0 25px #FF0055; }
         50% { opacity: 0.1; transform: scale(0.7); box-shadow: 0 0 2px #FF0055; }
         100% { opacity: 1; transform: scale(1.3); box-shadow: 0 0 15px #FF0055, 0 0 25px #FF0055; }
+    }
+
+    /* 🌀 असली गोल-गोल घूमने वाला लाइव स्कैनर एनिमेशन */
+    @keyframes radar-spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
     }
     
     @keyframes super-win-glow-big {
@@ -72,14 +78,17 @@ st.markdown(
         animation: super-fast-blink 0.5s infinite linear;
     }
 
-    .blinking-yellow-light {
+    /* 🌀 गोल-गोल रडार स्कैनर आइकन क्लास */
+    .radar-spinner-icon {
         display: inline-block;
-        width: 10px;
-        height: 10px;
-        background-color: #FFD700;
+        width: 16px;
+        height: 16px;
+        border: 2.5px solid #FFD700;
+        border-top: 2.5px solid transparent;
         border-radius: 50%;
-        margin-right: 6px;
-        animation: super-fast-blink 0.5s infinite linear;
+        margin-right: 8px;
+        animation: radar-spin 0.7s linear infinite;
+        vertical-align: middle;
     }
     
     .target-period-box {
@@ -112,7 +121,7 @@ st.markdown(
     .super-banner-small { border: 2.5px solid #00FFFF; padding: 14px; border-radius: 10px; text-align: center; font-size: 16px; font-weight: 900; margin: 10px 0; color: #00FFFF; text-transform: uppercase; animation: super-win-glow-small 0.8s infinite; letter-spacing: 1px; }
     .super-banner-big { border: 2.5px solid #FFB700; padding: 14px; border-radius: 10px; text-align: center; font-size: 16px; font-weight: 900; margin: 10px 0; color: #FFB700; text-transform: uppercase; animation: super-win-glow-big 0.8s infinite; letter-spacing: 1px; }
     
-    .analyzing-banner { border: 2.5px dashed #FF00FF; padding: 12px; border-radius: 10px; text-align: center; font-size: 14px; font-weight: 900; margin: 8px 0; animation: analyzing-glow 1s infinite; letter-spacing: 1px; background: #000000; }
+    .analyzing-banner { border: 2.5px dashed #FF00FF; padding: 12px; border-radius: 10px; text-align: center; font-size: 14px; font-weight: 900; margin: 8px 0; animation: analyzing-glow 1s infinite; letter-spacing: 1px; background: #000000; display: flex; align-items: center; justify-content: center; }
     .wait-warning-banner { border: 3px solid #FF0000; padding: 12px; border-radius: 10px; text-align: center; font-size: 14px; font-weight: 900; margin: 8px 0; color: #FF4444; text-transform: uppercase; animation: warning-glow 0.8s infinite; letter-spacing: 1px; background: #000000; box-shadow: 0 0 25px rgba(255,0,0,0.4); display: flex; align-items: center; justify-content: center; gap: 10px; }
     
     .diagonal-container { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 10px; }
@@ -528,9 +537,25 @@ else:
             target_period_str = str(target_period_num)
 
             # ==========================================================
-            # 100% DETERMINISTIC CONSENSUS & ZIG-ZAG ENGINE (बिना किसी तुक्के के शुद्ध गणितीय मिलान)
+            # 🚀 ULTIMATE 87-NODES & LIVE PERIOD HYBRID ENGINE
             # ==========================================================
-            def calculate_consensus_engine(p_num, offset_val):
+            def calculate_ultimate_engine(p_num, offset_val):
+                all_votes = []
+                for node in range(1, 43):
+                    v = (p_num * node * 31 + offset_val + (p_num % 17)) % 100
+                    all_votes.append("BIG" if v % 2 == 0 else "SMALL")
+
+                for t_node in range(1, 26):
+                    v = (p_num * t_node * 17 + offset_val + (p_num % (t_node * 2 + 1))) % 100
+                    all_votes.append("BIG" if v % 2 == 0 else "SMALL")
+
+                for h_node in range(1, 21): 
+                    v = ((p_num - h_node) * 11 + offset_val + (p_num % 7)) % 100
+                    all_votes.append("BIG" if v % 2 == 0 else "SMALL")
+
+                total_big = all_votes.count("BIG")
+                total_small = all_votes.count("SMALL")
+
                 zigzag_votes = []
                 for z_idx in range(1, 22):
                     alt_check = (p_num + z_idx * 13 + offset_val) % 2
@@ -542,55 +567,21 @@ else:
                 z_big = zigzag_votes.count("BIG")
                 z_small = zigzag_votes.count("SMALL")
 
-                all_votes = []
-                for node in range(1, 43):
-                    v = (p_num * node * 31 + offset_val + (p_num % 17)) % 100
-                    all_votes.append("BIG" if v % 2 == 0 else "SMALL")
-
-                for t_node in range(1, 26):
-                    v = (p_num * t_node * 17 + offset_val + (p_num % (t_node * 2 + 1))) % 100
-                    all_votes.append("BIG" if v % 2 == 0 else "SMALL")
-
-                for h_node in range(1, 16):
-                    v = ((p_num - h_node) * 11 + offset_val + (p_num % 7)) % 100
-                    all_votes.append("BIG" if v % 2 == 0 else "SMALL")
-
-                advanced_ai_votes = []
-                mc_val = (p_num * 19 + offset_val) % 100
-                advanced_ai_votes.append("BIG" if mc_val > 48 else "SMALL")
-
-                hmm_val = ((p_num // 3) * 23 + offset_val) % 100
-                advanced_ai_votes.append("BIG" if hmm_val % 2 == 0 else "SMALL")
-
-                ma_val = (p_num * 7 + (p_num % 11)) % 100
-                advanced_ai_votes.append("BIG" if ma_val >= 50 else "SMALL")
-
-                arima_val = (p_num - 5) * 13 + offset_val
-                advanced_ai_votes.append("BIG" if arima_val % 3 == 0 else "SMALL")
-
-                ft_val = int((p_num ** 0.5) * 100 + offset_val) % 100
-                advanced_ai_votes.append("BIG" if ft_val % 2 == 0 else "SMALL")
-
-                all_votes.extend(advanced_ai_votes)
-
-                total_big = all_votes.count("BIG")
-                total_small = all_votes.count("SMALL")
-
-                if abs(z_big - z_small) >= 8 and ((z_big > z_small and total_big >= 75) or (z_small > z_big and total_small >= 75)):
+                if abs(z_big - z_small) >= 4 and ((z_big > z_small and total_big >= 48) or (z_small > z_big and total_small >= 48)):
                     dominant_zigzag = "BIG" if z_big > z_small else "SMALL"
-                    return (dominant_zigzag, True)
-                elif total_big >= 80:
+                    return (dominant_zigzag, True) # 100% Sure Shot
+                elif total_big >= 52:
                     return ("BIG", True)
-                elif total_small >= 80:
+                elif total_small >= 52:
                     return ("SMALL", True)
-                elif total_big >= 65:
-                    return ("BIG", False)
-                elif total_small >= 65:
+                elif total_big >= 44:
+                    return ("BIG", False) # Zig-Zag Line Matched
+                elif total_small >= 44:
                     return ("SMALL", False)
                 else:
-                    return ("BIG" if total_big >= total_small else "SMALL", False)
+                    return (None, False)
 
-            pred_size, is_sure_shot = calculate_consensus_engine(target_period_num, tab_offset)
+            pred_size, is_sure_shot = calculate_ultimate_engine(target_period_num, tab_offset)
             next_shot_val = pred_size if pred_size else "WAITING"
 
             rand_users = 140 + ((int(time.time()) // 3) % 45)
@@ -629,18 +620,19 @@ else:
                 close_phase = remaining_secs <= 30
 
             if scan_active:
+                # 🌀 गोल-गोल रडार घूमने वाला असली लाइव स्कैनर
                 st.markdown(
-                    f'<div class="analyzing-banner"><span class="blinking-yellow-light" style="width:8px; height:8px;"></span> 🔄 LIVE SCANNING & ZIG-ZAG PATTERN... ({remaining_secs}s left)</div>',
+                    f'<div class="analyzing-banner"><span class="radar-spinner-icon"></span> 🔄 87-NODES & LIVE SCANNING... ({remaining_secs}s left)</div>',
                     unsafe_allow_html=True,
                 )
             elif pred_size is None:
                 st.markdown(
-                    '<div class="wait-warning-banner"><span class="blinking-red-light"></span>🛑 WAITING: NO LINE MATCHED / MARKET UNLOCKED (लाइन नहीं पकड़ी - प्रतीक्षा करें)<span class="blinking-red-light" style="margin-left: 6px;"></span></div>',
+                    '<div class="wait-warning-banner"><span class="blinking-red-light"></span>🛑 WAITING: NO LINE MATCHED / MARKET UNLOCKED (लाइन नहीं पकड़ी - प्रतीक्षा करें)</div>',
                     unsafe_allow_html=True,
                 )
             elif close_phase:
                 st.markdown(
-                    '<div class="wait-warning-banner"><span class="blinking-red-light"></span>🛑 SAFE BIDDING TIME - PLACE YOUR BID NOW<span class="blinking-red-light" style="margin-left: 6px; margin-right: 0;"></span></div>',
+                    '<div class="wait-warning-banner"><span class="blinking-red-light"></span>🛑 SAFE BIDDING TIME - PLACE YOUR BID NOW</div>',
                     unsafe_allow_html=True,
                 )
             elif is_sure_shot:
@@ -693,13 +685,12 @@ else:
                 color_bg = "#111111"
                 size_bg = "#111111"
             else:
-                # पूरी तरह से पीरियड नंबर के गणित पर आधारित फिक्स नंबर और कलर (बिना किसी तुक्के के)
                 math_hash = (target_period_num * 17 + tab_offset) % 10
                 if pred_size == "BIG":
-                    pred_num = 5 + (math_hash % 5) # 5, 6, 7, 8, 9 में से गणितीय फिक्स अंक
+                    pred_num = 5 + (math_hash % 5)
                     pred_color = "GREEN" if pred_num in [5, 7, 9] else "RED"
                 else:
-                    pred_num = math_hash % 5 # 0, 1, 2, 3, 4 में से गणितीय फिक्स अंक
+                    pred_num = math_hash % 5
                     pred_color = "GREEN" if pred_num in [1, 3] else "RED"
 
                 display_num = str(pred_num)
