@@ -529,38 +529,7 @@ else:
             target_period_str = str(target_period_num)
 
             # ==========================================================
-            # SMART FLEXIBLE LIVE PERIOD VERIFICATION (सभी मोड्स के लिए बिल्कुल सही)
-            # ==========================================================
-            current_day_secs = now.hour * 3600 + now.minute * 60 + now.second
-            expected_elapsed = current_day_secs // seconds
-            expected_base_approx = 10000 + expected_elapsed
-
-            # 30 सेकंड मोड में चूंकि पीरियड्स तेजी से बदलते हैं, इसलिए रेंज को फ्लेक्सिबल रखा गया है ताकि कोई भी सही लाइव नंबर आसानी से मैच हो जाए
-            range_tolerance = 120 if seconds == 30 else 30
-
-            if abs(target_period_num - expected_base_approx) > range_tolerance:
-                st.markdown(
-                    f"""
-                    <div class="target-period-box">
-                        <div style="display: flex; align-items: center;">
-                            <span class="blinking-red-light"></span>
-                            <span style="color: #FFD700; font-size: 12px; font-weight: 900;">LIVE PERIOD:</span>
-                            <span style="color: #FF4444; font-size: 12px; font-weight: 900;">🚨 गलत या फर्जी पीरियड! बीडीजी का सही लाइव नंबर डालें।</span>
-                        </div>
-                        <div class="timer-box-large">⏰ {timer_str}</div>
-                    </div>
-                """,
-                    unsafe_allow_html=True,
-                )
-                st.markdown(
-                    '<div class="wait-warning-banner"><span class="blinking-red-light"></span>🛑 INVALID PERIOD NUMBER - ENTER LIVE BDG PERIOD<span class="blinking-red-light" style="margin-left: 6px; margin-right: 0;"></span></div>',
-                    unsafe_allow_html=True,
-                )
-                st.markdown("</div>", unsafe_allow_html=True)
-                return
-
-            # ==========================================================
-            # 87-NODES STRICT 80+ CONSENSUS ENGINE
+            # 87-NODES STRICT 80+ CONSENSUS ENGINE (बिना किसी रुकावट के सीधे काम करेगा)
             # ==========================================================
             def calculate_87_nodes_consensus(p_num, offset_val):
                 zigzag_votes = []
