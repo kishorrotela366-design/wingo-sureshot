@@ -528,12 +528,17 @@ else:
             target_period_num = base_val + elapsed_blocks
             target_period_str = str(target_period_num)
 
-            # STRICT LIVE PERIOD RANGE VERIFICATION
+            # ==========================================================
+            # SMART FLEXIBLE LIVE PERIOD VERIFICATION (सभी मोड्स के लिए बिल्कुल सही)
+            # ==========================================================
             current_day_secs = now.hour * 3600 + now.minute * 60 + now.second
             expected_elapsed = current_day_secs // seconds
             expected_base_approx = 10000 + expected_elapsed
 
-            if abs(target_period_num - expected_base_approx) > 25:
+            # 30 सेकंड मोड में चूंकि पीरियड्स तेजी से बदलते हैं, इसलिए रेंज को फ्लेक्सिबल रखा गया है ताकि कोई भी सही लाइव नंबर आसानी से मैच हो जाए
+            range_tolerance = 120 if seconds == 30 else 30
+
+            if abs(target_period_num - expected_base_approx) > range_tolerance:
                 st.markdown(
                     f"""
                     <div class="target-period-box">
@@ -765,9 +770,6 @@ else:
                 unsafe_allow_html=True,
             )
 
-            # ==========================================================
-            # नीचे वाले 'NEXT SHOT' को स्कैनिंग के दौरान 'WAITING' रखने का नियम
-            # ==========================================================
             if scan_active:
                 next_shot_val = "WAITING..."
                 next_shot_bg = "#111111"
