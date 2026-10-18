@@ -27,7 +27,7 @@ st.markdown(
         100% { opacity: 1; transform: scale(1.3); box-shadow: 0 0 15px #FF0055, 0 0 25px #FF0055; }
     }
 
-    /* 🌀 असली गोल-गोल घूमने वाला लाइव स्कैनर एनिमेशन */
+    /* 🌀 गोल-गोल घूमने वाला लाइव स्कैनर एनिमेशन */
     @keyframes radar-spin {
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
@@ -81,12 +81,13 @@ st.markdown(
     /* 🌀 गोल-गोल रडार स्कैनर आइकन क्लास */
     .radar-spinner-icon {
         display: inline-block;
-        width: 16px;
-        height: 16px;
-        border: 2.5px solid #FFD700;
+        width: 14px;
+        height: 14px;
+        border: 2.5px solid #FF0055;
         border-top: 2.5px solid transparent;
         border-radius: 50%;
-        margin-right: 8px;
+        margin-left: 6px;
+        margin-right: 6px;
         animation: radar-spin 0.7s linear infinite;
         vertical-align: middle;
     }
@@ -537,7 +538,7 @@ else:
             target_period_str = str(target_period_num)
 
             # ==========================================================
-            # 🚀 ULTIMATE 87-NODES & LIVE PERIOD HYBRID ENGINE
+            # 🚀 HYBRID ENGINE (मजबूत और सुरक्षित लॉजिक)
             # ==========================================================
             def calculate_ultimate_engine(p_num, offset_val):
                 all_votes = []
@@ -620,9 +621,9 @@ else:
                 close_phase = remaining_secs <= 30
 
             if scan_active:
-                # 🌀 गोल-गोल रडार घूमने वाला असली लाइव स्कैनर
+                # 🔄 87 शब्द हटाकर केवल लाइव स्कैनिंग और घूमने वाला रडार स्कैनर
                 st.markdown(
-                    f'<div class="analyzing-banner"><span class="radar-spinner-icon"></span> 🔄 87-NODES & LIVE SCANNING... ({remaining_secs}s left)</div>',
+                    f'<div class="analyzing-banner"><span class="blinking-red-light" style="width:8px; height:8px; margin:0 4px 0 0;"></span> LIVE SCANNING... <span class="radar-spinner-icon"></span> ({remaining_secs}s left)</div>',
                     unsafe_allow_html=True,
                 )
             elif pred_size is None:
