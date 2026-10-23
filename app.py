@@ -1,4 +1,4 @@
- from datetime import datetime, timedelta
+from datetime import datetime, timedelta
 import json
 import os
 import time
@@ -545,13 +545,9 @@ else:
             target_period_num = base_val + elapsed_blocks
             target_period_str = str(target_period_num)
 
-            # ==========================================================
-            # 🚀 ROCK-SOLID SAFE HYBRID ENGINE (सुरक्षित और संतुलित लॉजिक)
-            # ==========================================================
             def calculate_ultimate_engine(p_num, offset_val):
                 all_votes = []
                 
-                # 1. मूल 87 नोड्स
                 for node in range(1, 43):
                     v = (p_num * node * 31 + offset_val + (p_num % 17)) % 100
                     all_votes.append("BIG" if v % 2 == 0 else "SMALL")
@@ -567,7 +563,6 @@ else:
                 total_big = all_votes.count("BIG")
                 total_small = all_votes.count("SMALL")
 
-                # 2. जिगजैग / पैटर्न लेयर
                 zigzag_votes = []
                 for z_idx in range(1, 22):
                     alt_check = (p_num + z_idx * 13 + offset_val) % 2
@@ -581,12 +576,10 @@ else:
 
                 total_votes_count = len(all_votes)
                 
-                # सख्त थ्रेशोल्ड (Sure Shot के लिए 65% और लाइन के लिए 52%)
                 sure_threshold = int(total_votes_count * 0.65)
                 line_threshold = int(total_votes_count * 0.52)
                 diff = abs(total_big - total_small)
 
-                # यदि मार्केट एकदम उलझा हुआ या 50-50 है, तो लाल वार्निंग (None) भेजें ताकि लॉस न हो
                 if diff < int(total_votes_count * 0.04):
                     return (None, False)
 
