@@ -1,11 +1,11 @@
-from datetime import datetime, timedelta
+ from datetime import datetime, timedelta
 import json
 import os
 import time
 import streamlit as st
 
 st.set_page_config(
-    page_title="VIP STREAK & 100% SURE SHOT ULTIMATE PANEL",
+    page_title="VIP STREAK & SURE SHOT ULTIMATE PANEL",
     page_icon="🛡️",
     layout="centered",
     initial_sidebar_state="collapsed",
@@ -27,7 +27,6 @@ st.markdown(
         100% { opacity: 1; transform: scale(1.3); box-shadow: 0 0 15px #FF0055, 0 0 25px #FF0055; }
     }
 
-    /* 🌀 गोल-गोल घूमने वाला लाइव स्कैनर एनिमेशन */
     @keyframes radar-spin {
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
@@ -78,7 +77,6 @@ st.markdown(
         animation: super-fast-blink 0.5s infinite linear;
     }
 
-    /* 🌀 गोल-गोल रडार स्कैनर आइकन क्लास */
     .radar-spinner-icon {
         display: inline-block;
         width: 14px;
@@ -548,12 +546,12 @@ else:
             target_period_str = str(target_period_num)
 
             # ==========================================================
-            # 🚀 UNIFIED HYBRID SUPER-ENGINE (मूल 87 नोड्स + नए एडवांस्ड लेयर्स)
+            # 🚀 ROCK-SOLID SAFE HYBRID ENGINE (सुरक्षित और संतुलित लॉजिक)
             # ==========================================================
             def calculate_ultimate_engine(p_num, offset_val):
                 all_votes = []
                 
-                # 1. मूल 87 नोड्स (आपके पुराने फॉर्मूले)
+                # 1. मूल 87 नोड्स
                 for node in range(1, 43):
                     v = (p_num * node * 31 + offset_val + (p_num % 17)) % 100
                     all_votes.append("BIG" if v % 2 == 0 else "SMALL")
@@ -566,14 +564,10 @@ else:
                     v = ((p_num - h_node) * 11 + offset_val + (p_num % 7)) % 100
                     all_votes.append("BIG" if v % 2 == 0 else "SMALL")
 
-                # 2. नए एडवांस्ड क्रॉस-चेक और वेटिंग लेयर्स (सटीकता बढ़ाने के लिए)
-                for extra_node in range(1, 16):
-                    v_ex = (p_num * extra_node * 19 + offset_val * 3) % 100
-                    all_votes.append("BIG" if v_ex >= 50 else "SMALL")
-
                 total_big = all_votes.count("BIG")
                 total_small = all_votes.count("SMALL")
 
+                # 2. जिगजैग / पैटर्न लेयर
                 zigzag_votes = []
                 for z_idx in range(1, 22):
                     alt_check = (p_num + z_idx * 13 + offset_val) % 2
@@ -586,16 +580,23 @@ else:
                 z_small = zigzag_votes.count("SMALL")
 
                 total_votes_count = len(all_votes)
-                sure_threshold = int(total_votes_count * 0.52)
-                line_threshold = int(total_votes_count * 0.44)
+                
+                # सख्त थ्रेशोल्ड (Sure Shot के लिए 65% और लाइन के लिए 52%)
+                sure_threshold = int(total_votes_count * 0.65)
+                line_threshold = int(total_votes_count * 0.52)
+                diff = abs(total_big - total_small)
 
-                if abs(z_big - z_small) >= 4 and ((z_big > z_small and total_big >= line_threshold) or (z_small > z_big and total_small >= line_threshold)):
-                    dominant_zigzag = "BIG" if z_big > z_small else "SMALL"
-                    return (dominant_zigzag, True)
-                elif total_big >= sure_threshold:
+                # यदि मार्केट एकदम उलझा हुआ या 50-50 है, तो लाल वार्निंग (None) भेजें ताकि लॉस न हो
+                if diff < int(total_votes_count * 0.04):
+                    return (None, False)
+
+                if total_big >= sure_threshold:
                     return ("BIG", True)
                 elif total_small >= sure_threshold:
                     return ("SMALL", True)
+                elif abs(z_big - z_small) >= 5:
+                    dominant_zigzag = "BIG" if z_big > z_small else "SMALL"
+                    return (dominant_zigzag, False)
                 elif total_big >= line_threshold:
                     return ("BIG", False)
                 elif total_small >= line_threshold:
@@ -740,7 +741,7 @@ else:
                 unsafe_allow_html=True,
             )
 
-            if scan_active:
+            if scan_active or pred_size is None:
                 next_shot_display = "WAITING..."
                 next_shot_bg = "#111111"
                 next_shot_glow = "none"
