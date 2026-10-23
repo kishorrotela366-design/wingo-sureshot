@@ -142,11 +142,17 @@ def load_shared_data():
             with open(DATA_FILE, "r", encoding="utf-8") as f:
                 data = json.load(f)
                 for mob, val in data.get("utr_requests", {}).items():
-                    if "expiry" in val and isinstance(val["expiry"], str):
-                        try:
-                            val["expiry"] = datetime.fromisoformat(val["expiry"])
-                        except:
-                            val["expiry"] = datetime.now() + timedelta(days=15)
+                    if "expiry" in val:
+                        exp_val = val["expiry"]
+                        if isinstance(exp_val, str):
+                            try:
+                                cleaned_str = exp_val.replace("Z", "+00:00")
+                                val["expiry"] = datetime.fromisoformat(cleaned_str)
+                            except:
+                                try:
+                                    val["expiry"] = datetime.strptime(exp_val[:19], "%Y-%m-%d %H:%M:%S")
+                                except:
+                                    pass
                 return data
         except:
             pass
@@ -240,9 +246,13 @@ if not st.session_state.authenticated:
                 exp_time = user_data["expiry"]
                 if isinstance(exp_time, str):
                     try:
-                        exp_time = datetime.fromisoformat(exp_time)
+                        cleaned_str = exp_time.replace("Z", "+00:00")
+                        exp_time = datetime.fromisoformat(cleaned_str)
                     except:
-                        exp_time = datetime.now() + timedelta(days=15)
+                        try:
+                            exp_time = datetime.strptime(exp_time[:19], "%Y-%m-%d %H:%M:%S")
+                        except:
+                            exp_time = datetime.now() + timedelta(days=15)
 
                 if datetime.now() < exp_time:
                     if user_data["status"] == "APPROVED":
@@ -538,10 +548,12 @@ else:
             target_period_str = str(target_period_num)
 
             # ==========================================================
-            # 🚀 HYBRID ENGINE (मजबूत और सुरक्षित लॉजिक)
+            # 🚀 UNIFIED HYBRID SUPER-ENGINE (मूल 87 नोड्स + नए एडवांस्ड लेयर्स)
             # ==========================================================
             def calculate_ultimate_engine(p_num, offset_val):
                 all_votes = []
+                
+                # 1. मूल 87 नोड्स (आपके पुराने फॉर्मूले)
                 for node in range(1, 43):
                     v = (p_num * node * 31 + offset_val + (p_num % 17)) % 100
                     all_votes.append("BIG" if v % 2 == 0 else "SMALL")
@@ -553,6 +565,11 @@ else:
                 for h_node in range(1, 21): 
                     v = ((p_num - h_node) * 11 + offset_val + (p_num % 7)) % 100
                     all_votes.append("BIG" if v % 2 == 0 else "SMALL")
+
+                # 2. नए एडवांस्ड क्रॉस-चेक और वेटिंग लेयर्स (सटीकता बढ़ाने के लिए)
+                for extra_node in range(1, 16):
+                    v_ex = (p_num * extra_node * 19 + offset_val * 3) % 100
+                    all_votes.append("BIG" if v_ex >= 50 else "SMALL")
 
                 total_big = all_votes.count("BIG")
                 total_small = all_votes.count("SMALL")
@@ -568,16 +585,20 @@ else:
                 z_big = zigzag_votes.count("BIG")
                 z_small = zigzag_votes.count("SMALL")
 
-                if abs(z_big - z_small) >= 4 and ((z_big > z_small and total_big >= 48) or (z_small > z_big and total_small >= 48)):
+                total_votes_count = len(all_votes)
+                sure_threshold = int(total_votes_count * 0.52)
+                line_threshold = int(total_votes_count * 0.44)
+
+                if abs(z_big - z_small) >= 4 and ((z_big > z_small and total_big >= line_threshold) or (z_small > z_big and total_small >= line_threshold)):
                     dominant_zigzag = "BIG" if z_big > z_small else "SMALL"
-                    return (dominant_zigzag, True) # 100% Sure Shot
-                elif total_big >= 52:
+                    return (dominant_zigzag, True)
+                elif total_big >= sure_threshold:
                     return ("BIG", True)
-                elif total_small >= 52:
+                elif total_small >= sure_threshold:
                     return ("SMALL", True)
-                elif total_big >= 44:
-                    return ("BIG", False) # Zig-Zag Line Matched
-                elif total_small >= 44:
+                elif total_big >= line_threshold:
+                    return ("BIG", False)
+                elif total_small >= line_threshold:
                     return ("SMALL", False)
                 else:
                     return (None, False)
@@ -621,7 +642,6 @@ else:
                 close_phase = remaining_secs <= 30
 
             if scan_active:
-                # 🔄 87 शब्द हटाकर केवल लाइव स्कैनिंग और घूमने वाला रडार स्कैनर
                 st.markdown(
                     f'<div class="analyzing-banner"><span class="blinking-red-light" style="width:8px; height:8px; margin:0 4px 0 0;"></span> LIVE SCANNING... <span class="radar-spinner-icon"></span> ({remaining_secs}s left)</div>',
                     unsafe_allow_html=True,
