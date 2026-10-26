@@ -14,12 +14,13 @@ st.set_page_config(
 st.markdown(
     """
     <style>
-    .stApp { background-color: #000000; color: #FFFFFF; }
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    header {visibility: hidden;}
-    .stAppDeployButton {display: none;}
-    [data-testid="stStatusWidget"] {visibility: hidden;}
+    /* 🔒 ULTIMATE LAYOUT LOCK TO PREVENT APP OVERRIDES */
+    .stApp { background-color: #000000 !important; color: #FFFFFF !important; }
+    #MainMenu {visibility: hidden !important;}
+    footer {visibility: hidden !important;}
+    header {visibility: hidden !important;}
+    .stAppDeployButton {display: none !important;}
+    [data-testid="stStatusWidget"] {visibility: hidden !important;}
     
     @keyframes super-fast-blink {
         0% { opacity: 1; transform: scale(1.3); box-shadow: 0 0 15px #FF0055, 0 0 25px #FF0055; }
@@ -57,49 +58,49 @@ st.markdown(
     }
 
     .blinking-red-light {
-        display: inline-block;
-        width: 10px;
-        height: 10px;
-        background-color: #FF0055;
-        border-radius: 50%;
-        margin-right: 6px;
-        animation: super-fast-blink 0.5s infinite linear;
+        display: inline-block !important;
+        width: 10px !important;
+        height: 10px !important;
+        background-color: #FF0055 !important;
+        border-radius: 50% !important;
+        margin-right: 6px !important;
+        animation: super-fast-blink 0.5s infinite linear !important;
     }
 
     .blinking-green-light {
-        display: inline-block;
-        width: 10px;
-        height: 10px;
-        background-color: #00FF66;
-        border-radius: 50%;
-        margin-left: 6px;
-        margin-right: 6px;
-        animation: super-fast-blink 0.5s infinite linear;
+        display: inline-block !important;
+        width: 10px !important;
+        height: 10px !important;
+        background-color: #00FF66 !important;
+        border-radius: 50% !important;
+        margin-left: 6px !important;
+        margin-right: 6px !important;
+        animation: super-fast-blink 0.5s infinite linear !important;
     }
 
     .radar-spinner-icon {
-        display: inline-block;
-        width: 14px;
-        height: 14px;
-        border: 2.5px solid #FF0055;
-        border-top: 2.5px solid transparent;
-        border-radius: 50%;
-        margin-left: 6px;
-        margin-right: 6px;
-        animation: radar-spin 0.7s linear infinite;
-        vertical-align: middle;
+        display: inline-block !important;
+        width: 14px !important;
+        height: 14px !important;
+        border: 2.5px solid #FF0055 !important;
+        border-top: 2.5px solid transparent !important;
+        border-radius: 50% !important;
+        margin-left: 6px !important;
+        margin-right: 6px !important;
+        animation: radar-spin 0.7s linear infinite !important;
+        vertical-align: middle !important;
     }
     
     .target-period-box {
-        background: #000000;
-        border: 1.5px solid #00FFFF;
-        border-radius: 10px;
-        padding: 8px 10px;
-        box-shadow: 0 0 12px rgba(0, 255, 255, 0.25);
-        margin-bottom: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+        background: #000000 !important;
+        border: 1.5px solid #00FFFF !important;
+        border-radius: 10px !important;
+        padding: 8px 10px !important;
+        box-shadow: 0 0 12px rgba(0, 255, 255, 0.25) !important;
+        margin-bottom: 8px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
     }
 
     .stTextInput input {
@@ -114,19 +115,19 @@ st.markdown(
     }
     .stTextInput > label { display: none !important; }
 
-    .main-card { background-color: #000000; border: none; padding: 0px; margin-top: 4px; }
-    .timer-box-large { color: #FF00FF; font-weight: 900; font-size: 15px; text-shadow: 0 0 8px rgba(255,0,255,0.6); display: flex; align-items: center; gap: 4px; }
+    .main-card { background-color: #000000 !important; border: none !important; padding: 0px !important; margin-top: 4px !important; }
+    .timer-box-large { color: #FF00FF !important; font-weight: 900 !important; font-size: 15px !important; text-shadow: 0 0 8px rgba(255,0,255,0.6) !important; display: flex !important; align-items: center !important; gap: 4px !important; }
     
-    .super-banner-small { border: 2.5px solid #00FFFF; padding: 14px; border-radius: 10px; text-align: center; font-size: 16px; font-weight: 900; margin: 10px 0; color: #00FFFF; text-transform: uppercase; animation: super-win-glow-small 0.8s infinite; letter-spacing: 1px; }
-    .super-banner-big { border: 2.5px solid #FFB700; padding: 14px; border-radius: 10px; text-align: center; font-size: 16px; font-weight: 900; margin: 10px 0; color: #FFB700; text-transform: uppercase; animation: super-win-glow-big 0.8s infinite; letter-spacing: 1px; }
+    .super-banner-small { border: 2.5px solid #00FFFF !important; padding: 14px !important; border-radius: 10px !important; text-align: center !important; font-size: 16px !important; font-weight: 900 !important; margin: 10px 0 !important; color: #00FFFF !important; text-transform: uppercase !important; animation: super-win-glow-small 0.8s infinite !important; letter-spacing: 1px !important; }
+    .super-banner-big { border: 2.5px solid #FFB700 !important; padding: 14px !important; border-radius: 10px !important; text-align: center !important; font-size: 16px !important; font-weight: 900 !important; margin: 10px 0 !important; color: #FFB700 !important; text-transform: uppercase !important; animation: super-win-glow-big 0.8s infinite !important; letter-spacing: 1px !important; }
     
-    .analyzing-banner { border: 2.5px dashed #FF00FF; padding: 12px; border-radius: 10px; text-align: center; font-size: 14px; font-weight: 900; margin: 8px 0; animation: analyzing-glow 1s infinite; letter-spacing: 1px; background: #000000; display: flex; align-items: center; justify-content: center; }
-    .wait-warning-banner { border: 3px solid #FF0000; padding: 12px; border-radius: 10px; text-align: center; font-size: 14px; font-weight: 900; margin: 8px 0; color: #FF4444; text-transform: uppercase; animation: warning-glow 0.8s infinite; letter-spacing: 1px; background: #000000; box-shadow: 0 0 25px rgba(255,0,0,0.4); display: flex; align-items: center; justify-content: center; gap: 10px; }
+    .analyzing-banner { border: 2.5px dashed #FF00FF !important; padding: 12px !important; border-radius: 10px !important; text-align: center !important; font-size: 14px !important; font-weight: 900 !important; margin: 8px 0 !important; animation: analyzing-glow 1s infinite !important; letter-spacing: 1px !important; background: #000000 !important; display: flex !important; align-items: center !important; justify-content: center !important; }
+    .wait-warning-banner { border: 3px solid #FF0000 !important; padding: 12px !important; border-radius: 10px !important; text-align: center !important; font-size: 14px !important; font-weight: 900 !important; margin: 8px 0 !important; color: #FF4444 !important; text-transform: uppercase !important; animation: warning-glow 0.8s infinite !important; letter-spacing: 1px !important; background: #000000 !important; box-shadow: 0 0 25px rgba(255,0,0,0.4) !important; display: flex !important; align-items: center !important; justify-content: center !important; gap: 10px !important; }
     
-    .diagonal-container { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 10px; }
-    .result-item { flex: 1; text-align: center; background: #130d24; border: 2.5px solid #3b286b; border-radius: 12px; padding: 12px 6px; box-shadow: 0 0 10px rgba(59,40,107,0.3); }
-    .auth-card { background: #0b071a; border: 2px solid #FFD700; border-radius: 12px; padding: 16px; box-shadow: 0 0 15px rgba(255,215,0,0.2); margin-top: 10px; }
-    .admin-card { background: #110022; border: 2px solid #00FF66; border-radius: 12px; padding: 15px; margin-bottom: 15px; }
+    .diagonal-container { display: flex !important; justify-content: space-between !important; align-items: center !important; gap: 8px !important; margin-top: 10px !important; }
+    .result-item { flex: 1 !important; text-align: center !important; background: #130d24 !important; border: 2.5px solid #3b286b !important; border-radius: 12px !important; padding: 12px 6px !important; box-shadow: 0 0 10px rgba(59,40,107,0.3) !important; }
+    .auth-card { background: #0b071a !important; border: 2px solid #FFD700 !important; border-radius: 12px !important; padding: 16px !important; box-shadow: 0 0 15px rgba(255,215,0,0.2) !important; margin-top: 10px !important; }
+    .admin-card { background: #110022 !important; border: 2px solid #00FF66 !important; border-radius: 12px !important; padding: 15px !important; margin-bottom: 15px !important; }
     </style>
 """,
     unsafe_allow_html=True,
@@ -414,40 +415,40 @@ else:
 
     seconds = st.session_state.selected_game_seconds
 
-    # ⚡ COMPACT SINGLE-LINE MODE SELECTOR ROW (Matched with result items container style)
+    # 🔥 LOCKED WINGO STYLE GAME MODE SELECTOR BUTTONS
     col_m1, col_m2, col_m3, col_m4 = st.columns(4)
 
     with col_m1:
-        if st.button("30S MODE", key="btn_30s", use_container_width=True):
+        if st.button("⏳ WinGo 30sec", key="btn_30s", use_container_width=True):
             st.session_state.selected_game_seconds = 30
             st.rerun()
 
     with col_m2:
-        if st.button("1M MODE", key="btn_1m", use_container_width=True):
+        if st.button("🕒 WinGo 1 Min", key="btn_1m", use_container_width=True):
             st.session_state.selected_game_seconds = 60
             st.rerun()
 
     with col_m3:
-        if st.button("3M MODE", key="btn_3m", use_container_width=True):
+        if st.button("⏱️ WinGo 3 Min", key="btn_3m", use_container_width=True):
             st.session_state.selected_game_seconds = 180
             st.rerun()
 
     with col_m4:
-        if st.button("5M MODE", key="btn_5m", use_container_width=True):
+        if st.button("⏰ WinGo 5 Min", key="btn_5m", use_container_width=True):
             st.session_state.selected_game_seconds = 300
             st.rerun()
 
-    active_b30 = "background: linear-gradient(135deg, #FF4444, #880000) !important; border: 2.5px solid #FFD700 !important; color: #FFFFFF !important; box-shadow: 0 0 15px rgba(255,68,68,0.6);" if seconds == 30 else "background: #130d24 !important; border: 2.5px solid #3b286b !important; color: #CCCCCC !important;"
-    active_b1  = "background: linear-gradient(135deg, #00AA55, #003311) !important; border: 2.5px solid #00FF66 !important; color: #FFFFFF !important; box-shadow: 0 0 15px rgba(0,255,102,0.6);" if seconds == 60 else "background: #130d24 !important; border: 2.5px solid #3b286b !important; color: #CCCCCC !important;"
-    active_b3  = "background: linear-gradient(135deg, #0088FF, #002266) !important; border: 2.5px solid #00FFFF !important; color: #FFFFFF !important; box-shadow: 0 0 15px rgba(0,136,255,0.6);" if seconds == 180 else "background: #130d24 !important; border: 2.5px solid #3b286b !important; color: #CCCCCC !important;"
-    active_b5  = "background: linear-gradient(135deg, #FF8800, #552200) !important; border: 2.5px solid #FFB700 !important; color: #FFFFFF !important; box-shadow: 0 0 15px rgba(255,136,0,0.6);" if seconds == 300 else "background: #130d24 !important; border: 2.5px solid #3b286b !important; color: #CCCCCC !important;"
+    active_b30 = "background: linear-gradient(135deg, #FFB700, #CC8800) !important; border: 2.5px solid #FFFFFF !important; color: #000000 !important; box-shadow: 0 0 20px rgba(255,183,0,0.8) !important;" if seconds == 30 else "background: #1e1e1e !important; border: 1.5px solid #444444 !important; color: #AAAAAA !important;"
+    active_b1  = "background: linear-gradient(135deg, #00FF66, #008833) !important; border: 2.5px solid #FFFFFF !important; color: #000000 !important; box-shadow: 0 0 20px rgba(0,255,102,0.8) !important;" if seconds == 60 else "background: #1e1e1e !important; border: 1.5px solid #444444 !important; color: #AAAAAA !important;"
+    active_b3  = "background: linear-gradient(135deg, #0088FF, #003388) !important; border: 2.5px solid #FFFFFF !important; color: #FFFFFF !important; box-shadow: 0 0 20px rgba(0,136,255,0.8) !important;" if seconds == 180 else "background: #1e1e1e !important; border: 1.5px solid #444444 !important; color: #AAAAAA !important;"
+    active_b5  = "background: linear-gradient(135deg, #FF5500, #882200) !important; border: 2.5px solid #FFFFFF !important; color: #FFFFFF !important; box-shadow: 0 0 20px rgba(255,85,0,0.8) !important;" if seconds == 300 else "background: #1e1e1e !important; border: 1.5px solid #444444 !important; color: #AAAAAA !important;"
 
     st.markdown(f"""
         <style>
-        div[data-testid="column"]:nth-of-type(1) button {{ {active_b30} font-weight: 900; border-radius: 12px; padding: 12px 2px; font-size: 13px; }}
-        div[data-testid="column"]:nth-of-type(2) button {{ {active_b1} font-weight: 900; border-radius: 12px; padding: 12px 2px; font-size: 13px; }}
-        div[data-testid="column"]:nth-of-type(3) button {{ {active_b3} font-weight: 900; border-radius: 12px; padding: 12px 2px; font-size: 13px; }}
-        div[data-testid="column"]:nth-of-type(4) button {{ {active_b5} font-weight: 900; border-radius: 12px; padding: 12px 2px; font-size: 13px; }}
+        div[data-testid="column"]:nth-of-type(1) button {{ {active_b30} font-weight: 900 !important; border-radius: 14px !important; padding: 14px 2px !important; font-size: 13px !important; }}
+        div[data-testid="column"]:nth-of-type(2) button {{ {active_b1} font-weight: 900 !important; border-radius: 14px !important; padding: 14px 2px !important; font-size: 13px !important; }}
+        div[data-testid="column"]:nth-of-type(3) button {{ {active_b3} font-weight: 900 !important; border-radius: 14px !important; padding: 14px 2px !important; font-size: 13px !important; }}
+        div[data-testid="column"]:nth-of-type(4) button {{ {active_b5} font-weight: 900 !important; border-radius: 14px !important; padding: 14px 2px !important; font-size: 13px !important; }}
         </style>
     """, unsafe_allow_html=True)
 
@@ -503,6 +504,7 @@ else:
 
             user_input_str = st.session_state.user_base_period.strip()
 
+            # 🔥 STRICT LIVE PERIOD VALIDATION & AUTO-SYNC
             is_invalid_format = False
             if not user_input_str or len(user_input_str) != 5 or not user_input_str.isdigit():
                 is_invalid_format = True
@@ -514,7 +516,7 @@ else:
                         <div style="display: flex; align-items: center;">
                             <span class="blinking-red-light"></span>
                             <span style="color: #FFD700; font-size: 13px; font-weight: 900; margin-right: 6px;">LIVE PERIOD:</span>
-                            <span style="color: #FF4444; font-size: 12px; font-weight: 900;">🚨 कृपया गेम के पीछे के आखिरी 5 अंक ही डालें!</span>
+                            <span style="color: #FF4444; font-size: 12px; font-weight: 900;">🚨 कृपया BDG गेम का सही लाइव पीरियड नंबर डालें!</span>
                         </div>
                         <div class="timer-box-large">⏰ {timer_str}</div>
                     </div>
@@ -522,7 +524,7 @@ else:
                     unsafe_allow_html=True,
                 )
                 st.markdown(
-                    '<div class="wait-warning-banner"><span class="blinking-red-light"></span>🛑 WAITING: ENTER LAST 5 DIGITS<span class="blinking-red-light" style="margin-left: 6px; margin-right: 0;"></span></div>',
+                    '<div class="wait-warning-banner"><span class="blinking-red-light"></span>🛑 WAITING: ENTER VALID LIVE PERIOD NUMBER<span class="blinking-red-light" style="margin-left: 6px; margin-right: 0;"></span></div>',
                     unsafe_allow_html=True,
                 )
                 st.markdown("</div>", unsafe_allow_html=True)
@@ -679,7 +681,7 @@ else:
                         """
                         <div class="super-banner-big" style="animation: none; border-color: #FF8800;">
                             🔥 ZIG-ZAG LINE MATCHED : 
-                            <span style="background: #000000; color: #FFB700; padding: 2px 10px; border-radius: 4px; border: 1px solid #FFB700;">BIG</span> 🎯
+                            <span style="background: #000000; color: #FFB700; padding: 2px 10px; border-radius: 4px; border: 1px solid #FF8800;">BIG</span> 🎯
                         </div>
                     """,
                         unsafe_allow_html=True,
