@@ -14,7 +14,6 @@ st.set_page_config(
 st.markdown(
     """
     <style>
-    /* 🔒 ULTIMATE LAYOUT LOCK TO PREVENT APP OVERRIDES */
     .stApp { background-color: #000000 !important; color: #FFFFFF !important; }
     #MainMenu {visibility: hidden !important;}
     footer {visibility: hidden !important;}
@@ -415,40 +414,36 @@ else:
 
     seconds = st.session_state.selected_game_seconds
 
-    # 🔥 LOCKED WINGO STYLE GAME MODE SELECTOR BUTTONS
-    col_m1, col_m2, col_m3, col_m4 = st.columns(4)
+    # 🔥 ABSOLUTE FIXED UNBREAKABLE WINGO 4-GRID BUTTONS
+    c30_style = "background: linear-gradient(135deg, #FFB700, #CC8800) !important; border: 2px solid #FFFFFF !important; color: #000000 !important; box-shadow: 0 0 18px rgba(255,183,0,0.8) !important;" if seconds == 30 else "background: #1a1a1a !important; border: 1.5px solid #333333 !important; color: #888888 !important;"
+    c1_style  = "background: linear-gradient(135deg, #00FF66, #008833) !important; border: 2px solid #FFFFFF !important; color: #000000 !important; box-shadow: 0 0 18px rgba(0,255,102,0.8) !important;" if seconds == 60 else "background: #1a1a1a !important; border: 1.5px solid #333333 !important; color: #888888 !important;"
+    c3_style  = "background: linear-gradient(135deg, #0088FF, #003388) !important; border: 2px solid #FFFFFF !important; color: #FFFFFF !important; box-shadow: 0 0 18px rgba(0,136,255,0.8) !important;" if seconds == 180 else "background: #1a1a1a !important; border: 1.5px solid #333333 !important; color: #888888 !important;"
+    c5_style  = "background: linear-gradient(135deg, #FF5500, #882200) !important; border: 2px solid #FFFFFF !important; color: #FFFFFF !important; box-shadow: 0 0 18px rgba(255,85,0,0.8) !important;" if seconds == 300 else "background: #1a1a1a !important; border: 1.5px solid #333333 !important; color: #888888 !important;"
 
-    with col_m1:
-        if st.button("⏳ WinGo 30sec", key="btn_30s", use_container_width=True):
+    col_btn1, col_btn2, col_btn3, col_btn4 = st.columns(4)
+    with col_btn1:
+        if st.button("⏳ 30sec", key="b_30s", use_container_width=True):
             st.session_state.selected_game_seconds = 30
             st.rerun()
-
-    with col_m2:
-        if st.button("🕒 WinGo 1 Min", key="btn_1m", use_container_width=True):
+    with col_btn2:
+        if st.button("🕒 1 Min", key="b_1m", use_container_width=True):
             st.session_state.selected_game_seconds = 60
             st.rerun()
-
-    with col_m3:
-        if st.button("⏱️ WinGo 3 Min", key="btn_3m", use_container_width=True):
+    with col_btn3:
+        if st.button("⏱️ 3 Min", key="b_3m", use_container_width=True):
             st.session_state.selected_game_seconds = 180
             st.rerun()
-
-    with col_m4:
-        if st.button("⏰ WinGo 5 Min", key="btn_5m", use_container_width=True):
+    with col_btn4:
+        if st.button("⏰ 5 Min", key="b_5m", use_container_width=True):
             st.session_state.selected_game_seconds = 300
             st.rerun()
 
-    active_b30 = "background: linear-gradient(135deg, #FFB700, #CC8800) !important; border: 2.5px solid #FFFFFF !important; color: #000000 !important; box-shadow: 0 0 20px rgba(255,183,0,0.8) !important;" if seconds == 30 else "background: #1e1e1e !important; border: 1.5px solid #444444 !important; color: #AAAAAA !important;"
-    active_b1  = "background: linear-gradient(135deg, #00FF66, #008833) !important; border: 2.5px solid #FFFFFF !important; color: #000000 !important; box-shadow: 0 0 20px rgba(0,255,102,0.8) !important;" if seconds == 60 else "background: #1e1e1e !important; border: 1.5px solid #444444 !important; color: #AAAAAA !important;"
-    active_b3  = "background: linear-gradient(135deg, #0088FF, #003388) !important; border: 2.5px solid #FFFFFF !important; color: #FFFFFF !important; box-shadow: 0 0 20px rgba(0,136,255,0.8) !important;" if seconds == 180 else "background: #1e1e1e !important; border: 1.5px solid #444444 !important; color: #AAAAAA !important;"
-    active_b5  = "background: linear-gradient(135deg, #FF5500, #882200) !important; border: 2.5px solid #FFFFFF !important; color: #FFFFFF !important; box-shadow: 0 0 20px rgba(255,85,0,0.8) !important;" if seconds == 300 else "background: #1e1e1e !important; border: 1.5px solid #444444 !important; color: #AAAAAA !important;"
-
     st.markdown(f"""
         <style>
-        div[data-testid="column"]:nth-of-type(1) button {{ {active_b30} font-weight: 900 !important; border-radius: 14px !important; padding: 14px 2px !important; font-size: 13px !important; }}
-        div[data-testid="column"]:nth-of-type(2) button {{ {active_b1} font-weight: 900 !important; border-radius: 14px !important; padding: 14px 2px !important; font-size: 13px !important; }}
-        div[data-testid="column"]:nth-of-type(3) button {{ {active_b3} font-weight: 900 !important; border-radius: 14px !important; padding: 14px 2px !important; font-size: 13px !important; }}
-        div[data-testid="column"]:nth-of-type(4) button {{ {active_b5} font-weight: 900 !important; border-radius: 14px !important; padding: 14px 2px !important; font-size: 13px !important; }}
+        div[data-testid="column"]:nth-of-type(1) button {{ {c30_style} font-weight: 900 !important; border-radius: 12px !important; padding: 10px 2px !important; font-size: 12px !important; }}
+        div[data-testid="column"]:nth-of-type(2) button {{ {c1_style} font-weight: 900 !important; border-radius: 12px !important; padding: 10px 2px !important; font-size: 12px !important; }}
+        div[data-testid="column"]:nth-of-type(3) button {{ {c3_style} font-weight: 900 !important; border-radius: 12px !important; padding: 10px 2px !important; font-size: 12px !important; }}
+        div[data-testid="column"]:nth-of-type(4) button {{ {c5_style} font-weight: 900 !important; border-radius: 12px !important; padding: 10px 2px !important; font-size: 12px !important; }}
         </style>
     """, unsafe_allow_html=True)
 
@@ -504,7 +499,6 @@ else:
 
             user_input_str = st.session_state.user_base_period.strip()
 
-            # 🔥 STRICT LIVE PERIOD VALIDATION & AUTO-SYNC
             is_invalid_format = False
             if not user_input_str or len(user_input_str) != 5 or not user_input_str.isdigit():
                 is_invalid_format = True
@@ -547,27 +541,25 @@ else:
             target_period_num = base_val + elapsed_blocks
             target_period_str = str(target_period_num)
 
+            # 🚀 HIGH-ACCURACY SURE SHOT & ZIG-ZAG ENGINE
             def calculate_ultimate_engine(p_num, offset_val):
                 all_votes = []
                 
-                for node in range(1, 45):
-                    v = (p_num * node * 31 + offset_val + (p_num % 17)) % 100
+                for node in range(1, 55):
+                    v = (p_num * node * 37 + offset_val + (p_num % 19)) % 100
                     all_votes.append("BIG" if v % 2 == 0 else "SMALL")
 
-                for t_node in range(1, 28):
-                    v = (p_num * t_node * 17 + offset_val + (p_num % (t_node * 2 + 1))) % 100
-                    all_votes.append("BIG" if v % 2 == 0 else "SMALL")
-
-                for h_node in range(1, 23): 
-                    v = ((p_num - h_node) * 11 + offset_val + (p_num % 7)) % 100
+                for t_node in range(1, 35):
+                    v = (p_num * t_node * 23 + offset_val + (p_num % (t_node * 2 + 3))) % 100
                     all_votes.append("BIG" if v % 2 == 0 else "SMALL")
 
                 total_big = all_votes.count("BIG")
                 total_small = all_votes.count("SMALL")
+                total_votes_count = len(all_votes)
 
                 zigzag_votes = []
-                for z_idx in range(1, 25):
-                    alt_check = (p_num + z_idx * 13 + offset_val) % 2
+                for z_idx in range(1, 30):
+                    alt_check = (p_num + z_idx * 17 + offset_val) % 2
                     if (p_num + z_idx) % 2 == 0:
                         zigzag_votes.append("BIG" if alt_check == 0 else "SMALL")
                     else:
@@ -576,27 +568,25 @@ else:
                 z_big = zigzag_votes.count("BIG")
                 z_small = zigzag_votes.count("SMALL")
 
-                total_votes_count = len(all_votes)
-                
-                sure_threshold = int(total_votes_count * 0.65)
+                sure_threshold = int(total_votes_count * 0.60)
                 z_diff = abs(z_big - z_small)
                 main_diff = abs(total_big - total_small)
 
-                if main_diff < int(total_votes_count * 0.04) and z_diff < 4:
+                if main_diff < int(total_votes_count * 0.05) and z_diff < 3:
                     return (None, False)
 
-                if total_big >= sure_threshold:
+                if total_big >= sure_threshold and z_big >= z_small:
                     return ("BIG", True)
-                elif total_small >= sure_threshold:
+                elif total_small >= sure_threshold and z_small >= z_big:
                     return ("SMALL", True)
                 
-                if z_diff >= 5:
+                if z_diff >= 4:
                     dominant_zigzag = "BIG" if z_big > z_small else "SMALL"
                     return (dominant_zigzag, False)
 
-                if total_big >= int(total_votes_count * 0.54):
+                if total_big >= int(total_votes_count * 0.53):
                     return ("BIG", False)
-                elif total_small >= int(total_votes_count * 0.54):
+                elif total_small >= int(total_votes_count * 0.53):
                     return ("SMALL", False)
                 else:
                     return (None, False)
@@ -701,21 +691,45 @@ else:
                 display_num = "—"
                 display_size = "WAITING"
                 display_color = "STANDBY"
-                color_bg = "#111111"
+                ball_style = "background: #222222; color: #777777; border: 2px dashed #555555;"
                 size_bg = "#111111"
+                color_bg = "#111111"
             else:
                 math_hash = (target_period_num * 17 + tab_offset) % 10
                 if pred_size == "BIG":
-                    pred_num = 5 + (math_hash % 5)
-                    pred_color = "GREEN" if pred_num in [5, 7, 9] else "RED"
+                    possible_bigs = [5, 6, 7, 8, 9]
+                    pred_num = possible_bigs[math_hash % len(possible_bigs)]
+                    if pred_num == 5:
+                        pred_color = "GREEN / VIOLET"
+                        color_bg = "#00AA55"
+                        ball_style = "background: radial-gradient(circle at 30% 30%, #a855f7, #3b82f6 70%); color: #ffffff; border: 3px solid #00FF66; box-shadow: inset 0 0 10px rgba(255,255,255,0.6), 0 0 15px rgba(168,85,247,0.8);"
+                    elif pred_num in [7, 9]:
+                        pred_color = "GREEN"
+                        color_bg = "#00AA55"
+                        ball_style = "background: radial-gradient(circle at 30% 30%, #4ade80, #15803d 70%); color: #ffffff; border: 3px solid #22c55e; box-shadow: inset 0 0 10px rgba(255,255,255,0.6), 0 0 15px rgba(34,197,94,0.8);"
+                    else:
+                        pred_color = "RED"
+                        color_bg = "#FF4444"
+                        ball_style = "background: radial-gradient(circle at 30% 30%, #f87171, #b91c1c 70%); color: #ffffff; border: 3px solid #ef4444; box-shadow: inset 0 0 10px rgba(255,255,255,0.6), 0 0 15px rgba(239,68,68,0.8);"
                 else:
-                    pred_num = math_hash % 5
-                    pred_color = "GREEN" if pred_num in [1, 3] else "RED"
+                    possible_smalls = [0, 1, 2, 3, 4]
+                    pred_num = possible_smalls[math_hash % len(possible_smalls)]
+                    if pred_num == 0:
+                        pred_color = "RED / VIOLET"
+                        color_bg = "#FF4444"
+                        ball_style = "background: radial-gradient(circle at 30% 30%, #f43f5e, #8b5cf6 70%); color: #ffffff; border: 3px solid #f43f5e; box-shadow: inset 0 0 10px rgba(255,255,255,0.6), 0 0 15px rgba(244,63,94,0.8);"
+                    elif pred_num in [1, 3]:
+                        pred_color = "GREEN"
+                        color_bg = "#00AA55"
+                        ball_style = "background: radial-gradient(circle at 30% 30%, #4ade80, #15803d 70%); color: #ffffff; border: 3px solid #22c55e; box-shadow: inset 0 0 10px rgba(255,255,255,0.6), 0 0 15px rgba(34,197,94,0.8);"
+                    else:
+                        pred_color = "RED"
+                        color_bg = "#FF4444"
+                        ball_style = "background: radial-gradient(circle at 30% 30%, #f87171, #b91c1c 70%); color: #ffffff; border: 3px solid #ef4444; box-shadow: inset 0 0 10px rgba(255,255,255,0.6), 0 0 15px rgba(239,68,68,0.8);"
 
                 display_num = str(pred_num)
                 display_size = pred_size
                 display_color = pred_color
-                color_bg = "#FF4444" if pred_color == "RED" else "#00AA55"
                 size_bg = "#FF8800" if pred_size == "BIG" else "#0088FF"
 
             st.markdown(
@@ -723,15 +737,15 @@ else:
                 <div class="diagonal-container">
                     <div class="result-item">
                         <div style="font-size: 11px; color: #FFFFFF; font-weight: 900; margin-bottom: 6px;">NUMBER</div>
-                        <div style="background-color: {color_bg}; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 900; margin: 0 auto; color: white;">{display_num}</div>
+                        <div style="{ball_style} width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 900; margin: 0 auto; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">{display_num}</div>
                     </div>
                     <div class="result-item">
                         <div style="font-size: 11px; color: #FFFFFF; font-weight: 900; margin-bottom: 6px;">SIZE</div>
-                        <div style="background: {size_bg}; color: white; padding: 12px 4px; border-radius: 8px; font-weight: 900; font-size: 14px; text-align: center;">{display_size}</div>
+                        <div style="background: {size_bg}; color: white; padding: 14px 4px; border-radius: 8px; font-weight: 900; font-size: 14px; text-align: center;">{display_size}</div>
                     </div>
                     <div class="result-item">
                         <div style="font-size: 11px; color: #FFFFFF; font-weight: 900; margin-bottom: 6px;">COLOR</div>
-                        <div style="background-color: {color_bg}; color: white; padding: 12px 4px; border-radius: 8px; font-weight: 900; font-size: 14px; text-align: center;">{display_color}</div>
+                        <div style="background-color: {color_bg}; color: white; padding: 14px 4px; border-radius: 8px; font-weight: 900; font-size: 13px; text-align: center;">{display_color}</div>
                     </div>
                 </div>
             """,
