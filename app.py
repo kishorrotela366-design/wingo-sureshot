@@ -134,6 +134,23 @@ st.markdown(
 
 DATA_FILE = "bdg_app_data.json"
 
+def parse_expiry_date(exp_val):
+    if isinstance(exp_val, datetime):
+        return exp_val
+    if not exp_val:
+        return datetime.now() + timedelta(days=15)
+    
+    if isinstance(exp_val, str):
+        try:
+            cleaned_str = exp_val.replace("Z", "+00:00")
+            return datetime.fromisoformat(cleaned_str)
+        except Exception:
+            try:
+                return datetime.strptime(exp_val[:19], "%Y-%m-%d %H:%M:%S")
+            except Exception:
+                pass
+    return datetime.now() + timedelta(days=15)
+
 def load_shared_data():
     if os.path.exists(DATA_FILE):
         try:
@@ -141,18 +158,9 @@ def load_shared_data():
                 data = json.load(f)
                 for mob, val in data.get("utr_requests", {}).items():
                     if "expiry" in val:
-                        exp_val = val["expiry"]
-                        if isinstance(exp_val, str):
-                            try:
-                                cleaned_str = exp_val.replace("Z", "+00:00")
-                                val["expiry"] = datetime.fromisoformat(cleaned_str)
-                            except:
-                                try:
-                                    val["expiry"] = datetime.strptime(exp_val[:19], "%Y-%m-%d %H:%M:%S")
-                                except:
-                                    pass
+                        val["expiry"] = parse_expiry_date(val["expiry"])
                 return data
-        except:
+        except Exception:
             pass
     return {"utr_requests": {}, "used_utrs_list": []}
 
@@ -241,16 +249,7 @@ if not st.session_state.authenticated:
         elif clean_l_mob in st.session_state.utr_requests:
             user_data = st.session_state.utr_requests[clean_l_mob]
             if user_data["password"] == login_pass:
-                exp_time = user_data["expiry"]
-                if isinstance(exp_time, str):
-                    try:
-                        cleaned_str = exp_time.replace("Z", "+00:00")
-                        exp_time = datetime.fromisoformat(cleaned_str)
-                    except:
-                        try:
-                            exp_time = datetime.strptime(exp_time[:19], "%Y-%m-%d %H:%M:%S")
-                        except:
-                            exp_time = datetime.now() + timedelta(days=15)
+                exp_time = parse_expiry_date(user_data["expiry"])
 
                 if datetime.now() < exp_time:
                     if user_data["status"] == "APPROVED":
@@ -415,6 +414,7 @@ else:
 
     seconds = st.session_state.selected_game_seconds
 
+    # ⚡ COMPACT SINGLE-LINE MODE SELECTOR ROW (Matched with result items container style)
     col_m1, col_m2, col_m3, col_m4 = st.columns(4)
 
     with col_m1:
@@ -437,17 +437,17 @@ else:
             st.session_state.selected_game_seconds = 300
             st.rerun()
 
-    active_b30 = "background: linear-gradient(135deg, #FF4444, #880000) !important; border: 2.5px solid #FFD700 !important; color: #FFFFFF !important; box-shadow: 0 0 15px rgba(255,68,68,0.6);" if seconds == 30 else "background: #111111 !important; border: 1px solid #333333 !important; color: #888888 !important;"
-    active_b1  = "background: linear-gradient(135deg, #00AA55, #003311) !important; border: 2.5px solid #00FF66 !important; color: #FFFFFF !important; box-shadow: 0 0 15px rgba(0,255,102,0.6);" if seconds == 60 else "background: #111111 !important; border: 1px solid #333333 !important; color: #888888 !important;"
-    active_b3  = "background: linear-gradient(135deg, #0088FF, #002266) !important; border: 2.5px solid #00FFFF !important; color: #FFFFFF !important; box-shadow: 0 0 15px rgba(0,136,255,0.6);" if seconds == 180 else "background: #111111 !important; border: 1px solid #333333 !important; color: #888888 !important;"
-    active_b5  = "background: linear-gradient(135deg, #FF8800, #552200) !important; border: 2.5px solid #FFB700 !important; color: #FFFFFF !important; box-shadow: 0 0 15px rgba(255,136,0,0.6);" if seconds == 300 else "background: #111111 !important; border: 1px solid #333333 !important; color: #888888 !important;"
+    active_b30 = "background: linear-gradient(135deg, #FF4444, #880000) !important; border: 2.5px solid #FFD700 !important; color: #FFFFFF !important; box-shadow: 0 0 15px rgba(255,68,68,0.6);" if seconds == 30 else "background: #130d24 !important; border: 2.5px solid #3b286b !important; color: #CCCCCC !important;"
+    active_b1  = "background: linear-gradient(135deg, #00AA55, #003311) !important; border: 2.5px solid #00FF66 !important; color: #FFFFFF !important; box-shadow: 0 0 15px rgba(0,255,102,0.6);" if seconds == 60 else "background: #130d24 !important; border: 2.5px solid #3b286b !important; color: #CCCCCC !important;"
+    active_b3  = "background: linear-gradient(135deg, #0088FF, #002266) !important; border: 2.5px solid #00FFFF !important; color: #FFFFFF !important; box-shadow: 0 0 15px rgba(0,136,255,0.6);" if seconds == 180 else "background: #130d24 !important; border: 2.5px solid #3b286b !important; color: #CCCCCC !important;"
+    active_b5  = "background: linear-gradient(135deg, #FF8800, #552200) !important; border: 2.5px solid #FFB700 !important; color: #FFFFFF !important; box-shadow: 0 0 15px rgba(255,136,0,0.6);" if seconds == 300 else "background: #130d24 !important; border: 2.5px solid #3b286b !important; color: #CCCCCC !important;"
 
     st.markdown(f"""
         <style>
-        div[data-testid="column"]:nth-of-type(1) button {{ {active_b30} font-weight: 900; border-radius: 8px; }}
-        div[data-testid="column"]:nth-of-type(2) button {{ {active_b1} font-weight: 900; border-radius: 8px; }}
-        div[data-testid="column"]:nth-of-type(3) button {{ {active_b3} font-weight: 900; border-radius: 8px; }}
-        div[data-testid="column"]:nth-of-type(4) button {{ {active_b5} font-weight: 900; border-radius: 8px; }}
+        div[data-testid="column"]:nth-of-type(1) button {{ {active_b30} font-weight: 900; border-radius: 12px; padding: 12px 2px; font-size: 13px; }}
+        div[data-testid="column"]:nth-of-type(2) button {{ {active_b1} font-weight: 900; border-radius: 12px; padding: 12px 2px; font-size: 13px; }}
+        div[data-testid="column"]:nth-of-type(3) button {{ {active_b3} font-weight: 900; border-radius: 12px; padding: 12px 2px; font-size: 13px; }}
+        div[data-testid="column"]:nth-of-type(4) button {{ {active_b5} font-weight: 900; border-radius: 12px; padding: 12px 2px; font-size: 13px; }}
         </style>
     """, unsafe_allow_html=True)
 
@@ -548,15 +548,15 @@ else:
             def calculate_ultimate_engine(p_num, offset_val):
                 all_votes = []
                 
-                for node in range(1, 43):
+                for node in range(1, 45):
                     v = (p_num * node * 31 + offset_val + (p_num % 17)) % 100
                     all_votes.append("BIG" if v % 2 == 0 else "SMALL")
 
-                for t_node in range(1, 26):
+                for t_node in range(1, 28):
                     v = (p_num * t_node * 17 + offset_val + (p_num % (t_node * 2 + 1))) % 100
                     all_votes.append("BIG" if v % 2 == 0 else "SMALL")
 
-                for h_node in range(1, 21): 
+                for h_node in range(1, 23): 
                     v = ((p_num - h_node) * 11 + offset_val + (p_num % 7)) % 100
                     all_votes.append("BIG" if v % 2 == 0 else "SMALL")
 
@@ -564,7 +564,7 @@ else:
                 total_small = all_votes.count("SMALL")
 
                 zigzag_votes = []
-                for z_idx in range(1, 22):
+                for z_idx in range(1, 25):
                     alt_check = (p_num + z_idx * 13 + offset_val) % 2
                     if (p_num + z_idx) % 2 == 0:
                         zigzag_votes.append("BIG" if alt_check == 0 else "SMALL")
@@ -577,22 +577,24 @@ else:
                 total_votes_count = len(all_votes)
                 
                 sure_threshold = int(total_votes_count * 0.65)
-                line_threshold = int(total_votes_count * 0.52)
-                diff = abs(total_big - total_small)
+                z_diff = abs(z_big - z_small)
+                main_diff = abs(total_big - total_small)
 
-                if diff < int(total_votes_count * 0.04):
+                if main_diff < int(total_votes_count * 0.04) and z_diff < 4:
                     return (None, False)
 
                 if total_big >= sure_threshold:
                     return ("BIG", True)
                 elif total_small >= sure_threshold:
                     return ("SMALL", True)
-                elif abs(z_big - z_small) >= 5:
+                
+                if z_diff >= 5:
                     dominant_zigzag = "BIG" if z_big > z_small else "SMALL"
                     return (dominant_zigzag, False)
-                elif total_big >= line_threshold:
+
+                if total_big >= int(total_votes_count * 0.54):
                     return ("BIG", False)
-                elif total_small >= line_threshold:
+                elif total_small >= int(total_votes_count * 0.54):
                     return ("SMALL", False)
                 else:
                     return (None, False)
@@ -642,7 +644,7 @@ else:
                 )
             elif pred_size is None:
                 st.markdown(
-                    '<div class="wait-warning-banner"><span class="blinking-red-light"></span>🛑 WAITING: NO LINE MATCHED / MARKET UNLOCKED (लाइन नहीं पकड़ी - प्रतीक्षा करें)</div>',
+                    '<div class="wait-warning-banner"><span class="blinking-red-light"></span>🛑 WAITING: MARKET FLUCTUATING (लाइन साफ नहीं है - सुरक्षित प्रतीक्षा करें)</div>',
                     unsafe_allow_html=True,
                 )
             elif close_phase:
