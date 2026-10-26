@@ -414,36 +414,32 @@ else:
 
     seconds = st.session_state.selected_game_seconds
 
-    # 🔥 ABSOLUTE FIXED UNBREAKABLE WINGO 4-GRID BUTTONS
+    # 🔥 100% BULLETPROOF HORIZONTAL CONTAINER (FORCED SIDE-BY-SIDE BUTTONS)
     c30_style = "background: linear-gradient(135deg, #FFB700, #CC8800) !important; border: 2px solid #FFFFFF !important; color: #000000 !important; box-shadow: 0 0 18px rgba(255,183,0,0.8) !important;" if seconds == 30 else "background: #1a1a1a !important; border: 1.5px solid #333333 !important; color: #888888 !important;"
     c1_style  = "background: linear-gradient(135deg, #00FF66, #008833) !important; border: 2px solid #FFFFFF !important; color: #000000 !important; box-shadow: 0 0 18px rgba(0,255,102,0.8) !important;" if seconds == 60 else "background: #1a1a1a !important; border: 1.5px solid #333333 !important; color: #888888 !important;"
     c3_style  = "background: linear-gradient(135deg, #0088FF, #003388) !important; border: 2px solid #FFFFFF !important; color: #FFFFFF !important; box-shadow: 0 0 18px rgba(0,136,255,0.8) !important;" if seconds == 180 else "background: #1a1a1a !important; border: 1.5px solid #333333 !important; color: #888888 !important;"
     c5_style  = "background: linear-gradient(135deg, #FF5500, #882200) !important; border: 2px solid #FFFFFF !important; color: #FFFFFF !important; box-shadow: 0 0 18px rgba(255,85,0,0.8) !important;" if seconds == 300 else "background: #1a1a1a !important; border: 1.5px solid #333333 !important; color: #888888 !important;"
 
-    col_btn1, col_btn2, col_btn3, col_btn4 = st.columns(4)
-    with col_btn1:
+    with st.container(horizontal=True, gap="small"):
         if st.button("⏳ 30sec", key="b_30s", use_container_width=True):
             st.session_state.selected_game_seconds = 30
             st.rerun()
-    with col_btn2:
         if st.button("🕒 1 Min", key="b_1m", use_container_width=True):
             st.session_state.selected_game_seconds = 60
             st.rerun()
-    with col_btn3:
         if st.button("⏱️ 3 Min", key="b_3m", use_container_width=True):
             st.session_state.selected_game_seconds = 180
             st.rerun()
-    with col_btn4:
         if st.button("⏰ 5 Min", key="b_5m", use_container_width=True):
             st.session_state.selected_game_seconds = 300
             st.rerun()
 
     st.markdown(f"""
         <style>
-        div[data-testid="column"]:nth-of-type(1) button {{ {c30_style} font-weight: 900 !important; border-radius: 12px !important; padding: 10px 2px !important; font-size: 12px !important; }}
-        div[data-testid="column"]:nth-of-type(2) button {{ {c1_style} font-weight: 900 !important; border-radius: 12px !important; padding: 10px 2px !important; font-size: 12px !important; }}
-        div[data-testid="column"]:nth-of-type(3) button {{ {c3_style} font-weight: 900 !important; border-radius: 12px !important; padding: 10px 2px !important; font-size: 12px !important; }}
-        div[data-testid="column"]:nth-of-type(4) button {{ {c5_style} font-weight: 900 !important; border-radius: 12px !important; padding: 10px 2px !important; font-size: 12px !important; }}
+        div[data-testid="stHorizontalBlock"] > div:nth-child(1) button {{ {c30_style} font-weight: 900 !important; border-radius: 10px !important; padding: 10px 2px !important; font-size: 12px !important; }}
+        div[data-testid="stHorizontalBlock"] > div:nth-child(2) button {{ {c1_style} font-weight: 900 !important; border-radius: 10px !important; padding: 10px 2px !important; font-size: 12px !important; }}
+        div[data-testid="stHorizontalBlock"] > div:nth-child(3) button {{ {c3_style} font-weight: 900 !important; border-radius: 10px !important; padding: 10px 2px !important; font-size: 12px !important; }}
+        div[data-testid="stHorizontalBlock"] > div:nth-child(4) button {{ {c5_style} font-weight: 900 !important; border-radius: 10px !important; padding: 10px 2px !important; font-size: 12px !important; }}
         </style>
     """, unsafe_allow_html=True)
 
@@ -541,7 +537,6 @@ else:
             target_period_num = base_val + elapsed_blocks
             target_period_str = str(target_period_num)
 
-            # 🚀 HIGH-ACCURACY SURE SHOT & ZIG-ZAG ENGINE
             def calculate_ultimate_engine(p_num, offset_val):
                 all_votes = []
                 
@@ -702,30 +697,31 @@ else:
                     if pred_num == 5:
                         pred_color = "GREEN / VIOLET"
                         color_bg = "#00AA55"
-                        ball_style = "background: radial-gradient(circle at 30% 30%, #a855f7, #3b82f6 70%); color: #ffffff; border: 3px solid #00FF66; box-shadow: inset 0 0 10px rgba(255,255,255,0.6), 0 0 15px rgba(168,85,247,0.8);"
+                        # 3D Ball style with exact BDG game ball look and side dot highlights
+                        ball_style = "background: radial-gradient(circle at 35% 35%, #c084fc 0%, #9333ea 50%, #581c87 100%); color: #ffffff; border: 3px solid #00FF66; box-shadow: inset -4px -4px 10px rgba(0,0,0,0.6), inset 4px 4px 10px rgba(255,255,255,0.4), 0 0 18px rgba(147,51,234,0.9);"
                     elif pred_num in [7, 9]:
                         pred_color = "GREEN"
                         color_bg = "#00AA55"
-                        ball_style = "background: radial-gradient(circle at 30% 30%, #4ade80, #15803d 70%); color: #ffffff; border: 3px solid #22c55e; box-shadow: inset 0 0 10px rgba(255,255,255,0.6), 0 0 15px rgba(34,197,94,0.8);"
+                        ball_style = "background: radial-gradient(circle at 35% 35%, #4ade80 0%, #16a34a 50%, #14532d 100%); color: #ffffff; border: 3px solid #22c55e; box-shadow: inset -4px -4px 10px rgba(0,0,0,0.6), inset 4px 4px 10px rgba(255,255,255,0.4), 0 0 18px rgba(34,197,94,0.9);"
                     else:
                         pred_color = "RED"
                         color_bg = "#FF4444"
-                        ball_style = "background: radial-gradient(circle at 30% 30%, #f87171, #b91c1c 70%); color: #ffffff; border: 3px solid #ef4444; box-shadow: inset 0 0 10px rgba(255,255,255,0.6), 0 0 15px rgba(239,68,68,0.8);"
+                        ball_style = "background: radial-gradient(circle at 35% 35%, #f87171 0%, #dc2626 50%, #7f1d1d 100%); color: #ffffff; border: 3px solid #ef4444; box-shadow: inset -4px -4px 10px rgba(0,0,0,0.6), inset 4px 4px 10px rgba(255,255,255,0.4), 0 0 18px rgba(239,68,68,0.9);"
                 else:
                     possible_smalls = [0, 1, 2, 3, 4]
                     pred_num = possible_smalls[math_hash % len(possible_smalls)]
                     if pred_num == 0:
                         pred_color = "RED / VIOLET"
                         color_bg = "#FF4444"
-                        ball_style = "background: radial-gradient(circle at 30% 30%, #f43f5e, #8b5cf6 70%); color: #ffffff; border: 3px solid #f43f5e; box-shadow: inset 0 0 10px rgba(255,255,255,0.6), 0 0 15px rgba(244,63,94,0.8);"
+                        ball_style = "background: radial-gradient(circle at 35% 35%, #f43f5e 0%, #8b5cf6 50%, #4c1d95 100%); color: #ffffff; border: 3px solid #f43f5e; box-shadow: inset -4px -4px 10px rgba(0,0,0,0.6), inset 4px 4px 10px rgba(255,255,255,0.4), 0 0 18px rgba(244,63,94,0.9);"
                     elif pred_num in [1, 3]:
                         pred_color = "GREEN"
                         color_bg = "#00AA55"
-                        ball_style = "background: radial-gradient(circle at 30% 30%, #4ade80, #15803d 70%); color: #ffffff; border: 3px solid #22c55e; box-shadow: inset 0 0 10px rgba(255,255,255,0.6), 0 0 15px rgba(34,197,94,0.8);"
+                        ball_style = "background: radial-gradient(circle at 35% 35%, #4ade80 0%, #16a34a 50%, #14532d 100%); color: #ffffff; border: 3px solid #22c55e; box-shadow: inset -4px -4px 10px rgba(0,0,0,0.6), inset 4px 4px 10px rgba(255,255,255,0.4), 0 0 18px rgba(34,197,94,0.9);"
                     else:
                         pred_color = "RED"
                         color_bg = "#FF4444"
-                        ball_style = "background: radial-gradient(circle at 30% 30%, #f87171, #b91c1c 70%); color: #ffffff; border: 3px solid #ef4444; box-shadow: inset 0 0 10px rgba(255,255,255,0.6), 0 0 15px rgba(239,68,68,0.8);"
+                        ball_style = "background: radial-gradient(circle at 35% 35%, #f87171 0%, #dc2626 50%, #7f1d1d 100%); color: #ffffff; border: 3px solid #ef4444; box-shadow: inset -4px -4px 10px rgba(0,0,0,0.6), inset 4px 4px 10px rgba(255,255,255,0.4), 0 0 18px rgba(239,68,68,0.9);"
 
                 display_num = str(pred_num)
                 display_size = pred_size
@@ -737,7 +733,11 @@ else:
                 <div class="diagonal-container">
                     <div class="result-item">
                         <div style="font-size: 11px; color: #FFFFFF; font-weight: 900; margin-bottom: 6px;">NUMBER</div>
-                        <div style="{ball_style} width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 900; margin: 0 auto; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">{display_num}</div>
+                        <div style="{ball_style} width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 900; margin: 0 auto; text-shadow: 0 2px 5px rgba(0,0,0,0.9); position: relative;">
+                            {display_num}
+                            <span style="position: absolute; top: 8px; left: 10px; width: 8px; height: 8px; background: rgba(255,255,255,0.6); border-radius: 50%;"></span>
+                            <span style="position: absolute; bottom: 8px; right: 10px; width: 6px; height: 6px; background: rgba(255,255,255,0.4); border-radius: 50%;"></span>
+                        </div>
                     </div>
                     <div class="result-item">
                         <div style="font-size: 11px; color: #FFFFFF; font-weight: 900; margin-bottom: 6px;">SIZE</div>
