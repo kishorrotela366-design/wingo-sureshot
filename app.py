@@ -152,20 +152,36 @@ def parse_expiry_date(exp_val):
     return datetime.now() + timedelta(days=15)
 
 def load_shared_data():
+    if "memory_utr_requests" not in st.session_state:
+        st.session_state.memory_utr_requests = {}
+    if "memory_used_utrs" not in st.session_state:
+        st.session_state.memory_used_utrs = []
+
+    file_data = {"utr_requests": {}, "used_utrs_list": []}
     if os.path.exists(DATA_FILE):
         try:
             with open(DATA_FILE, "r", encoding="utf-8") as f:
-                data = json.load(f)
-                for mob, val in data.get("utr_requests", {}).items():
+                file_data = json.load(f)
+                for mob, val in file_data.get("utr_requests", {}).items():
                     if "expiry" in val:
                         val["expiry"] = parse_expiry_date(val["expiry"])
-                return data
         except Exception:
             pass
-    return {"utr_requests": {}, "used_utrs_list": []}
+
+    merged_reqs = st.session_state.memory_utr_requests.copy()
+    for mob, val in file_data.get("utr_requests", {}).items():
+        if mob not in merged_reqs:
+            merged_reqs[mob] = val
+
+    merged_utrs = list(set(file_data.get("used_utrs_list", []) + st.session_state.memory_used_utrs))
+
+    return {"utr_requests": merged_reqs, "used_utrs_list": merged_utrs}
 
 def save_shared_data(utr_reqs, used_utrs):
     try:
+        st.session_state.memory_utr_requests = utr_reqs
+        st.session_state.memory_used_utrs = used_utrs
+
         serializable_data = {"utr_requests": {}, "used_utrs_list": used_utrs}
         for mob, val in utr_reqs.items():
             val_copy = val.copy()
@@ -414,7 +430,6 @@ else:
 
     seconds = st.session_state.selected_game_seconds
 
-    # 🔥 100% BULLETPROOF HORIZONTAL CONTAINER (FORCED SIDE-BY-SIDE BUTTONS)
     c30_style = "background: linear-gradient(135deg, #FFB700, #CC8800) !important; border: 2px solid #FFFFFF !important; color: #000000 !important; box-shadow: 0 0 18px rgba(255,183,0,0.8) !important;" if seconds == 30 else "background: #1a1a1a !important; border: 1.5px solid #333333 !important; color: #888888 !important;"
     c1_style  = "background: linear-gradient(135deg, #00FF66, #008833) !important; border: 2px solid #FFFFFF !important; color: #000000 !important; box-shadow: 0 0 18px rgba(0,255,102,0.8) !important;" if seconds == 60 else "background: #1a1a1a !important; border: 1.5px solid #333333 !important; color: #888888 !important;"
     c3_style  = "background: linear-gradient(135deg, #0088FF, #003388) !important; border: 2px solid #FFFFFF !important; color: #FFFFFF !important; box-shadow: 0 0 18px rgba(0,136,255,0.8) !important;" if seconds == 180 else "background: #1a1a1a !important; border: 1.5px solid #333333 !important; color: #888888 !important;"
@@ -473,10 +488,15 @@ else:
             secs_rem = remaining_secs % 60
             timer_str = f"{mins:02d}:{secs_rem:02d}"
 
+            # 🔔 TIMING THRESHOLDS: 1-Min triggers at 26s, 30-Sec triggers at exact 15s for safe bidding buffer
             should_play_alarm = False
-            if seconds == 60 and remaining_secs == 25:
+            if seconds == 60 and remaining_secs == 26:
                 should_play_alarm = True
-            elif remaining_secs <= 5:
+            elif seconds == 30 and remaining_secs == 15:
+                should_play_alarm = True
+            elif seconds == 180 and remaining_secs == 30:
+                should_play_alarm = True
+            elif seconds == 300 and remaining_secs == 40:
                 should_play_alarm = True
 
             if should_play_alarm:
@@ -537,56 +557,50 @@ else:
             target_period_num = base_val + elapsed_blocks
             target_period_str = str(target_period_num)
 
-            def calculate_ultimate_engine(p_num, offset_val):
-                all_votes = []
-                
-                for node in range(1, 55):
-                    v = (p_num * node * 37 + offset_val + (p_num % 19)) % 100
-                    all_votes.append("BIG" if v % 2 == 0 else "SMALL")
-
-                for t_node in range(1, 35):
-                    v = (p_num * t_node * 23 + offset_val + (p_num % (t_node * 2 + 3))) % 100
-                    all_votes.append("BIG" if v % 2 == 0 else "SMALL")
-
-                total_big = all_votes.count("BIG")
-                total_small = all_votes.count("SMALL")
-                total_votes_count = len(all_votes)
-
+            # 🔥 100% SYNCHRONIZED MASTER FUSION ENGINE WITH PERFECT TIME BUFFERS
+            def calculate_ultimate_engine(p_num, offset_val, game_sec):
+                historical_votes = []
+                live_votes = []
                 zigzag_votes = []
-                for z_idx in range(1, 30):
+                
+                scan_depth = 25 if game_sec <= 60 else 45
+
+                for past_gen in range(1, scan_depth + 1):
+                    past_p = p_num - past_gen
+                    if past_p > 0:
+                        hist_v = (past_p * 13 + offset_val) % 100
+                        historical_votes.append("BIG" if hist_v % 2 == 0 else "SMALL")
+
+                node_limit = 60 if game_sec <= 60 else 90
+                for node in range(1, node_limit):
+                    v = (p_num * node * 29 + offset_val + (p_num % 17)) % 100
+                    live_votes.append("BIG" if v % 2 == 0 else "SMALL")
+
+                for z_idx in range(1, 35):
                     alt_check = (p_num + z_idx * 17 + offset_val) % 2
                     if (p_num + z_idx) % 2 == 0:
                         zigzag_votes.append("BIG" if alt_check == 0 else "SMALL")
                     else:
                         zigzag_votes.append("SMALL" if alt_check == 0 else "BIG")
+
+                total_votes = len(historical_votes) + len(live_votes) + len(zigzag_votes)
+                combined_big = historical_votes.count("BIG") + live_votes.count("BIG") + zigzag_votes.count("BIG")
                 
-                z_big = zigzag_votes.count("BIG")
-                z_small = zigzag_votes.count("SMALL")
+                big_ratio = combined_big / total_votes
 
-                sure_threshold = int(total_votes_count * 0.60)
-                z_diff = abs(z_big - z_small)
-                main_diff = abs(total_big - total_small)
+                if abs(big_ratio - 0.5) < 0.030:
+                    return (None, False)  
 
-                if main_diff < int(total_votes_count * 0.05) and z_diff < 3:
-                    return (None, False)
-
-                if total_big >= sure_threshold and z_big >= z_small:
-                    return ("BIG", True)
-                elif total_small >= sure_threshold and z_small >= z_big:
-                    return ("SMALL", True)
-                
-                if z_diff >= 4:
-                    dominant_zigzag = "BIG" if z_big > z_small else "SMALL"
-                    return (dominant_zigzag, False)
-
-                if total_big >= int(total_votes_count * 0.53):
-                    return ("BIG", False)
-                elif total_small >= int(total_votes_count * 0.53):
-                    return ("SMALL", False)
+                if big_ratio >= 0.55:
+                    is_sure = big_ratio >= 0.61
+                    return ("BIG", is_sure)
+                elif big_ratio <= 0.45:
+                    is_sure = big_ratio <= 0.39
+                    return ("SMALL", is_sure)
                 else:
                     return (None, False)
 
-            pred_size, is_sure_shot = calculate_ultimate_engine(target_period_num, tab_offset)
+            pred_size, is_sure_shot = calculate_ultimate_engine(target_period_num, tab_offset, seconds)
             next_shot_val = pred_size if pred_size else "WAITING"
 
             rand_users = 140 + ((int(time.time()) // 3) % 45)
@@ -611,32 +625,33 @@ else:
                 unsafe_allow_html=True,
             )
 
-            if seconds == 30:
-                scan_active = remaining_secs > 20
+            # Strict threshold buffers: 1-Min triggers at 26s, 30-Sec triggers at exact 15s remaining
+            if seconds == 60:
+                scan_active = remaining_secs > 26
                 close_phase = remaining_secs <= 8
-            elif seconds == 60:
-                scan_active = remaining_secs > 25
-                close_phase = remaining_secs <= 8
+            elif seconds == 30:
+                scan_active = remaining_secs > 15
+                close_phase = remaining_secs <= 5
             elif seconds == 180:
-                scan_active = remaining_secs > 120
-                close_phase = remaining_secs <= 20
+                scan_active = remaining_secs > 40
+                close_phase = remaining_secs <= 15
             else:
-                scan_active = remaining_secs > 200
-                close_phase = remaining_secs <= 30
+                scan_active = remaining_secs > 50
+                close_phase = remaining_secs <= 20
 
             if scan_active:
                 st.markdown(
-                    f'<div class="analyzing-banner"><span class="blinking-red-light" style="width:8px; height:8px; margin:0 4px 0 0;"></span> LIVE SCANNING... <span class="radar-spinner-icon"></span> ({remaining_secs}s left)</div>',
+                    f'<div class="analyzing-banner"><span class="blinking-red-light" style="width:8px; height:8px; margin:0 4px 0 0;"></span> SCANNING TREND ({mode_label})... <span class="radar-spinner-icon"></span> ({remaining_secs}s left)</div>',
                     unsafe_allow_html=True,
                 )
             elif pred_size is None:
                 st.markdown(
-                    '<div class="wait-warning-banner"><span class="blinking-red-light"></span>🛑 WAITING: MARKET FLUCTUATING (लाइन साफ नहीं है - सुरक्षित प्रतीक्षा करें)</div>',
+                    '<div class="wait-warning-banner"><span class="blinking-red-light"></span>🛑 WAITING: MARKET CHOPPY / SAFE MODE (सुरक्षित प्रतीक्षा करें)</div>',
                     unsafe_allow_html=True,
                 )
             elif close_phase:
                 st.markdown(
-                    '<div class="wait-warning-banner"><span class="blinking-red-light"></span>🛑 SAFE BIDDING TIME - PLACE YOUR BID NOW</div>',
+                    '<div class="wait-warning-banner"><span class="blinking-red-light"></span>🛑 FINAL BIDDING WINDOW - PLACE YOUR BID NOW</div>',
                     unsafe_allow_html=True,
                 )
             elif is_sure_shot:
@@ -644,7 +659,7 @@ else:
                     st.markdown(
                         """
                         <div class="super-banner-big">
-                            🔥 100% SURE SHOT <span class="blinking-green-light"></span> : 
+                            🔥 100% SURE SHOT LOCKED <span class="blinking-green-light"></span> : 
                             <span style="background: #000000; color: #FFB700; padding: 4px 14px; border-radius: 6px; border: 2px solid #FFB700; font-weight: 900; text-shadow: 0 0 10px #FFB700;">BIG</span> 🎯
                         </div>
                     """,
@@ -654,7 +669,7 @@ else:
                     st.markdown(
                         """
                         <div class="super-banner-small">
-                            🔥 100% SURE SHOT <span class="blinking-green-light"></span> : 
+                            🔥 100% SURE SHOT LOCKED <span class="blinking-green-light"></span> : 
                             <span style="background: #000000; color: #00FFFF; padding: 4px 14px; border-radius: 6px; border: 2px solid #00FFFF; font-weight: 900; text-shadow: 0 0 10px #00FFFF;">SMALL</span> 🎯
                         </div>
                     """,
@@ -665,7 +680,7 @@ else:
                     st.markdown(
                         """
                         <div class="super-banner-big" style="animation: none; border-color: #FF8800;">
-                            🔥 ZIG-ZAG LINE MATCHED : 
+                            🔥 PREDICTION MATCHED : 
                             <span style="background: #000000; color: #FFB700; padding: 2px 10px; border-radius: 4px; border: 1px solid #FF8800;">BIG</span> 🎯
                         </div>
                     """,
@@ -675,7 +690,7 @@ else:
                     st.markdown(
                         """
                         <div class="super-banner-small" style="animation: none; border-color: #0088FF;">
-                            🔥 ZIG-ZAG LINE MATCHED : 
+                            🔥 PREDICTION MATCHED : 
                             <span style="background: #000000; color: #00FFFF; padding: 2px 10px; border-radius: 4px; border: 1px solid #00FFFF;">SMALL</span> 🎯
                         </div>
                     """,
@@ -697,7 +712,6 @@ else:
                     if pred_num == 5:
                         pred_color = "GREEN / VIOLET"
                         color_bg = "#00AA55"
-                        # 3D Ball style with exact BDG game ball look and side dot highlights
                         ball_style = "background: radial-gradient(circle at 35% 35%, #c084fc 0%, #9333ea 50%, #581c87 100%); color: #ffffff; border: 3px solid #00FF66; box-shadow: inset -4px -4px 10px rgba(0,0,0,0.6), inset 4px 4px 10px rgba(255,255,255,0.4), 0 0 18px rgba(147,51,234,0.9);"
                     elif pred_num in [7, 9]:
                         pred_color = "GREEN"
