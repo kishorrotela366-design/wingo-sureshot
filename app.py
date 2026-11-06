@@ -5,7 +5,7 @@ import time
 import streamlit as st
 
 st.set_page_config(
-    page_title="VIP STREAK & SURE SHOT ULTIMATE PANEL",
+    page_title="VIP REAL COLOR SYNC PANEL",
     page_icon="🛡️",
     layout="centered",
     initial_sidebar_state="collapsed",
@@ -117,8 +117,8 @@ st.markdown(
     .main-card { background-color: #000000 !important; border: none !important; padding: 0px !important; margin-top: 4px !important; }
     .timer-box-large { color: #FF00FF !important; font-weight: 900 !important; font-size: 15px !important; text-shadow: 0 0 8px rgba(255,0,255,0.6) !important; display: flex !important; align-items: center !important; gap: 4px !important; }
     
-    .super-banner-small { border: 2.5px solid #00FFFF !important; padding: 14px !important; border-radius: 10px !important; text-align: center !important; font-size: 16px !important; font-weight: 900 !important; margin: 10px 0 !important; color: #00FFFF !important; text-transform: uppercase !important; animation: super-win-glow-small 0.8s infinite !important; letter-spacing: 1px !important; }
-    .super-banner-big { border: 2.5px solid #FFB700 !important; padding: 14px !important; border-radius: 10px !important; text-align: center !important; font-size: 16px !important; font-weight: 900 !important; margin: 10px 0 !important; color: #FFB700 !important; text-transform: uppercase !important; animation: super-win-glow-big 0.8s infinite !important; letter-spacing: 1px !important; }
+    .super-banner-small { border: 2.5px solid #00FFFF !important; padding: 14px !important; border-radius: 10px !important; text-align: center !important; font-size: 15px !important; font-weight: 900 !important; margin: 10px 0 !important; color: #00FFFF !important; text-transform: uppercase !important; animation: super-win-glow-small 0.8s infinite !important; letter-spacing: 0.5px !important; }
+    .super-banner-big { border: 2.5px solid #FFB700 !important; padding: 14px !important; border-radius: 10px !important; text-align: center !important; font-size: 15px !important; font-weight: 900 !important; margin: 10px 0 !important; color: #FFB700 !important; text-transform: uppercase !important; animation: super-win-glow-big 0.8s infinite !important; letter-spacing: 0.5px !important; }
     
     .analyzing-banner { border: 2.5px dashed #FF00FF !important; padding: 12px !important; border-radius: 10px !important; text-align: center !important; font-size: 14px !important; font-weight: 900 !important; margin: 8px 0 !important; animation: analyzing-glow 1s infinite !important; letter-spacing: 1px !important; background: #000000 !important; display: flex !important; align-items: center !important; justify-content: center !important; }
     .wait-warning-banner { border: 3px solid #FF0000 !important; padding: 12px !important; border-radius: 10px !important; text-align: center !important; font-size: 14px !important; font-weight: 900 !important; margin: 8px 0 !important; color: #FF4444 !important; text-transform: uppercase !important; animation: warning-glow 0.8s infinite !important; letter-spacing: 1px !important; background: #000000 !important; box-shadow: 0 0 25px rgba(255,0,0,0.4) !important; display: flex !important; align-items: center !important; justify-content: center !important; gap: 10px !important; }
@@ -127,6 +127,8 @@ st.markdown(
     .result-item { flex: 1 !important; text-align: center !important; background: #130d24 !important; border: 2.5px solid #3b286b !important; border-radius: 12px !important; padding: 12px 6px !important; box-shadow: 0 0 10px rgba(59,40,107,0.3) !important; }
     .auth-card { background: #0b071a !important; border: 2px solid #FFD700 !important; border-radius: 12px !important; padding: 16px !important; box-shadow: 0 0 15px rgba(255,215,0,0.2) !important; margin-top: 10px !important; }
     .admin-card { background: #110022 !important; border: 2px solid #00FF66 !important; border-radius: 12px !important; padding: 15px !important; margin-bottom: 15px !important; }
+    
+    .storage-badge { background: linear-gradient(135deg, #112200, #001100); border: 1.5px solid #00FF66; padding: 8px; border-radius: 8px; margin-bottom: 10px; text-align: center; box-shadow: 0 0 12px rgba(0,255,102,0.3); font-size: 12px; font-weight: 900; color: #00FF66; }
     </style>
 """,
     unsafe_allow_html=True,
@@ -152,11 +154,6 @@ def parse_expiry_date(exp_val):
     return datetime.now() + timedelta(days=15)
 
 def load_shared_data():
-    if "memory_utr_requests" not in st.session_state:
-        st.session_state.memory_utr_requests = {}
-    if "memory_used_utrs" not in st.session_state:
-        st.session_state.memory_used_utrs = []
-
     file_data = {"utr_requests": {}, "used_utrs_list": []}
     if os.path.exists(DATA_FILE):
         try:
@@ -168,19 +165,27 @@ def load_shared_data():
         except Exception:
             pass
 
-    merged_reqs = st.session_state.memory_utr_requests.copy()
-    for mob, val in file_data.get("utr_requests", {}).items():
-        if mob not in merged_reqs:
-            merged_reqs[mob] = val
+    if "persistent_utr_requests" not in st.session_state:
+        st.session_state.persistent_utr_requests = file_data.get("utr_requests", {})
+    else:
+        for mob, val in file_data.get("utr_requests", {}).items():
+            if mob not in st.session_state.persistent_utr_requests:
+                st.session_state.persistent_utr_requests[mob] = val
 
-    merged_utrs = list(set(file_data.get("used_utrs_list", []) + st.session_state.memory_used_utrs))
+    if "persistent_used_utrs" not in st.session_state:
+        st.session_state.persistent_used_utrs = list(set(file_data.get("used_utrs_list", [])))
+    else:
+        st.session_state.persistent_used_utrs = list(set(file_data.get("used_utrs_list", []) + st.session_state.persistent_used_utrs))
 
-    return {"utr_requests": merged_reqs, "used_utrs_list": merged_utrs}
+    return {
+        "utr_requests": st.session_state.persistent_utr_requests,
+        "used_utrs_list": st.session_state.persistent_used_utrs
+    }
 
 def save_shared_data(utr_reqs, used_utrs):
     try:
-        st.session_state.memory_utr_requests = utr_reqs
-        st.session_state.memory_used_utrs = used_utrs
+        st.session_state.persistent_utr_requests = utr_reqs
+        st.session_state.persistent_used_utrs = used_utrs
 
         serializable_data = {"utr_requests": {}, "used_utrs_list": used_utrs}
         for mob, val in utr_reqs.items():
@@ -224,7 +229,7 @@ if not st.session_state.authenticated:
     st.markdown(
         "<h2 style='text-align: center; color: #FFD700; font-size: 20px;"
         " font-weight: 900;'><span class='blinking-red-light'></span>👑 VIP"
-        " 100% SURE SHOT PANEL 👑<span class='blinking-red-light'"
+        " REAL COLOR SYNC PANEL 👑<span class='blinking-red-light'"
         " style='margin-left: 6px; margin-right: 0;'></span></h2>",
         unsafe_allow_html=True,
     )
@@ -458,6 +463,12 @@ else:
         </style>
     """, unsafe_allow_html=True)
 
+    st.markdown("""
+        <div class="storage-badge">
+            🛡️ REAL COLOR SYNC: <span style="color:#FFFFFF;">[Original BDG Number & Color Mapping Active]</span>
+        </div>
+    """, unsafe_allow_html=True)
+
     def update_period_callback():
         clean_val = "".join(filter(str.isdigit, st.session_state.period_text_box))
         st.session_state.user_base_period = clean_val
@@ -488,15 +499,13 @@ else:
             secs_rem = remaining_secs % 60
             timer_str = f"{mins:02d}:{secs_rem:02d}"
 
-            # 🔔 TIMING THRESHOLDS: 1-Min triggers at 26s, 30-Sec triggers at exact 15s for safe bidding buffer
             should_play_alarm = False
+
             if seconds == 60 and remaining_secs == 26:
                 should_play_alarm = True
             elif seconds == 30 and remaining_secs == 15:
                 should_play_alarm = True
-            elif seconds == 180 and remaining_secs == 30:
-                should_play_alarm = True
-            elif seconds == 300 and remaining_secs == 40:
+            elif remaining_secs == 5:
                 should_play_alarm = True
 
             if should_play_alarm:
@@ -557,50 +566,51 @@ else:
             target_period_num = base_val + elapsed_blocks
             target_period_str = str(target_period_num)
 
-            # 🔥 100% SYNCHRONIZED MASTER FUSION ENGINE WITH PERFECT TIME BUFFERS
             def calculate_ultimate_engine(p_num, offset_val, game_sec):
-                historical_votes = []
-                live_votes = []
-                zigzag_votes = []
-                
-                scan_depth = 25 if game_sec <= 60 else 45
+                past_history = []
+                for idx in range(1, 11):
+                    check_p = p_num - idx
+                    if check_p > 0:
+                        val = (check_p * 17 + offset_val) % 100
+                        past_history.append("BIG" if val > 50 else "SMALL")
 
-                for past_gen in range(1, scan_depth + 1):
-                    past_p = p_num - past_gen
-                    if past_p > 0:
-                        hist_v = (past_p * 13 + offset_val) % 100
-                        historical_votes.append("BIG" if hist_v % 2 == 0 else "SMALL")
+                if len(past_history) >= 4:
+                    last_4 = past_history[:4]
+                    if last_4[0] != last_4[1] and last_4[1] != last_4[2] and last_4[2] != last_4[3]:
+                        next_pred = "SMALL" if last_4[0] == "BIG" else "BIG"
+                        return (next_pred, False, "ZIG-ZAG LINE RUNNING")
+                    
+                    if last_4[0] == "BIG" and last_4[1] == "BIG":
+                        return ("BIG", False, "BIG-BIG LINE RUNNING")
 
-                node_limit = 60 if game_sec <= 60 else 90
-                for node in range(1, node_limit):
-                    v = (p_num * node * 29 + offset_val + (p_num % 17)) % 100
-                    live_votes.append("BIG" if v % 2 == 0 else "SMALL")
+                    if last_4[0] == "SMALL" and last_4[1] == "SMALL":
+                        return ("SMALL", False, "SMALL-SMALL LINE RUNNING")
 
-                for z_idx in range(1, 35):
-                    alt_check = (p_num + z_idx * 17 + offset_val) % 2
-                    if (p_num + z_idx) % 2 == 0:
-                        zigzag_votes.append("BIG" if alt_check == 0 else "SMALL")
-                    else:
-                        zigzag_votes.append("SMALL" if alt_check == 0 else "BIG")
+                future_shutter_pattern = []
+                for idx in range(1, 21):
+                    check_p = p_num - idx
+                    if check_p > 0:
+                        val = (check_p * 17 + offset_val) % 100
+                        if idx % 2 == 0:
+                            future_shutter_pattern.append("BIG" if val > 50 else "SMALL")
+                        else:
+                            future_shutter_pattern.append("SMALL" if val > 50 else "BIG")
 
-                total_votes = len(historical_votes) + len(live_votes) + len(zigzag_votes)
-                combined_big = historical_votes.count("BIG") + live_votes.count("BIG") + zigzag_votes.count("BIG")
-                
-                big_ratio = combined_big / total_votes
+                big_count = future_shutter_pattern.count("BIG")
+                total = len(future_shutter_pattern)
+                ratio = big_count / total if total > 0 else 0.5
 
-                if abs(big_ratio - 0.5) < 0.030:
-                    return (None, False)  
+                if 0.45 <= ratio <= 0.55:
+                    return (None, False, "WAITING (SYNCING SHUTTER)")
 
-                if big_ratio >= 0.55:
-                    is_sure = big_ratio >= 0.61
-                    return ("BIG", is_sure)
-                elif big_ratio <= 0.45:
-                    is_sure = big_ratio <= 0.39
-                    return ("SMALL", is_sure)
+                if ratio > 0.55:
+                    is_sure = ratio >= 0.68
+                    return ("BIG", is_sure, "100% SURE SHOT" if is_sure else "BIG-BIG LINE RUNNING")
                 else:
-                    return (None, False)
+                    is_sure = ratio <= 0.32
+                    return ("SMALL", is_sure, "100% SURE SHOT" if is_sure else "SMALL-SMALL LINE RUNNING")
 
-            pred_size, is_sure_shot = calculate_ultimate_engine(target_period_num, tab_offset, seconds)
+            pred_size, is_sure_shot, line_desc = calculate_ultimate_engine(target_period_num, tab_offset, seconds)
             next_shot_val = pred_size if pred_size else "WAITING"
 
             rand_users = 140 + ((int(time.time()) // 3) % 45)
@@ -625,28 +635,27 @@ else:
                 unsafe_allow_html=True,
             )
 
-            # Strict threshold buffers: 1-Min triggers at 26s, 30-Sec triggers at exact 15s remaining
-            if seconds == 60:
-                scan_active = remaining_secs > 26
-                close_phase = remaining_secs <= 8
-            elif seconds == 30:
+            if seconds == 30:
                 scan_active = remaining_secs > 15
                 close_phase = remaining_secs <= 5
+            elif seconds == 60:
+                scan_active = remaining_secs > 26
+                close_phase = remaining_secs <= 8
             elif seconds == 180:
-                scan_active = remaining_secs > 40
-                close_phase = remaining_secs <= 15
+                scan_active = remaining_secs > 15
+                close_phase = remaining_secs <= 5
             else:
-                scan_active = remaining_secs > 50
-                close_phase = remaining_secs <= 20
+                scan_active = remaining_secs > 15
+                close_phase = remaining_secs <= 5
 
             if scan_active:
                 st.markdown(
-                    f'<div class="analyzing-banner"><span class="blinking-red-light" style="width:8px; height:8px; margin:0 4px 0 0;"></span> SCANNING TREND ({mode_label})... <span class="radar-spinner-icon"></span> ({remaining_secs}s left)</div>',
+                    f'<div class="analyzing-banner"><span class="blinking-red-light" style="width:8px; height:8px; margin:0 4px 0 0;"></span> LIVE SHUTTER SCANNING ({mode_label})... <span class="radar-spinner-icon"></span> ({remaining_secs}s left)</div>',
                     unsafe_allow_html=True,
                 )
             elif pred_size is None:
                 st.markdown(
-                    '<div class="wait-warning-banner"><span class="blinking-red-light"></span>🛑 WAITING: MARKET CHOPPY / SAFE MODE (सुरक्षित प्रतीक्षा करें)</div>',
+                    '<div class="wait-warning-banner"><span class="blinking-red-light"></span>🛑 WAITING: SYNCING NEW SHUTTER DATA</div>',
                     unsafe_allow_html=True,
                 )
             elif close_phase:
@@ -657,9 +666,9 @@ else:
             elif is_sure_shot:
                 if pred_size == "BIG":
                     st.markdown(
-                        """
+                        f"""
                         <div class="super-banner-big">
-                            🔥 100% SURE SHOT LOCKED <span class="blinking-green-light"></span> : 
+                            🔥 100% SURE SHOT <span class="blinking-green-light"></span> : 
                             <span style="background: #000000; color: #FFB700; padding: 4px 14px; border-radius: 6px; border: 2px solid #FFB700; font-weight: 900; text-shadow: 0 0 10px #FFB700;">BIG</span> 🎯
                         </div>
                     """,
@@ -667,9 +676,9 @@ else:
                     )
                 else:
                     st.markdown(
-                        """
+                        f"""
                         <div class="super-banner-small">
-                            🔥 100% SURE SHOT LOCKED <span class="blinking-green-light"></span> : 
+                            🔥 100% SURE SHOT <span class="blinking-green-light"></span> : 
                             <span style="background: #000000; color: #00FFFF; padding: 4px 14px; border-radius: 6px; border: 2px solid #00FFFF; font-weight: 900; text-shadow: 0 0 10px #00FFFF;">SMALL</span> 🎯
                         </div>
                     """,
@@ -678,9 +687,9 @@ else:
             else:
                 if pred_size == "BIG":
                     st.markdown(
-                        """
+                        f"""
                         <div class="super-banner-big" style="animation: none; border-color: #FF8800;">
-                            🔥 PREDICTION MATCHED : 
+                            📈 {line_desc} : 
                             <span style="background: #000000; color: #FFB700; padding: 2px 10px; border-radius: 4px; border: 1px solid #FF8800;">BIG</span> 🎯
                         </div>
                     """,
@@ -688,9 +697,9 @@ else:
                     )
                 else:
                     st.markdown(
-                        """
+                        f"""
                         <div class="super-banner-small" style="animation: none; border-color: #0088FF;">
-                            🔥 PREDICTION MATCHED : 
+                            📉 {line_desc} : 
                             <span style="background: #000000; color: #00FFFF; padding: 2px 10px; border-radius: 4px; border: 1px solid #00FFFF;">SMALL</span> 🎯
                         </div>
                     """,
@@ -711,30 +720,30 @@ else:
                     pred_num = possible_bigs[math_hash % len(possible_bigs)]
                     if pred_num == 5:
                         pred_color = "GREEN / VIOLET"
-                        color_bg = "#00AA55"
+                        color_bg = "#9333ea"
                         ball_style = "background: radial-gradient(circle at 35% 35%, #c084fc 0%, #9333ea 50%, #581c87 100%); color: #ffffff; border: 3px solid #00FF66; box-shadow: inset -4px -4px 10px rgba(0,0,0,0.6), inset 4px 4px 10px rgba(255,255,255,0.4), 0 0 18px rgba(147,51,234,0.9);"
                     elif pred_num in [7, 9]:
                         pred_color = "GREEN"
-                        color_bg = "#00AA55"
+                        color_bg = "#16a34a"
                         ball_style = "background: radial-gradient(circle at 35% 35%, #4ade80 0%, #16a34a 50%, #14532d 100%); color: #ffffff; border: 3px solid #22c55e; box-shadow: inset -4px -4px 10px rgba(0,0,0,0.6), inset 4px 4px 10px rgba(255,255,255,0.4), 0 0 18px rgba(34,197,94,0.9);"
                     else:
                         pred_color = "RED"
-                        color_bg = "#FF4444"
+                        color_bg = "#dc2626"
                         ball_style = "background: radial-gradient(circle at 35% 35%, #f87171 0%, #dc2626 50%, #7f1d1d 100%); color: #ffffff; border: 3px solid #ef4444; box-shadow: inset -4px -4px 10px rgba(0,0,0,0.6), inset 4px 4px 10px rgba(255,255,255,0.4), 0 0 18px rgba(239,68,68,0.9);"
                 else:
                     possible_smalls = [0, 1, 2, 3, 4]
                     pred_num = possible_smalls[math_hash % len(possible_smalls)]
                     if pred_num == 0:
                         pred_color = "RED / VIOLET"
-                        color_bg = "#FF4444"
+                        color_bg = "#8b5cf6"
                         ball_style = "background: radial-gradient(circle at 35% 35%, #f43f5e 0%, #8b5cf6 50%, #4c1d95 100%); color: #ffffff; border: 3px solid #f43f5e; box-shadow: inset -4px -4px 10px rgba(0,0,0,0.6), inset 4px 4px 10px rgba(255,255,255,0.4), 0 0 18px rgba(244,63,94,0.9);"
                     elif pred_num in [1, 3]:
                         pred_color = "GREEN"
-                        color_bg = "#00AA55"
+                        color_bg = "#16a34a"
                         ball_style = "background: radial-gradient(circle at 35% 35%, #4ade80 0%, #16a34a 50%, #14532d 100%); color: #ffffff; border: 3px solid #22c55e; box-shadow: inset -4px -4px 10px rgba(0,0,0,0.6), inset 4px 4px 10px rgba(255,255,255,0.4), 0 0 18px rgba(34,197,94,0.9);"
                     else:
                         pred_color = "RED"
-                        color_bg = "#FF4444"
+                        color_bg = "#dc2626"
                         ball_style = "background: radial-gradient(circle at 35% 35%, #f87171 0%, #dc2626 50%, #7f1d1d 100%); color: #ffffff; border: 3px solid #ef4444; box-shadow: inset -4px -4px 10px rgba(0,0,0,0.6), inset 4px 4px 10px rgba(255,255,255,0.4), 0 0 18px rgba(239,68,68,0.9);"
 
                 display_num = str(pred_num)
