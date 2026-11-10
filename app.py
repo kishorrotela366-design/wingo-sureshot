@@ -5,8 +5,8 @@ import time
 import streamlit as st
 
 st.set_page_config(
-    page_title="VIP REAL COLOR SYNC PANEL - CLEANED 100-SHUTTER",
-    page_icon="🛡️",
+    page_title="VIP REAL COLOR SYNC PANEL - UNIVERSAL GOD-MODE 102",
+    page_icon="👑",
     layout="centered",
     initial_sidebar_state="collapsed",
 )
@@ -33,21 +33,21 @@ st.markdown(
     }
     
     @keyframes super-win-glow-big {
-        0% { border-color: #FFB700; box-shadow: 0 0 35px #FFB700, inset 0 0 20px #FFB700; background: linear-gradient(135deg, #3a2200, #150a00); }
-        50% { border-color: #FF5500; box-shadow: 0 0 15px #FF5500, inset 0 0 5px #FF5500; background: linear-gradient(135deg, #4a0e00, #1a0500); }
-        100% { border-color: #FFB700; box-shadow: 0 0 35px #FFB700, inset 0 0 20px #FFB700; background: linear-gradient(135deg, #3a2200, #150a00); }
+        0% { border-color: #FFD700; box-shadow: 0 0 40px #FFD700, inset 0 0 25px #FFD700; background: linear-gradient(135deg, #4a2f00, #1a0f00); }
+        50% { border-color: #FF0055; box-shadow: 0 0 20px #FF0055, inset 0 0 10px #FF0055; background: linear-gradient(135deg, #5a001a, #1a0005); }
+        100% { border-color: #FFD700; box-shadow: 0 0 40px #FFD700, inset 0 0 25px #FFD700; background: linear-gradient(135deg, #4a2f00, #1a0f00); }
     }
 
     @keyframes super-win-glow-small {
-        0% { border-color: #00FFFF; box-shadow: 0 0 35px #00FFFF, inset 0 0 20px #00FFFF; background: linear-gradient(135deg, #002222, #000a1a); }
-        50% { border-color: #0088FF; box-shadow: 0 0 15px #0088FF, inset 0 0 5px #0088FF; background: linear-gradient(135deg, #00103a, #00051a); }
-        100% { border-color: #00FFFF; box-shadow: 0 0 35px #00FFFF, inset 0 0 20px #00FFFF; background: linear-gradient(135deg, #002222, #000a1a); }
+        0% { border-color: #00FFFF; box-shadow: 0 0 40px #00FFFF, inset 0 0 25px #00FFFF; background: linear-gradient(135deg, #003333, #000f1a); }
+        50% { border-color: #00FF66; box-shadow: 0 0 20px #00FF66, inset 0 0 10px #00FF66; background: linear-gradient(135deg, #002211, #00051a); }
+        100% { border-color: #00FFFF; box-shadow: 0 0 40px #00FFFF, inset 0 0 25px #00FFFF; background: linear-gradient(135deg, #003333, #000f1a); }
     }
 
     @keyframes analyzing-glow {
-        0% { border-color: #FF00FF; box-shadow: 0 0 20px #FF00FF; color: #FF00FF; }
-        50% { border-color: #00FFFF; box-shadow: 0 0 20px #00FFFF; color: #00FFFF; }
-        100% { border-color: #FF00FF; box-shadow: 0 0 20px #FF00FF; color: #FF00FF; }
+        0% { border-color: #FF00FF; box-shadow: 0 0 25px #FF00FF; color: #FF00FF; }
+        50% { border-color: #00FFFF; box-shadow: 0 0 25px #00FFFF; color: #00FFFF; }
+        100% { border-color: #FF00FF; box-shadow: 0 0 25px #FF00FF; color: #FF00FF; }
     }
 
     .blinking-red-light {
@@ -86,10 +86,10 @@ st.markdown(
     
     .target-period-box {
         background: #000000 !important;
-        border: 1.5px solid #00FFFF !important;
+        border: 1.5px solid #FFD700 !important;
         border-radius: 10px !important;
         padding: 8px 10px !important;
-        box-shadow: 0 0 12px rgba(0, 255, 255, 0.25) !important;
+        box-shadow: 0 0 15px rgba(255, 215, 0, 0.3) !important;
         margin-bottom: 8px !important;
         display: flex !important;
         align-items: center !important;
@@ -99,7 +99,7 @@ st.markdown(
     .stTextInput input {
         background-color: #FFFFFF !important;
         color: #000000 !important;
-        border: 1.5px solid #00FF66 !important;
+        border: 1.5px solid #FFD700 !important;
         border-radius: 6px !important;
         font-weight: 900 !important;
         text-align: left !important;
@@ -112,16 +112,16 @@ st.markdown(
     .timer-box-large { color: #FF00FF !important; font-weight: 900 !important; font-size: 15px !important; text-shadow: 0 0 8px rgba(255,0,255,0.6) !important; display: flex !important; align-items: center !important; gap: 4px !important; }
     
     .super-banner-small { border: 2.5px solid #00FFFF !important; padding: 14px !important; border-radius: 10px !important; text-align: center !important; font-size: 15px !important; font-weight: 900 !important; margin: 10px 0 !important; color: #00FFFF !important; text-transform: uppercase !important; animation: super-win-glow-small 0.8s infinite !important; letter-spacing: 0.5px !important; }
-    .super-banner-big { border: 2.5px solid #FFB700 !important; padding: 14px !important; border-radius: 10px !important; text-align: center !important; font-size: 15px !important; font-weight: 900 !important; margin: 10px 0 !important; color: #FFB700 !important; text-transform: uppercase !important; animation: super-win-glow-big 0.8s infinite !important; letter-spacing: 0.5px !important; }
+    .super-banner-big { border: 2.5px solid #FFD700 !important; padding: 14px !important; border-radius: 10px !important; text-align: center !important; font-size: 15px !important; font-weight: 900 !important; margin: 10px 0 !important; color: #FFD700 !important; text-transform: uppercase !important; animation: super-win-glow-big 0.8s infinite !important; letter-spacing: 0.5px !important; }
     
-    .analyzing-banner { border: 2.5px dashed #FF00FF !important; padding: 12px !important; border-radius: 10px !important; text-align: center !important; font-size: 14px !important; font-weight: 900 !important; margin: 8px 0 !important; animation: analyzing-glow 1s infinite !important; letter-spacing: 1px !important; background: #000000 !important; display: flex !important; align-items: center !important; justify-content: center !important; }
+    .analyzing-banner { border: 2.5px dashed #FFD700 !important; padding: 12px !important; border-radius: 10px !important; text-align: center !important; font-size: 14px !important; font-weight: 900 !important; margin: 8px 0 !important; animation: analyzing-glow 1s infinite !important; letter-spacing: 1px !important; background: #000000 !important; display: flex !important; align-items: center !important; justify-content: center !important; }
     
     .diagonal-container { display: flex !important; justify-content: space-between !important; align-items: center !important; gap: 8px !important; margin-top: 10px !important; }
-    .result-item { flex: 1 !important; text-align: center !important; background: #130d24 !important; border: 2.5px solid #3b286b !important; border-radius: 12px !important; padding: 12px 6px !important; box-shadow: 0 0 10px (59,40,107,0.3) !important; }
+    .result-item { flex: 1 !important; text-align: center !important; background: #1a0f00 !important; border: 2.5px solid #ffd700 !important; border-radius: 12px !important; padding: 12px 6px !important; box-shadow: 0 0 12px rgba(255,215,0,0.3) !important; }
     .auth-card { background: #0b071a !important; border: 2px solid #FFD700 !important; border-radius: 12px !important; padding: 16px !important; box-shadow: 0 0 15px rgba(255,215,0,0.2) !important; margin-top: 10px !important; }
     .admin-card { background: #110022 !important; border: 2px solid #00FF66 !important; border-radius: 12px !important; padding: 15px !important; margin-bottom: 15px !important; }
     
-    .storage-badge { background: linear-gradient(135deg, #112200, #001100); border: 1.5px solid #00FF66; padding: 8px; border-radius: 8px; margin-bottom: 10px; text-align: center; box-shadow: 0 0 12px rgba(0,255,102,0.3); font-size: 12px; font-weight: 900; color: #00FF66; }
+    .storage-badge { background: linear-gradient(135deg, #332200, #110a00); border: 1.5px solid #FFD700; padding: 8px; border-radius: 8px; margin-bottom: 10px; text-align: center; box-shadow: 0 0 15px rgba(255,215,0,0.4); font-size: 12px; font-weight: 900; color: #FFD700; }
     </style>
 """,
     unsafe_allow_html=True,
@@ -222,7 +222,7 @@ if not st.session_state.authenticated:
     st.markdown(
         "<h2 style='text-align: center; color: #FFD700; font-size: 20px;"
         " font-weight: 900;'><span class='blinking-red-light'></span>👑 VIP"
-        " CLEANED 100-SHUTTER PANEL 👑<span class='blinking-red-light'"
+        " UNIVERSAL 102 GOD-MODE PANEL 👑<span class='blinking-red-light'"
         " style='margin-left: 6px; margin-right: 0;'></span></h2>",
         unsafe_allow_html=True,
     )
@@ -256,7 +256,7 @@ if not st.session_state.authenticated:
         if clean_l_mob == MASTER_MOBILE and login_pass == MASTER_PASSWORD:
             st.session_state.authenticated = True
             st.session_state.is_owner = True
-            st.success("👑 ओनर एक्सेस सफल! क्लीन किया गया कंट्रोल पैनल खुल रहा है...")
+            st.success("👑 ओनर एक्सेस सफल! 102-शटर यूनिवर्सल गॉड-मोड खुल रहा है...")
             time.sleep(0.8)
             st.rerun()
 
@@ -268,7 +268,7 @@ if not st.session_state.authenticated:
                 if user_data.get("status") == "APPROVED" and datetime.now() < exp_time:
                     st.session_state.authenticated = True
                     st.session_state.is_owner = False
-                    st.success("🟢 Verified: आपका प्लान सक्रिय है, डैशबोर्ड खुल रहा है...")
+                    st.success("🟢 Verified: आपका 102-शटर यूनिवर्सल प्लान सक्रिय है...")
                     time.sleep(0.8)
                     st.rerun()
                 elif user_data.get("status") == "REJECTED":
@@ -353,7 +353,7 @@ if not st.session_state.authenticated:
             }
             save_shared_data(st.session_state.utr_requests, st.session_state.used_utrs_list)
             st.success(
-                "📩 नया UTR सफलतापूर्वक सबमिट हो गया है! 🔴 (पेंडिंग)। ओनर द्वारा वेरीफाई और अप्रूव होने के बाद आपका पैनल चालू होगा."
+                "📩 नया UTR सफलतापूर्वक सबमिट हो गया है! 🔴 (पेंडिंग)। ओनर द्वारा वेरीफाई और अप्रूव होने के बाद आपका 102-शटर गॉड-मोड पैनल चालू होगा."
             )
 
     st.markdown("</div>", unsafe_allow_html=True)
@@ -447,7 +447,7 @@ else:
 
     st.markdown("""
         <div class="storage-badge">
-            ⚡ DEDUPLICATED 100-SHUTTER CLEAN ENGINE: <span style="color:#FFFFFF;">[Quantum Reversal Matrix Active]</span>
+            👑 UNIVERSAL 102 MASTER OVERLORD: <span style="color:#FFFFFF;">[Motherboard Bypass & Supreme God-Mode Active]</span>
         </div>
     """, unsafe_allow_html=True)
 
@@ -525,7 +525,7 @@ else:
                     unsafe_allow_html=True,
                 )
                 st.markdown(
-                    '<div class="analyzing-banner"><span class="blinking-red-light"></span>⚡ WAITING FOR VALID LIVE PERIOD NUMBER...</div>',
+                    '<div class="analyzing-banner"><span class="blinking-red-light"></span>👑 UNIVERSAL 102 WAITING FOR SERVER SYNC...</div>',
                     unsafe_allow_html=True,
                 )
                 st.markdown("</div>", unsafe_allow_html=True)
@@ -548,38 +548,36 @@ else:
             target_period_num = base_val + elapsed_blocks
             target_period_str = str(target_period_num)
 
-            # === CLEANED 100-SHUTTER QUANTUM REVERSAL CONSENSUS ENGINE ===
-            def calculate_clean_100_consensus(p_num, offset_val):
+            # === 102-SHUTTER UNIVERSAL GOD-MODE MASTER OVERLORD ENGINE ===
+            def calculate_universal_102_consensus(p_num, offset_val):
                 history_box = []
                 for idx in range(1, 16):
                     chk = p_num - idx
                     if chk > 0:
-                        # Cleaned non-overlapping matrix calculation
-                        v = (chk * 53 + offset_val + (idx * 19)) % 100
-                        history_box.append(1 if v > 48 else 0)
+                        # 102 Universal Motherboard Frequency Mapping
+                        v = (chk * 79 + offset_val + (idx * 43)) % 100
+                        history_box.append(1 if v > 42 else 0)
 
                 if len(history_box) < 5:
-                    return ("BIG", True, "CLEAN 100-SHUTTER SYNC")
+                    return ("BIG", True, "UNIVERSAL 102 SYNC ACTIVE")
 
-                # Unique Shutter #100 Logic: Quantum Adaptive Reversal Matrix
-                flips = sum(1 for i in range(len(history_box)-1) if history_box[i] != history_box[i+1])
-                is_zigzag_active = flips >= (len(history_box) * 0.5)
-
+                # Shutter #102: Universal Overlord Motherboard Bypass Core
+                universal_signal = (p_num // 2) % 2
                 recent_trend = sum(history_box[:4])
 
-                if is_zigzag_active:
+                if universal_signal == 0:
                     pred = "SMALL" if history_box[0] == 1 else "BIG"
-                    desc = "QUANTUM REVERSAL MATRIX CATCH"
+                    desc = "👑 UNIVERSAL 102: MOTHERBOARD OVERLORD SHIFT LOCKED"
                 else:
                     pred = "BIG" if recent_trend >= 2 else "SMALL"
-                    desc = "CLEAN HARMONIC MOMENTUM"
+                    desc = "⚡ SUPREME GOD-MODE STABLE SYNC"
 
                 return (pred, True, desc)
 
-            pred_size, is_sure_shot, line_desc = calculate_clean_100_consensus(target_period_num, tab_offset)
+            pred_size, is_sure_shot, line_desc = calculate_universal_102_consensus(target_period_num, tab_offset)
             next_shot_val = pred_size
 
-            rand_users = 256 + ((int(time.time()) // 3) % 15)
+            rand_users = 332 + ((int(time.time()) // 3) % 23)
             mode_label = f"{seconds}S" if seconds < 60 else f"{seconds//60}M"
 
             st.markdown(
@@ -590,9 +588,9 @@ else:
                         <span style="color: #FFD700; font-size: 12px; font-weight: 900;">LIVE PERIOD:</span>
                         <span style="color: #00FFFF; font-size: 13px; font-weight: 900; background: rgba(0,255,255,0.1); padding: 1px 6px; border-radius: 4px; border: 1px solid #00FFFF;">{target_period_str}</span>
                     </div>
-                    <div style="background: #081a10; border: 1px solid #00FF66; padding: 2px 6px; border-radius: 6px; display: flex; align-items: center; gap: 4px;">
+                    <div style="background: #2a1a00; border: 1px solid #FFD700; padding: 2px 6px; border-radius: 6px; display: flex; align-items: center; gap: 4px;">
                         <span class="blinking-green-light" style="width: 7px; height: 7px; margin: 0;"></span>
-                        <span style="color: #00FF66; font-size: 11px; font-weight: 900;">{mode_label} 100-SHUTTER CLEAN</span>
+                        <span style="color: #FFD700; font-size: 11px; font-weight: 900;">{mode_label} UNIVERSAL 102</span>
                         <span style="color: #FFFFFF; font-size: 11px; font-weight: 900;">| 👥 {rand_users}</span>
                     </div>
                     <div class="timer-box-large">⏰ {timer_str}</div>
@@ -610,7 +608,7 @@ else:
 
             if scan_active:
                 st.markdown(
-                    f'<div class="analyzing-banner"><span class="blinking-red-light" style="width:8px; height:8px; margin:0 4px 0 0;"></span> CLEAN 100-SHUTTER SCANNING ({mode_label})... <span class="radar-spinner-icon"></span> ({remaining_secs}s left)</div>',
+                    f'<div class="analyzing-banner"><span class="blinking-red-light" style="width:8px; height:8px; margin:0 4px 0 0;"></span> UNIVERSAL 102 SCANNING ({mode_label})... <span class="radar-spinner-icon"></span> ({remaining_secs}s left)</div>',
                     unsafe_allow_html=True,
                 )
             else:
@@ -618,8 +616,8 @@ else:
                     st.markdown(
                         f"""
                         <div class="super-banner-big">
-                            🔥 100-SHUTTER SURE SHOT <span class="blinking-green-light"></span> : 
-                            <span style="background: #000000; color: #FFB700; padding: 4px 14px; border-radius: 6px; border: 2px solid #FFB700; font-weight: 900; text-shadow: 0 0 10px #FFB700;">BIG</span> 🎯
+                            👑 UNIVERSAL 102 SURE SHOT <span class="blinking-green-light"></span> : 
+                            <span style="background: #000000; color: #FFD700; padding: 4px 14px; border-radius: 6px; border: 2px solid #FFD700; font-weight: 900; text-shadow: 0 0 12px #FFD700;">BIG</span> 🎯
                         </div>
                     """,
                         unsafe_allow_html=True,
@@ -628,8 +626,8 @@ else:
                     st.markdown(
                         f"""
                         <div class="super-banner-small">
-                            🔥 100-SHUTTER SURE SHOT <span class="blinking-green-light"></span> : 
-                            <span style="background: #000000; color: #00FFFF; padding: 4px 14px; border-radius: 6px; border: 2px solid #00FFFF; font-weight: 900; text-shadow: 0 0 10px #00FFFF;">SMALL</span> 🎯
+                            👑 UNIVERSAL 102 SURE SHOT <span class="blinking-green-light"></span> : 
+                            <span style="background: #000000; color: #00FFFF; padding: 4px 14px; border-radius: 6px; border: 2px solid #00FFFF; font-weight: 900; text-shadow: 0 0 12px #00FFFF;">SMALL</span> 🎯
                         </div>
                     """,
                         unsafe_allow_html=True,
@@ -642,30 +640,30 @@ else:
                 if pred_num == 5:
                     pred_color = "GREEN / VIOLET"
                     color_bg = "#9333ea"
-                    ball_style = "background: radial-gradient(circle at 35% 35%, #c084fc 0%, #9333ea 50%, #581c87 100%); color: #ffffff; border: 3px solid #00FF66; box-shadow: inset -4px -4px 10px rgba(0,0,0,0.6), inset 4px 4px 10px rgba(255,255,255,0.4), 0 0 18px rgba(147,51,234,0.9);"
+                    ball_style = "background: radial-gradient(circle at 35% 35%, #c084fc 0%, #9333ea 50%, #581c87 100%); color: #ffffff; border: 3px solid #FFD700; box-shadow: inset -4px -4px 10px rgba(0,0,0,0.6), inset 4px 4px 10px rgba(255,255,255,0.4), 0 0 20px rgba(255,215,0,0.9);"
                 elif pred_num in [7, 9]:
                     pred_color = "GREEN"
                     color_bg = "#16a34a"
-                    ball_style = "background: radial-gradient(circle at 35% 35%, #4ade80 0%, #16a34a 50%, #14532d 100%); color: #ffffff; border: 3px solid #22c55e; box-shadow: inset -4px -4px 10px rgba(0,0,0,0.6), inset 4px 4px 10px rgba(255,255,255,0.4), 0 0 18px rgba(34,197,94,0.9);"
+                    ball_style = "background: radial-gradient(circle at 35% 35%, #4ade80 0%, #16a34a 50%, #14532d 100%); color: #ffffff; border: 3px solid #FFD700; box-shadow: inset -4px -4px 10px rgba(0,0,0,0.6), inset 4px 4px 10px rgba(255,255,255,0.4), 0 0 20px rgba(255,215,0,0.9);"
                 else:
                     pred_color = "RED"
                     color_bg = "#dc2626"
-                    ball_style = "background: radial-gradient(circle at 35% 35%, #f87171 0%, #dc2626 50%, #7f1d1d 100%); color: #ffffff; border: 3px solid #ef4444; box-shadow: inset -4px -4px 10px rgba(0,0,0,0.6), inset 4px 4px 10px rgba(255,255,255,0.4), 0 0 18px rgba(239,68,68,0.9);"
+                    ball_style = "background: radial-gradient(circle at 35% 35%, #f87171 0%, #dc2626 50%, #7f1d1d 100%); color: #ffffff; border: 3px solid #FFD700; box-shadow: inset -4px -4px 10px rgba(0,0,0,0.6), inset 4px 4px 10px rgba(255,255,255,0.4), 0 0 20px rgba(255,215,0,0.9);"
             else:
                 possible_smalls = [0, 1, 2, 3, 4]
                 pred_num = possible_smalls[math_hash % len(possible_smalls)]
                 if pred_num == 0:
                     pred_color = "RED / VIOLET"
                     color_bg = "#8b5cf6"
-                    ball_style = "background: radial-gradient(circle at 35% 35%, #f43f5e 0%, #8b5cf6 50%, #4c1d95 100%); color: #ffffff; border: 3px solid #f43f5e; box-shadow: inset -4px -4px 10px rgba(0,0,0,0.6), inset 4px 4px 10px rgba(255,255,255,0.4), 0 0 18px rgba(244,63,94,0.9);"
+                    ball_style = "background: radial-gradient(circle at 35% 35%, #f43f5e 0%, #8b5cf6 50%, #4c1d95 100%); color: #ffffff; border: 3px solid #FFD700; box-shadow: inset -4px -4px 10px rgba(0,0,0,0.6), inset 4px 4px 10px rgba(255,255,255,0.4), 0 0 20px rgba(255,215,0,0.9);"
                 elif pred_num in [1, 3]:
                     pred_color = "GREEN"
                     color_bg = "#16a34a"
-                    ball_style = "background: radial-gradient(circle at 35% 35%, #4ade80 0%, #16a34a 50%, #14532d 100%); color: #ffffff; border: 3px solid #22c55e; box-shadow: inset -4px -4px 10px rgba(0,0,0,0.6), inset 4px 4px 10px rgba(255,255,255,0.4), 0 0 18px rgba(34,197,94,0.9);"
+                    ball_style = "background: radial-gradient(circle at 35% 35%, #4ade80 0%, #16a34a 50%, #14532d 100%); color: #ffffff; border: 3px solid #FFD700; box-shadow: inset -4px -4px 10px rgba(0,0,0,0.6), inset 4px 4px 10px rgba(255,255,255,0.4), 0 0 20px rgba(255,215,0,0.9);"
                 else:
                     pred_color = "RED"
                     color_bg = "#dc2626"
-                    ball_style = "background: radial-gradient(circle at 35% 35%, #f87171 0%, #dc2626 50%, #7f1d1d 100%); color: #ffffff; border: 3px solid #ef4444; box-shadow: inset -4px -4px 10px rgba(0,0,0,0.6), inset 4px 4px 10px rgba(255,255,255,0.4), 0 0 18px rgba(239,68,68,0.9);"
+                    ball_style = "background: radial-gradient(circle at 35% 35%, #f87171 0%, #dc2626 50%, #7f1d1d 100%); color: #ffffff; border: 3px solid #FFD700; box-shadow: inset -4px -4px 10px rgba(0,0,0,0.6), inset 4px 4px 10px rgba(255,255,255,0.4), 0 0 20px rgba(255,215,0,0.9);"
 
             display_num = str(pred_num)
             display_size = pred_size
@@ -676,7 +674,7 @@ else:
                 f"""
                 <div class="diagonal-container">
                     <div class="result-item">
-                        <div style="font-size: 11px; color: #FFFFFF; font-weight: 900; margin-bottom: 6px;">NUMBER</div>
+                        <div style="font-size: 11px; color: #FFD700; font-weight: 900; margin-bottom: 6px;">NUMBER</div>
                         <div style="{ball_style} width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 900; margin: 0 auto; text-shadow: 0 2px 5px rgba(0,0,0,0.9); position: relative;">
                             {display_num}
                             <span style="position: absolute; top: 8px; left: 10px; width: 8px; height: 8px; background: rgba(255,255,255,0.6); border-radius: 50%;"></span>
@@ -684,11 +682,11 @@ else:
                         </div>
                     </div>
                     <div class="result-item">
-                        <div style="font-size: 11px; color: #FFFFFF; font-weight: 900; margin-bottom: 6px;">SIZE</div>
+                        <div style="font-size: 11px; color: #FFD700; font-weight: 900; margin-bottom: 6px;">SIZE</div>
                         <div style="background: {size_bg}; color: white; padding: 14px 4px; border-radius: 8px; font-weight: 900; font-size: 14px; text-align: center;">{display_size}</div>
                     </div>
                     <div class="result-item">
-                        <div style="font-size: 11px; color: #FFFFFF; font-weight: 900; margin-bottom: 6px;">COLOR</div>
+                        <div style="font-size: 11px; color: #FFD700; font-weight: 900; margin-bottom: 6px;">COLOR</div>
                         <div style="background-color: {color_bg}; color: white; padding: 14px 4px; border-radius: 8px; font-weight: 900; font-size: 13px; text-align: center;">{display_color}</div>
                     </div>
                 </div>
@@ -698,14 +696,14 @@ else:
 
             next_shot_display = next_shot_val
             next_shot_bg = "#FF8800" if next_shot_display == "BIG" else "#0088FF"
-            next_shot_glow = f"0 0 15px {next_shot_bg}"
+            next_shot_glow = f"0 0 18px {next_shot_bg}"
 
             st.markdown(
                 f"""
-                <div style="margin-top: 12px; background: #000000; padding: 14px; border-radius: 12px; text-align: center; border: 2px solid #FFD700; box-shadow: 0 0 15px rgba(255,215,0,0.2); display: flex; justify-content: center; align-items: center; gap: 12px;">
+                <div style="margin-top: 12px; background: #000000; padding: 14px; border-radius: 12px; text-align: center; border: 2px solid #FFD700; box-shadow: 0 0 18px rgba(255,215,0,0.4); display: flex; justify-content: center; align-items: center; gap: 12px;">
                     <div style="display: flex; align-items: center; gap: 6px;">
                         <span class="blinking-red-light" style="width:10px; height:10px; margin:0;"></span>
-                        <span style="color: #00FF66; font-size: 14px; font-weight: 900; letter-spacing: 1px;">CLEAN 100 LIVE</span>
+                        <span style="color: #FFD700; font-size: 14px; font-weight: 900; letter-spacing: 1px;">UNIVERSAL 102 ACTIVE</span>
                     </div>
                     <span style="color: #FFD700; font-weight: 900;">|</span>
                     <div style="display: flex; align-items: center; gap: 10px;">
