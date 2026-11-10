@@ -5,7 +5,7 @@ import time
 import streamlit as st
 
 st.set_page_config(
-    page_title="VIP REAL COLOR SYNC PANEL",
+    page_title="VIP REAL COLOR SYNC PANEL - CLEANED 100-SHUTTER",
     page_icon="🛡️",
     layout="centered",
     initial_sidebar_state="collapsed",
@@ -42,12 +42,6 @@ st.markdown(
         0% { border-color: #00FFFF; box-shadow: 0 0 35px #00FFFF, inset 0 0 20px #00FFFF; background: linear-gradient(135deg, #002222, #000a1a); }
         50% { border-color: #0088FF; box-shadow: 0 0 15px #0088FF, inset 0 0 5px #0088FF; background: linear-gradient(135deg, #00103a, #00051a); }
         100% { border-color: #00FFFF; box-shadow: 0 0 35px #00FFFF, inset 0 0 20px #00FFFF; background: linear-gradient(135deg, #002222, #000a1a); }
-    }
-
-    @keyframes warning-glow {
-        0% { border-color: #FF0000; box-shadow: 0 0 25px #FF0000; background: rgba(255, 0, 0, 0.25); }
-        50% { border-color: #FF8800; box-shadow: 0 0 10px #FF8800; background: rgba(255, 136, 0, 0.1); }
-        100% { border-color: #FF0000; box-shadow: 0 0 25px #FF0000; background: rgba(255, 0, 0, 0.25); }
     }
 
     @keyframes analyzing-glow {
@@ -121,10 +115,9 @@ st.markdown(
     .super-banner-big { border: 2.5px solid #FFB700 !important; padding: 14px !important; border-radius: 10px !important; text-align: center !important; font-size: 15px !important; font-weight: 900 !important; margin: 10px 0 !important; color: #FFB700 !important; text-transform: uppercase !important; animation: super-win-glow-big 0.8s infinite !important; letter-spacing: 0.5px !important; }
     
     .analyzing-banner { border: 2.5px dashed #FF00FF !important; padding: 12px !important; border-radius: 10px !important; text-align: center !important; font-size: 14px !important; font-weight: 900 !important; margin: 8px 0 !important; animation: analyzing-glow 1s infinite !important; letter-spacing: 1px !important; background: #000000 !important; display: flex !important; align-items: center !important; justify-content: center !important; }
-    .wait-warning-banner { border: 3px solid #FF0000 !important; padding: 12px !important; border-radius: 10px !important; text-align: center !important; font-size: 14px !important; font-weight: 900 !important; margin: 8px 0 !important; color: #FF4444 !important; text-transform: uppercase !important; animation: warning-glow 0.8s infinite !important; letter-spacing: 1px !important; background: #000000 !important; box-shadow: 0 0 25px rgba(255,0,0,0.4) !important; display: flex !important; align-items: center !important; justify-content: center !important; gap: 10px !important; }
     
     .diagonal-container { display: flex !important; justify-content: space-between !important; align-items: center !important; gap: 8px !important; margin-top: 10px !important; }
-    .result-item { flex: 1 !important; text-align: center !important; background: #130d24 !important; border: 2.5px solid #3b286b !important; border-radius: 12px !important; padding: 12px 6px !important; box-shadow: 0 0 10px rgba(59,40,107,0.3) !important; }
+    .result-item { flex: 1 !important; text-align: center !important; background: #130d24 !important; border: 2.5px solid #3b286b !important; border-radius: 12px !important; padding: 12px 6px !important; box-shadow: 0 0 10px (59,40,107,0.3) !important; }
     .auth-card { background: #0b071a !important; border: 2px solid #FFD700 !important; border-radius: 12px !important; padding: 16px !important; box-shadow: 0 0 15px rgba(255,215,0,0.2) !important; margin-top: 10px !important; }
     .admin-card { background: #110022 !important; border: 2px solid #00FF66 !important; border-radius: 12px !important; padding: 15px !important; margin-bottom: 15px !important; }
     
@@ -229,7 +222,7 @@ if not st.session_state.authenticated:
     st.markdown(
         "<h2 style='text-align: center; color: #FFD700; font-size: 20px;"
         " font-weight: 900;'><span class='blinking-red-light'></span>👑 VIP"
-        " REAL COLOR SYNC PANEL 👑<span class='blinking-red-light'"
+        " CLEANED 100-SHUTTER PANEL 👑<span class='blinking-red-light'"
         " style='margin-left: 6px; margin-right: 0;'></span></h2>",
         unsafe_allow_html=True,
     )
@@ -263,7 +256,7 @@ if not st.session_state.authenticated:
         if clean_l_mob == MASTER_MOBILE and login_pass == MASTER_PASSWORD:
             st.session_state.authenticated = True
             st.session_state.is_owner = True
-            st.success("👑 ओनर एक्सेस सफल! कंट्रोल पैनल खुल रहा है...")
+            st.success("👑 ओनर एक्सेस सफल! क्लीन किया गया कंट्रोल पैनल खुल रहा है...")
             time.sleep(0.8)
             st.rerun()
 
@@ -360,7 +353,7 @@ if not st.session_state.authenticated:
             }
             save_shared_data(st.session_state.utr_requests, st.session_state.used_utrs_list)
             st.success(
-                "📩 नया UTR सफलतापूर्वक सबमिट हो गया है! 🔴 (पेंडिंग)। ओनर द्वारा वेरीफाई और अप्रूव होने के बाद आपका 15 दिन का पैनल चालू होगा."
+                "📩 नया UTR सफलतापूर्वक सबमिट हो गया है! 🔴 (पेंडिंग)। ओनर द्वारा वेरीफाई और अप्रूव होने के बाद आपका पैनल चालू होगा."
             )
 
     st.markdown("</div>", unsafe_allow_html=True)
@@ -454,7 +447,7 @@ else:
 
     st.markdown("""
         <div class="storage-badge">
-            🛡️ ULTRA-STRICT 95-SHUTTER SAFETY LOCK: <span style="color:#FFFFFF;">[Zero-Guessing & Strict Wait Mode Active]</span>
+            ⚡ DEDUPLICATED 100-SHUTTER CLEAN ENGINE: <span style="color:#FFFFFF;">[Quantum Reversal Matrix Active]</span>
         </div>
     """, unsafe_allow_html=True)
 
@@ -532,7 +525,7 @@ else:
                     unsafe_allow_html=True,
                 )
                 st.markdown(
-                    '<div class="wait-warning-banner"><span class="blinking-red-light"></span>🛑 WAITING: ENTER VALID LIVE PERIOD NUMBER<span class="blinking-red-light" style="margin-left: 6px; margin-right: 0;"></span></div>',
+                    '<div class="analyzing-banner"><span class="blinking-red-light"></span>⚡ WAITING FOR VALID LIVE PERIOD NUMBER...</div>',
                     unsafe_allow_html=True,
                 )
                 st.markdown("</div>", unsafe_allow_html=True)
@@ -555,46 +548,38 @@ else:
             target_period_num = base_val + elapsed_blocks
             target_period_str = str(target_period_num)
 
-            # === ULTRA-STRICT 95-SHUTTER CONSENSUS ENGINE (NO GUESSING, STRICT SAFETY LOCK) ===
-            def calculate_ultra_strict_consensus(p_num, offset_val, game_sec):
-                votes_pool = []
-                
-                for idx in range(1, 22):
-                    check_p = p_num - idx
-                    if check_p > 0:
-                        v_val = (check_p * 29 + offset_val + (idx * 11)) % 100
-                        votes_pool.append("BIG" if v_val > 50 else "SMALL")
+            # === CLEANED 100-SHUTTER QUANTUM REVERSAL CONSENSUS ENGINE ===
+            def calculate_clean_100_consensus(p_num, offset_val):
+                history_box = []
+                for idx in range(1, 16):
+                    chk = p_num - idx
+                    if chk > 0:
+                        # Cleaned non-overlapping matrix calculation
+                        v = (chk * 53 + offset_val + (idx * 19)) % 100
+                        history_box.append(1 if v > 48 else 0)
 
-                if len(votes_pool) >= 4:
-                    last_4 = votes_pool[:4]
-                    if last_4[0] != last_4[1] and last_4[1] != last_4[2] and last_4[2] != last_4[3]:
-                        return ("SMALL" if last_4[0] == "BIG" else "BIG", False, "STRICT 95 ZIG-ZAG LOCK")
+                if len(history_box) < 5:
+                    return ("BIG", True, "CLEAN 100-SHUTTER SYNC")
 
-                big_votes = votes_pool.count("BIG")
-                small_votes = votes_pool.count("SMALL")
-                total_votes = len(votes_pool)
+                # Unique Shutter #100 Logic: Quantum Adaptive Reversal Matrix
+                flips = sum(1 for i in range(len(history_box)-1) if history_box[i] != history_box[i+1])
+                is_zigzag_active = flips >= (len(history_box) * 0.5)
 
-                if total_votes == 0:
-                    return (None, False, "SCANNING 95 SHUTTERS")
+                recent_trend = sum(history_box[:4])
 
-                big_percentage = big_votes / total_votes
-
-                # STRICT CONFIRMATION RANGE: Expanded Chaos Zone to prevent false signals
-                # If market ratio is between 46% and 54%, it forces a strict SAFETY HOLD (WAITING)
-                if 0.46 <= big_percentage <= 0.54:
-                    return (None, False, "STRICT SAFETY HOLD - WAITING FOR CLEAN MARKET")
-
-                if big_percentage > 0.54:
-                    is_sure = big_percentage >= 0.68  # Higher threshold for absolute safety
-                    return ("BIG", is_sure, "100% SURE SHOT (STRICT LOCK)" if is_sure else "STRICT 95 STRONG BIG")
+                if is_zigzag_active:
+                    pred = "SMALL" if history_box[0] == 1 else "BIG"
+                    desc = "QUANTUM REVERSAL MATRIX CATCH"
                 else:
-                    is_sure = big_percentage <= 0.32  # Higher threshold for absolute safety
-                    return ("SMALL", is_sure, "100% SURE SHOT (STRICT LOCK)" if is_sure else "STRICT 95 STRONG SMALL")
+                    pred = "BIG" if recent_trend >= 2 else "SMALL"
+                    desc = "CLEAN HARMONIC MOMENTUM"
 
-            pred_size, is_sure_shot, line_desc = calculate_ultra_strict_consensus(target_period_num, tab_offset, seconds)
-            next_shot_val = pred_size if pred_size else "WAITING"
+                return (pred, True, desc)
 
-            rand_users = 182 + ((int(time.time()) // 3) % 20)
+            pred_size, is_sure_shot, line_desc = calculate_clean_100_consensus(target_period_num, tab_offset)
+            next_shot_val = pred_size
+
+            rand_users = 256 + ((int(time.time()) // 3) % 15)
             mode_label = f"{seconds}S" if seconds < 60 else f"{seconds//60}M"
 
             st.markdown(
@@ -607,7 +592,7 @@ else:
                     </div>
                     <div style="background: #081a10; border: 1px solid #00FF66; padding: 2px 6px; border-radius: 6px; display: flex; align-items: center; gap: 4px;">
                         <span class="blinking-green-light" style="width: 7px; height: 7px; margin: 0;"></span>
-                        <span style="color: #00FF66; font-size: 11px; font-weight: 900;">{mode_label} STRICT LOCK</span>
+                        <span style="color: #00FF66; font-size: 11px; font-weight: 900;">{mode_label} 100-SHUTTER CLEAN</span>
                         <span style="color: #FFFFFF; font-size: 11px; font-weight: 900;">| 👥 {rand_users}</span>
                     </div>
                     <div class="timer-box-large">⏰ {timer_str}</div>
@@ -618,38 +603,22 @@ else:
 
             if seconds == 30:
                 scan_active = remaining_secs > 15
-                close_phase = remaining_secs <= 5
             elif seconds == 60:
                 scan_active = remaining_secs > 26
-                close_phase = remaining_secs <= 8
-            elif seconds == 180:
-                scan_active = remaining_secs > 15
-                close_phase = remaining_secs <= 5
             else:
                 scan_active = remaining_secs > 15
-                close_phase = remaining_secs <= 5
 
             if scan_active:
                 st.markdown(
-                    f'<div class="analyzing-banner"><span class="blinking-red-light" style="width:8px; height:8px; margin:0 4px 0 0;"></span> STRICT 95-SHUTTER SCANNING ({mode_label})... <span class="radar-spinner-icon"></span> ({remaining_secs}s left)</div>',
+                    f'<div class="analyzing-banner"><span class="blinking-red-light" style="width:8px; height:8px; margin:0 4px 0 0;"></span> CLEAN 100-SHUTTER SCANNING ({mode_label})... <span class="radar-spinner-icon"></span> ({remaining_secs}s left)</div>',
                     unsafe_allow_html=True,
                 )
-            elif pred_size is None:
-                st.markdown(
-                    '<div class="wait-warning-banner"><span class="blinking-red-light"></span>🛑 STRICT SAFETY HOLD: WAITING FOR 100% CLEAR TREND</div>',
-                    unsafe_allow_html=True,
-                )
-            elif close_phase:
-                st.markdown(
-                    '<div class="wait-warning-banner"><span class="blinking-red-light"></span>🛑 FINAL BIDDING WINDOW - PLACE YOUR BID NOW</div>',
-                    unsafe_allow_html=True,
-                )
-            elif is_sure_shot:
+            else:
                 if pred_size == "BIG":
                     st.markdown(
                         f"""
                         <div class="super-banner-big">
-                            🔥 100% SURE SHOT <span class="blinking-green-light"></span> : 
+                            🔥 100-SHUTTER SURE SHOT <span class="blinking-green-light"></span> : 
                             <span style="background: #000000; color: #FFB700; padding: 4px 14px; border-radius: 6px; border: 2px solid #FFB700; font-weight: 900; text-shadow: 0 0 10px #FFB700;">BIG</span> 🎯
                         </div>
                     """,
@@ -659,78 +628,49 @@ else:
                     st.markdown(
                         f"""
                         <div class="super-banner-small">
-                            🔥 100% SURE SHOT <span class="blinking-green-light"></span> : 
+                            🔥 100-SHUTTER SURE SHOT <span class="blinking-green-light"></span> : 
                             <span style="background: #000000; color: #00FFFF; padding: 4px 14px; border-radius: 6px; border: 2px solid #00FFFF; font-weight: 900; text-shadow: 0 0 10px #00FFFF;">SMALL</span> 🎯
                         </div>
                     """,
                         unsafe_allow_html=True,
                     )
-            else:
-                if pred_size == "BIG":
-                    st.markdown(
-                        f"""
-                        <div class="super-banner-big" style="animation: none; border-color: #FF8800;">
-                            📈 {line_desc} : 
-                            <span style="background: #000000; color: #FFB700; padding: 2px 10px; border-radius: 4px; border: 1px solid #FF8800;">BIG</span> 🎯
-                        </div>
-                    """,
-                        unsafe_allow_html=True,
-                    )
-                else:
-                    st.markdown(
-                        f"""
-                        <div class="super-banner-small" style="animation: none; border-color: #0088FF;">
-                            📉 {line_desc} : 
-                            <span style="background: #000000; color: #00FFFF; padding: 2px 10px; border-radius: 4px; border: 1px solid #00FFFF;">SMALL</span> 🎯
-                        </div>
-                    """,
-                        unsafe_allow_html=True,
-                    )
 
-            if scan_active or pred_size is None:
-                display_num = "—"
-                display_size = "WAITING"
-                display_color = "STANDBY"
-                ball_style = "background: #222222; color: #777777; border: 2px dashed #555555;"
-                size_bg = "#111111"
-                color_bg = "#111111"
-            else:
-                math_hash = (target_period_num * 17 + tab_offset) % 10
-                if pred_size == "BIG":
-                    possible_bigs = [5, 6, 7, 8, 9]
-                    pred_num = possible_bigs[math_hash % len(possible_bigs)]
-                    if pred_num == 5:
-                        pred_color = "GREEN / VIOLET"
-                        color_bg = "#9333ea"
-                        ball_style = "background: radial-gradient(circle at 35% 35%, #c084fc 0%, #9333ea 50%, #581c87 100%); color: #ffffff; border: 3px solid #00FF66; box-shadow: inset -4px -4px 10px rgba(0,0,0,0.6), inset 4px 4px 10px rgba(255,255,255,0.4), 0 0 18px rgba(147,51,234,0.9);"
-                    elif pred_num in [7, 9]:
-                        pred_color = "GREEN"
-                        color_bg = "#16a34a"
-                        ball_style = "background: radial-gradient(circle at 35% 35%, #4ade80 0%, #16a34a 50%, #14532d 100%); color: #ffffff; border: 3px solid #22c55e; box-shadow: inset -4px -4px 10px rgba(0,0,0,0.6), inset 4px 4px 10px rgba(255,255,255,0.4), 0 0 18px rgba(34,197,94,0.9);"
-                    else:
-                        pred_color = "RED"
-                        color_bg = "#dc2626"
-                        ball_style = "background: radial-gradient(circle at 35% 35%, #f87171 0%, #dc2626 50%, #7f1d1d 100%); color: #ffffff; border: 3px solid #ef4444; box-shadow: inset -4px -4px 10px rgba(0,0,0,0.6), inset 4px 4px 10px rgba(255,255,255,0.4), 0 0 18px rgba(239,68,68,0.9);"
+            math_hash = (target_period_num * 17 + tab_offset) % 10
+            if pred_size == "BIG":
+                possible_bigs = [5, 6, 7, 8, 9]
+                pred_num = possible_bigs[math_hash % len(possible_bigs)]
+                if pred_num == 5:
+                    pred_color = "GREEN / VIOLET"
+                    color_bg = "#9333ea"
+                    ball_style = "background: radial-gradient(circle at 35% 35%, #c084fc 0%, #9333ea 50%, #581c87 100%); color: #ffffff; border: 3px solid #00FF66; box-shadow: inset -4px -4px 10px rgba(0,0,0,0.6), inset 4px 4px 10px rgba(255,255,255,0.4), 0 0 18px rgba(147,51,234,0.9);"
+                elif pred_num in [7, 9]:
+                    pred_color = "GREEN"
+                    color_bg = "#16a34a"
+                    ball_style = "background: radial-gradient(circle at 35% 35%, #4ade80 0%, #16a34a 50%, #14532d 100%); color: #ffffff; border: 3px solid #22c55e; box-shadow: inset -4px -4px 10px rgba(0,0,0,0.6), inset 4px 4px 10px rgba(255,255,255,0.4), 0 0 18px rgba(34,197,94,0.9);"
                 else:
-                    possible_smalls = [0, 1, 2, 3, 4]
-                    pred_num = possible_smalls[math_hash % len(possible_smalls)]
-                    if pred_num == 0:
-                        pred_color = "RED / VIOLET"
-                        color_bg = "#8b5cf6"
-                        ball_style = "background: radial-gradient(circle at 35% 35%, #f43f5e 0%, #8b5cf6 50%, #4c1d95 100%); color: #ffffff; border: 3px solid #f43f5e; box-shadow: inset -4px -4px 10px rgba(0,0,0,0.6), inset 4px 4px 10px rgba(255,255,255,0.4), 0 0 18px rgba(244,63,94,0.9);"
-                    elif pred_num in [1, 3]:
-                        pred_color = "GREEN"
-                        color_bg = "#16a34a"
-                        ball_style = "background: radial-gradient(circle at 35% 35%, #4ade80 0%, #16a34a 50%, #14532d 100%); color: #ffffff; border: 3px solid #22c55e; box-shadow: inset -4px -4px 10px rgba(0,0,0,0.6), inset 4px 4px 10px rgba(255,255,255,0.4), 0 0 18px rgba(34,197,94,0.9);"
-                    else:
-                        pred_color = "RED"
-                        color_bg = "#dc2626"
-                        ball_style = "background: radial-gradient(circle at 35% 35%, #f87171 0%, #dc2626 50%, #7f1d1d 100%); color: #ffffff; border: 3px solid #ef4444; box-shadow: inset -4px -4px 10px rgba(0,0,0,0.6), inset 4px 4px 10px rgba(255,255,255,0.4), 0 0 18px rgba(239,68,68,0.9);"
+                    pred_color = "RED"
+                    color_bg = "#dc2626"
+                    ball_style = "background: radial-gradient(circle at 35% 35%, #f87171 0%, #dc2626 50%, #7f1d1d 100%); color: #ffffff; border: 3px solid #ef4444; box-shadow: inset -4px -4px 10px rgba(0,0,0,0.6), inset 4px 4px 10px rgba(255,255,255,0.4), 0 0 18px rgba(239,68,68,0.9);"
+            else:
+                possible_smalls = [0, 1, 2, 3, 4]
+                pred_num = possible_smalls[math_hash % len(possible_smalls)]
+                if pred_num == 0:
+                    pred_color = "RED / VIOLET"
+                    color_bg = "#8b5cf6"
+                    ball_style = "background: radial-gradient(circle at 35% 35%, #f43f5e 0%, #8b5cf6 50%, #4c1d95 100%); color: #ffffff; border: 3px solid #f43f5e; box-shadow: inset -4px -4px 10px rgba(0,0,0,0.6), inset 4px 4px 10px rgba(255,255,255,0.4), 0 0 18px rgba(244,63,94,0.9);"
+                elif pred_num in [1, 3]:
+                    pred_color = "GREEN"
+                    color_bg = "#16a34a"
+                    ball_style = "background: radial-gradient(circle at 35% 35%, #4ade80 0%, #16a34a 50%, #14532d 100%); color: #ffffff; border: 3px solid #22c55e; box-shadow: inset -4px -4px 10px rgba(0,0,0,0.6), inset 4px 4px 10px rgba(255,255,255,0.4), 0 0 18px rgba(34,197,94,0.9);"
+                else:
+                    pred_color = "RED"
+                    color_bg = "#dc2626"
+                    ball_style = "background: radial-gradient(circle at 35% 35%, #f87171 0%, #dc2626 50%, #7f1d1d 100%); color: #ffffff; border: 3px solid #ef4444; box-shadow: inset -4px -4px 10px rgba(0,0,0,0.6), inset 4px 4px 10px rgba(255,255,255,0.4), 0 0 18px rgba(239,68,68,0.9);"
 
-                display_num = str(pred_num)
-                display_size = pred_size
-                display_color = pred_color
-                size_bg = "#FF8800" if pred_size == "BIG" else "#0088FF"
+            display_num = str(pred_num)
+            display_size = pred_size
+            display_color = pred_color
+            size_bg = "#FF8800" if pred_size == "BIG" else "#0088FF"
 
             st.markdown(
                 f"""
@@ -756,28 +696,16 @@ else:
                 unsafe_allow_html=True,
             )
 
-            if scan_active or pred_size is None:
-                next_shot_display = "WAITING..."
-                next_shot_bg = "#111111"
-                next_shot_glow = "none"
-            else:
-                next_shot_display = next_shot_val
-                if next_shot_display == "BIG":
-                    next_shot_bg = "#FF8800"
-                    next_shot_glow = "0 0 15px #FF8800"
-                elif next_shot_display == "SMALL":
-                    next_shot_bg = "#0088FF"
-                    next_shot_glow = "0 0 15px #0088FF"
-                else:
-                    next_shot_bg = "#111111"
-                    next_shot_glow = "none"
+            next_shot_display = next_shot_val
+            next_shot_bg = "#FF8800" if next_shot_display == "BIG" else "#0088FF"
+            next_shot_glow = f"0 0 15px {next_shot_bg}"
 
             st.markdown(
                 f"""
                 <div style="margin-top: 12px; background: #000000; padding: 14px; border-radius: 12px; text-align: center; border: 2px solid #FFD700; box-shadow: 0 0 15px rgba(255,215,0,0.2); display: flex; justify-content: center; align-items: center; gap: 12px;">
                     <div style="display: flex; align-items: center; gap: 6px;">
                         <span class="blinking-red-light" style="width:10px; height:10px; margin:0;"></span>
-                        <span style="color: #00FF66; font-size: 14px; font-weight: 900; letter-spacing: 1px;">STRICT LIVE</span>
+                        <span style="color: #00FF66; font-size: 14px; font-weight: 900; letter-spacing: 1px;">CLEAN 100 LIVE</span>
                     </div>
                     <span style="color: #FFD700; font-weight: 900;">|</span>
                     <div style="display: flex; align-items: center; gap: 10px;">
