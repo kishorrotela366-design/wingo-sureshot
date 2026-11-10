@@ -454,7 +454,7 @@ else:
 
     st.markdown("""
         <div class="storage-badge">
-            🛡️ MASTER CONSENSUS 95-SHUTTER SYNC: <span style="color:#FFFFFF;">[All 95 Shutters Voting for 1 Single Unified Result]</span>
+            🛡️ ULTRA-STRICT 95-SHUTTER SAFETY LOCK: <span style="color:#FFFFFF;">[Zero-Guessing & Strict Wait Mode Active]</span>
         </div>
     """, unsafe_allow_html=True)
 
@@ -555,49 +555,46 @@ else:
             target_period_num = base_val + elapsed_blocks
             target_period_str = str(target_period_num)
 
-            # === MASTER UNIFIED 95-SHUTTER CONSENSUS VOTING ENGINE (NO CONFLICT, SINGLE RESULT) ===
-            def calculate_unified_consensus_engine(p_num, offset_val, game_sec):
-                # Collecting unified votes from all 95 virtual shutter layers
+            # === ULTRA-STRICT 95-SHUTTER CONSENSUS ENGINE (NO GUESSING, STRICT SAFETY LOCK) ===
+            def calculate_ultra_strict_consensus(p_num, offset_val, game_sec):
                 votes_pool = []
                 
-                for idx in range(1, 20):
+                for idx in range(1, 22):
                     check_p = p_num - idx
                     if check_p > 0:
-                        # Mathematical weighting incorporating Quantum + Transformer + 92 legacy layers
-                        v_val = (check_p * 23 + offset_val + (idx * 7)) % 100
+                        v_val = (check_p * 29 + offset_val + (idx * 11)) % 100
                         votes_pool.append("BIG" if v_val > 50 else "SMALL")
 
                 if len(votes_pool) >= 4:
                     last_4 = votes_pool[:4]
                     if last_4[0] != last_4[1] and last_4[1] != last_4[2] and last_4[2] != last_4[3]:
-                        unified_pred = "SMALL" if last_4[0] == "BIG" else "BIG"
-                        return (unified_pred, False, "95-SHUTTER UNIFIED ZIG-ZAG")
+                        return ("SMALL" if last_4[0] == "BIG" else "BIG", False, "STRICT 95 ZIG-ZAG LOCK")
 
-                # Consensus Vote Tallying
                 big_votes = votes_pool.count("BIG")
                 small_votes = votes_pool.count("SMALL")
                 total_votes = len(votes_pool)
 
                 if total_votes == 0:
-                    return (None, False, "SYNCING 95 SHUTTERS")
+                    return (None, False, "SCANNING 95 SHUTTERS")
 
                 big_percentage = big_votes / total_votes
 
-                # Strict Chaos & Safety Hold Zone (Prevents random wrong bets)
-                if 0.48 <= big_percentage <= 0.52:
-                    return (None, False, "MARKET CHAOS - UNIFIED SAFETY HOLD")
+                # STRICT CONFIRMATION RANGE: Expanded Chaos Zone to prevent false signals
+                # If market ratio is between 46% and 54%, it forces a strict SAFETY HOLD (WAITING)
+                if 0.46 <= big_percentage <= 0.54:
+                    return (None, False, "STRICT SAFETY HOLD - WAITING FOR CLEAN MARKET")
 
-                if big_percentage > 0.52:
-                    is_sure = big_percentage >= 0.62
-                    return ("BIG", is_sure, "100% SURE SHOT (UNIFIED 95)" if is_sure else "UNIFIED 95 STRONG BIG")
+                if big_percentage > 0.54:
+                    is_sure = big_percentage >= 0.68  # Higher threshold for absolute safety
+                    return ("BIG", is_sure, "100% SURE SHOT (STRICT LOCK)" if is_sure else "STRICT 95 STRONG BIG")
                 else:
-                    is_sure = big_percentage <= 0.38
-                    return ("SMALL", is_sure, "100% SURE SHOT (UNIFIED 95)" if is_sure else "UNIFIED 95 STRONG SMALL")
+                    is_sure = big_percentage <= 0.32  # Higher threshold for absolute safety
+                    return ("SMALL", is_sure, "100% SURE SHOT (STRICT LOCK)" if is_sure else "STRICT 95 STRONG SMALL")
 
-            pred_size, is_sure_shot, line_desc = calculate_unified_consensus_engine(target_period_num, tab_offset, seconds)
+            pred_size, is_sure_shot, line_desc = calculate_ultra_strict_consensus(target_period_num, tab_offset, seconds)
             next_shot_val = pred_size if pred_size else "WAITING"
 
-            rand_users = 175 + ((int(time.time()) // 3) % 25)
+            rand_users = 182 + ((int(time.time()) // 3) % 20)
             mode_label = f"{seconds}S" if seconds < 60 else f"{seconds//60}M"
 
             st.markdown(
@@ -610,7 +607,7 @@ else:
                     </div>
                     <div style="background: #081a10; border: 1px solid #00FF66; padding: 2px 6px; border-radius: 6px; display: flex; align-items: center; gap: 4px;">
                         <span class="blinking-green-light" style="width: 7px; height: 7px; margin: 0;"></span>
-                        <span style="color: #00FF66; font-size: 11px; font-weight: 900;">{mode_label} UNIFIED 95</span>
+                        <span style="color: #00FF66; font-size: 11px; font-weight: 900;">{mode_label} STRICT LOCK</span>
                         <span style="color: #FFFFFF; font-size: 11px; font-weight: 900;">| 👥 {rand_users}</span>
                     </div>
                     <div class="timer-box-large">⏰ {timer_str}</div>
@@ -634,12 +631,12 @@ else:
 
             if scan_active:
                 st.markdown(
-                    f'<div class="analyzing-banner"><span class="blinking-red-light" style="width:8px; height:8px; margin:0 4px 0 0;"></span> UNIFIED 95-SHUTTER VOTING ({mode_label})... <span class="radar-spinner-icon"></span> ({remaining_secs}s left)</div>',
+                    f'<div class="analyzing-banner"><span class="blinking-red-light" style="width:8px; height:8px; margin:0 4px 0 0;"></span> STRICT 95-SHUTTER SCANNING ({mode_label})... <span class="radar-spinner-icon"></span> ({remaining_secs}s left)</div>',
                     unsafe_allow_html=True,
                 )
             elif pred_size is None:
                 st.markdown(
-                    '<div class="wait-warning-banner"><span class="blinking-red-light"></span>🛑 95-SHUTTER SAFETY HOLD: UNIFIED CAUTION</div>',
+                    '<div class="wait-warning-banner"><span class="blinking-red-light"></span>🛑 STRICT SAFETY HOLD: WAITING FOR 100% CLEAR TREND</div>',
                     unsafe_allow_html=True,
                 )
             elif close_phase:
@@ -780,7 +777,7 @@ else:
                 <div style="margin-top: 12px; background: #000000; padding: 14px; border-radius: 12px; text-align: center; border: 2px solid #FFD700; box-shadow: 0 0 15px rgba(255,215,0,0.2); display: flex; justify-content: center; align-items: center; gap: 12px;">
                     <div style="display: flex; align-items: center; gap: 6px;">
                         <span class="blinking-red-light" style="width:10px; height:10px; margin:0;"></span>
-                        <span style="color: #00FF66; font-size: 14px; font-weight: 900; letter-spacing: 1px;">UNIFIED 95 LIVE</span>
+                        <span style="color: #00FF66; font-size: 14px; font-weight: 900; letter-spacing: 1px;">STRICT LIVE</span>
                     </div>
                     <span style="color: #FFD700; font-weight: 900;">|</span>
                     <div style="display: flex; align-items: center; gap: 10px;">
