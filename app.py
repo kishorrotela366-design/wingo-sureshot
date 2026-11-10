@@ -32,12 +32,11 @@ st.markdown(
         100% { transform: rotate(360deg); }
     }
     
-    /* === कलरफुल टिपटिप आती हुई हाई-टेक लाइट एनिमेशन === */
     @keyframes colorful-scanning-glow {
-        0% { border-color: #00FFFF; box-shadow: 0 0 15px #00FFFF, inset 0 0 10px #00FFFF; background: linear-gradient(135deg, #001a1a, #000000); }
-        33% { border-color: #FF0055; box-shadow: 0 0 20px #FF0055, inset 0 0 12px #FF0055; background: linear-gradient(135deg, #1a000a, #000000); }
-        66% { border-color: #00FF66; box-shadow: 0 0 15px #00FF66, inset 0 0 10px #00FF66; background: linear-gradient(135deg, #001a0a, #000000); }
-        100% { border-color: #00FFFF; box-shadow: 0 0 15px #00FFFF, inset 0 0 10px #00FFFF; background: linear-gradient(135deg, #001a1a, #000000); }
+        0% { border-color: #00FFFF; box-shadow: 0 0 20px #00FFFF, inset 0 0 15px #00FFFF; background: linear-gradient(135deg, #002222, #000a0a); }
+        33% { border-color: #FF0055; box-shadow: 0 0 25px #FF0055, inset 0 0 18px #FF0055; background: linear-gradient(135deg, #220011, #0a0005); }
+        66% { border-color: #00FF66; box-shadow: 0 0 20px #00FF66, inset 0 0 15px #00FF66; background: linear-gradient(135deg, #002211, #000a05); }
+        100% { border-color: #00FFFF; box-shadow: 0 0 20px #00FFFF, inset 0 0 15px #00FFFF; background: linear-gradient(135deg, #002222, #000a0a); }
     }
     
     @keyframes super-win-glow-big {
@@ -75,13 +74,11 @@ st.markdown(
 
     .radar-spinner-icon {
         display: inline-block !important;
-        width: 14px !important;
-        height: 14px !important;
-        border: 2.5px solid #00FFFF !important;
-        border-top: 2.5px solid transparent !important;
+        width: 18px !important;
+        height: 18px !important;
+        border: 3px solid #00FFFF !important;
+        border-top: 3px solid transparent !important;
         border-radius: 50% !important;
-        margin-left: 6px !important;
-        margin-right: 6px !important;
         animation: radar-spin 0.7s linear infinite !important;
         vertical-align: middle !important;
     }
@@ -222,7 +219,7 @@ if not st.session_state.authenticated:
     st.markdown(
         "<h2 style='text-align: center; color: #FFD700; font-size: 20px;"
         " font-weight: 900;'><span class='blinking-red-light'></span>👑 VIP"
-        " LIVE PRO PANEL 👑<span class='blinking-red-light'"
+        " PRO PANEL 👑<span class='blinking-red-light'"
         " style='margin-left: 6px; margin-right: 0;'></span></h2>",
         unsafe_allow_html=True,
     )
@@ -447,7 +444,7 @@ else:
 
     st.markdown("""
         <div class="storage-badge">
-            ⚡ LIVE PRO SCANNER: <span style="color:#FFFFFF;">[Color Glow Engine Active]</span>
+            ⚡ LIVE PRO SCANNER: <span style="color:#FFFFFF;">[Live Spinning Scan & Smart Result Engine Active]</span>
         </div>
     """, unsafe_allow_html=True)
 
@@ -602,99 +599,72 @@ else:
                 scan_active = remaining_secs > 15
 
             # ==========================================
-            # 1. जब तक स्कैनिंग चल रही है: बीच में काले पर्दे पर कलरफुल लाइटें टिपटिप आएंगी
+            # 1. जब तक स्कैनिंग चल रही है: बीच में गोल घूमने वाला स्कैनर दिखेगा और नीचे के खाने बंद रहेंगे
             # ==========================================
             if scan_active:
                 st.markdown(
                     f'''
-                    <div style="animation: colorful-scanning-glow 1.5s infinite; border: 2.5px solid #00FFFF; background: #000000; padding: 18px; border-radius: 12px; text-align: center; margin: 10px 0;">
-                        <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
-                            <span class="blinking-red-light"></span>
-                            <span style="color: #00FFFF; font-size: 13px; font-weight: 900; letter-spacing: 1.5px; text-shadow: 0 0 10px #00FFFF;">LIVE COLOR SCANNING ({mode_label})</span>
+                    <div style="animation: colorful-scanning-glow 1.5s infinite; border: 2.5px solid #00FFFF; padding: 20px; border-radius: 12px; text-align: center; margin: 10px 0;">
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
                             <span class="radar-spinner-icon"></span>
+                            <span style="color: #00FFFF; font-size: 14px; font-weight: 900; letter-spacing: 1.5px; text-shadow: 0 0 10px #00FFFF;">LIVE COLOR SCANNING ({mode_label})</span>
+                            <span class="blinking-red-light" style="margin:0;"></span>
                         </div>
-                        <div style="color: #00FF66; font-size: 11px; margin-top: 6px; font-weight: 900; text-shadow: 0 0 8px #00FF66;">⚡ SERVER PATTERN SYNCING... ({remaining_secs}s left)</div>
+                        <div style="color: #00FF66; font-size: 11px; margin-top: 8px; font-weight: 900; text-shadow: 0 0 8px #00FF66;">⚡ SERVER PATTERN ROTATING... ({remaining_secs}s left)</div>
                     </div>
                 ''',
                     unsafe_allow_html=True,
                 )
 
-                # नीचे के खानों में हमेशा की तरह लाइव रिजल्ट और नेक्स्ट शॉट चालू रहेगा
-                next_shot_display = pred_size
-                next_shot_bg = "#FF8800" if next_shot_display == "BIG" else "#0088FF"
-                next_shot_glow = f"0 0 12px {next_shot_bg}"
-
-                math_hash = (target_period_num * 17 + tab_offset) % 10
-                if pred_size == "BIG":
-                    possible_bigs = [5, 6, 7, 8, 9]
-                    pred_num = possible_bigs[math_hash % len(possible_bigs)]
-                    pred_color = "GREEN" if pred_num in [7, 9] else ("RED" if pred_num != 5 else "GREEN / VIOLET")
-                    color_bg = "#16a34a" if pred_color == "GREEN" else ("#dc2626" if pred_color == "RED" else "#9333ea")
-                else:
-                    possible_smalls = [0, 1, 2, 3, 4]
-                    pred_num = possible_smalls[math_hash % len(possible_smalls)]
-                    pred_color = "RED" if pred_num in [2, 4] else ("GREEN" if pred_num in [1, 3] else "RED / VIOLET")
-                    color_bg = "#dc2626" if pred_color == "RED" else ("#16a34a" if pred_color == "GREEN" else "#8b5cf6")
-
-                ball_style = "background: radial-gradient(circle at 35% 35%, #f87171 0%, #dc2626 50%, #7f1d1d 100%); color: #ffffff; border: 2px solid #FFD700;"
-
                 st.markdown(
-                    f"""
-                    <div class="diagonal-container">
-                        <div class="result-item">
-                            <div style="font-size: 11px; color: #FFD700; font-weight: 900; margin-bottom: 6px;">NUMBER</div>
-                            <div style="{ball_style} width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 900; margin: 0 auto;">
-                                {pred_num}
-                            </div>
-                        </div>
-                        <div class="result-item">
-                            <div style="font-size: 11px; color: #FFD700; font-weight: 900; margin-bottom: 6px;">SIZE</div>
-                            <div style="background: {'#FF8800' if pred_size=='BIG' else '#0088FF'}; color: white; padding: 12px 4px; border-radius: 8px; font-weight: 900; font-size: 13px; text-align: center;">{pred_size}</div>
-                        </div>
-                        <div class="result-item">
-                            <div style="font-size: 11px; color: #FFD700; font-weight: 900; margin-bottom: 6px;">COLOR</div>
-                            <div style="background-color: {color_bg}; color: white; padding: 12px 4px; border-radius: 8px; font-weight: 900; font-size: 12px; text-align: center;">{pred_color}</div>
-                        </div>
-                    </div>
-                """,
-                    unsafe_allow_html=True,
-                )
-
-                st.markdown(
-                    f"""
-                    <div style="margin-top: 10px; background: #000000; padding: 12px; border-radius: 10px; text-align: center; border: 1.5px solid #FFD700; display: flex; justify-content: center; align-items: center; gap: 10px;">
-                        <span style="color: #FFD700; font-size: 13px; font-weight: 900;">NEXT SHOT:</span>
-                        <span style="background: {next_shot_bg}; color: #FFFFFF; padding: 6px 20px; border-radius: 6px; font-weight: 900; font-size: 13px; border: 1.5px solid #FFFFFF; box-shadow: {next_shot_glow};">{next_shot_display}</span>
+                    """
+                    <div style="border: 1.5px dashed #333333; background: #000000; padding: 25px; border-radius: 12px; text-align: center; margin-top: 10px;">
+                        <div style="color: #666666; font-size: 13px; font-weight: 900; letter-spacing: 1px;">🔒 RESULT LOCKED UNTIL SCAN COMPLETE</div>
+                        <div style="color: #444444; font-size: 11px; margin-top: 4px;">स्कैन पूरा होने पर नीचे परिणाम दिखाई देगा...</div>
                     </div>
                 """,
                     unsafe_allow_html=True,
                 )
 
             # ==========================================
-            # 2. जब समय पूरा हो जाए: बीच में अचानक 100% SURE SHOT चमक उठेगा
+            # 2. जब स्कैन खत्म हो जाए: अगर 100% श्योर शॉट है तो बीच में चमकेगा, वरना साफ़ काला पर्दा रहेगा। और नीचे हर हाल में रिजल्ट दिखेगा!
             # ==========================================
             else:
-                if pred_size == "BIG":
-                    st.markdown(
-                        f"""
-                        <div class="super-banner-big">
-                            🔥 100% SURE SHOT <span class="blinking-green-light"></span> : 
-                            <span style="background: #000000; color: #FFD700; padding: 4px 14px; border-radius: 6px; border: 2px solid #FFD700; font-weight: 900; text-shadow: 0 0 10px #FFD700;">BIG</span> 🎯
-                        </div>
-                    """,
-                        unsafe_allow_html=True,
-                    )
+                is_true_sure_shot = (target_period_num % 3 == 0)
+
+                if is_true_sure_shot:
+                    if pred_size == "BIG":
+                        st.markdown(
+                            f"""
+                            <div class="super-banner-big">
+                                🔥 100% SURE SHOT <span class="blinking-green-light"></span> : 
+                                <span style="background: #000000; color: #FFD700; padding: 4px 14px; border-radius: 6px; border: 2px solid #FFD700; font-weight: 900; text-shadow: 0 0 10px #FFD700;">BIG</span> 🎯
+                            </div>
+                        """,
+                            unsafe_allow_html=True,
+                        )
+                    else:
+                        st.markdown(
+                            f"""
+                            <div class="super-banner-small">
+                                🔥 100% SURE SHOT <span class="blinking-green-light"></span> : 
+                                <span style="background: #000000; color: #00FFFF; padding: 4px 14px; border-radius: 6px; border: 2px solid #00FFFF; font-weight: 900; text-shadow: 0 0 10px #00FFFF;">SMALL</span> 🎯
+                            </div>
+                        """,
+                            unsafe_allow_html=True,
+                        )
                 else:
+                    # यदि श्योर शॉट नहीं है, तो बीच में साफ़ काला पर्दा रहेगा
                     st.markdown(
-                        f"""
-                        <div class="super-banner-small">
-                            🔥 100% SURE SHOT <span class="blinking-green-light"></span> : 
-                            <span style="background: #000000; color: #00FFFF; padding: 4px 14px; border-radius: 6px; border: 2px solid #00FFFF; font-weight: 900; text-shadow: 0 0 10px #00FFFF;">SMALL</span> 🎯
+                        """
+                        <div style="background: #000000; padding: 22px; border-radius: 10px; text-align: center; border: 1px solid #111111; margin: 10px 0;">
+                            <div style="color: #333333; font-size: 12px; font-weight: 900; letter-spacing: 1px;">████████████████████████</div>
                         </div>
                     """,
                         unsafe_allow_html=True,
                     )
 
+                # नीचे के खानों में सर्चिंग का रिजल्ट हर हाल में दिखेगा (चाहे श्योर शॉट हो या न हो)
                 math_hash = (target_period_num * 17 + tab_offset) % 10
                 if pred_size == "BIG":
                     possible_bigs = [5, 6, 7, 8, 9]
