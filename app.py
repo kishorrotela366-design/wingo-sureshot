@@ -22,7 +22,6 @@ st.markdown(
     .stAppDeployButton {display: none !important;}
     [data-testid="stStatusWidget"] {visibility: hidden !important;}
     
-    /* पंख लगाकर उड़ने वाले पैसे के बंडलों का एनिमेशन */
     @keyframes fly-cash-up {
         0% { transform: translateY(105vh) translateX(0px) rotate(0deg); opacity: 0; }
         20% { opacity: 0.9; }
@@ -69,28 +68,24 @@ st.markdown(
         100% { border-color: #00FFFF; box-shadow: 0 0 35px #00FFFF, inset 0 0 20px #00FFFF; background: linear-gradient(135deg, #003333, #000f1a); }
     }
 
-    /* VIP के लिए अलग चमक (गोल्डन और नियॉन पिंक) */
     @keyframes vip-anim {
         0% { color: #FFD700; text-shadow: 0 0 10px #FFD700, 0 0 20px #FF0055; transform: scale(1); }
         50% { color: #FF0055; text-shadow: 0 0 15px #FF0055, 0 0 25px #FFD700; transform: scale(1.05); }
         100% { color: #FFD700; text-shadow: 0 0 10px #FFD700, 0 0 20px #FF0055; transform: scale(1); }
     }
 
-    /* BDG के लिए अलग चमक (नियोन सियान और ग्रीन) */
     @keyframes bdg-anim {
         0% { color: #00FFFF; text-shadow: 0 0 10px #00FFFF, 0 0 20px #00FF66; transform: scale(1); }
         50% { color: #00FF66; text-shadow: 0 0 15px #00FF66, 0 0 25px #00FFFF; transform: scale(1.05); }
         100% { color: #00FFFF; text-shadow: 0 0 10px #00FFFF, 0 0 20px #00FF66; transform: scale(1); }
     }
 
-    /* GAME के लिए अलग चमक (पर्पल और ब्राइट येलो) */
     @keyframes game-anim {
         0% { color: #c084fc; text-shadow: 0 0 10px #c084fc, 0 0 20px #FFD700; transform: scale(1); }
         50% { color: #FFD700; text-shadow: 0 0 15px #FFD700, 0 0 25px #c084fc; transform: scale(1.05); }
         100% { color: #c084fc; text-shadow: 0 0 10px #c084fc, 0 0 20px #FFD700; transform: scale(1); }
     }
 
-    /* HACK के लिए अलग चमक (लाल और इलेक्ट्रिक ब्लू) */
     @keyframes hack-anim {
         0% { color: #ff3333; text-shadow: 0 0 10px #ff3333, 0 0 20px #0088FF; transform: scale(1); }
         50% { color: #0088FF; text-shadow: 0 0 15px #0088FF, 0 0 25px #ff3333; transform: scale(1.05); }
@@ -192,7 +187,6 @@ st.markdown(
     .admin-card { background: #110022 !important; border: 2px solid #00FF66 !important; border-radius: 12px !important; padding: 15px !important; margin-bottom: 15px !important; position: relative; z-index: 2; }
     </style>
 
-    <!-- पंख लगाकर उड़ने वाले पैसे के बंडल (Flying Cash with Wings Effect) -->
     <div class="flying-money-item" style="left: 8%; animation-delay: 0s;">💸🪽</div>
     <div class="flying-money-item" style="left: 25%; animation-delay: 1.5s;">💵🪽</div>
     <div class="flying-money-item" style="left: 50%; animation-delay: 3s;">💶🪽</div>
@@ -302,8 +296,8 @@ if "used_utrs_list" not in st.session_state:
 if "user_base_period" not in st.session_state:
     st.session_state.user_base_period = ""
 
-if "base_input_block_time" not in st.session_state:
-    st.session_state.base_input_block_time = 0
+if "base_input_time" not in st.session_state:
+    st.session_state.base_input_time = 0
 
 if "selected_game_seconds" not in st.session_state:
     st.session_state.selected_game_seconds = 30
@@ -311,7 +305,6 @@ if "selected_game_seconds" not in st.session_state:
 MASTER_MOBILE = "9011997944"
 MASTER_PASSWORD = "KISHOR@84"
 
-# अलग-अलग कलर्स और आगे-पीछे लाल बत्तियों के साथ वीआईपी हेडिंग
 st.markdown(
     """
     <div class='vip-pro-heading'>
@@ -534,15 +527,19 @@ else:
     with st.container(horizontal=True, gap="small"):
         if st.button("⏳ 30sec", key="b_30s", use_container_width=True):
             st.session_state.selected_game_seconds = 30
+            st.session_state.base_input_time = 0
             st.rerun()
         if st.button("🕒 1 Min", key="b_1m", use_container_width=True):
             st.session_state.selected_game_seconds = 60
+            st.session_state.base_input_time = 0
             st.rerun()
         if st.button("⏱️ 3 Min", key="b_3m", use_container_width=True):
             st.session_state.selected_game_seconds = 180
+            st.session_state.base_input_time = 0
             st.rerun()
         if st.button("⏰ 5 Min", key="b_5m", use_container_width=True):
             st.session_state.selected_game_seconds = 300
+            st.session_state.base_input_time = 0
             st.rerun()
 
     st.markdown(f"""
@@ -558,10 +555,8 @@ else:
     def update_period_callback():
         clean_val = "".join(filter(str.isdigit, st.session_state.period_text_box))
         st.session_state.user_base_period = clean_val
-        current_time = int(time.time())
-        st.session_state.base_input_block_time = current_time - (
-            current_time % seconds
-        )
+        if len(clean_val) == 5:
+            st.session_state.base_input_time = int(time.time())
 
     st.text_input(
         "Period Input",
@@ -610,18 +605,13 @@ else:
 
             user_input_str = st.session_state.user_base_period.strip()
 
-            current_time = int(time.time())
-            current_block_start = current_time - (current_time % seconds)
-
+            # यहाँ सख्त नियम है: अगर 5 अंकों का असली नंबर नहीं होगा, तो पैनल कोई तुक्का या रिजल्ट नहीं दिखाएगा
             is_invalid_format = False
             if not user_input_str or len(user_input_str) != 5 or not user_input_str.isdigit():
                 is_invalid_format = True
             else:
                 try:
                     user_val = int(user_input_str)
-                    if st.session_state.base_input_block_time == 0:
-                        st.session_state.base_input_block_time = current_block_start
-                    
                     if abs(user_val) < 10000:
                         is_invalid_format = True
                 except:
@@ -634,7 +624,7 @@ else:
                         <div style="display: flex; align-items: center;">
                             <span class="blinking-red-light"></span>
                             <span style="color: #FFD700; font-size: 13px; font-weight: 900; margin-right: 6px;">LIVE PERIOD:</span>
-                            <span style="color: #FF4444; font-size: 12px; font-weight: 900;">🚨 कृपया BDG गेम का सही लाइव पीरियड नंबर डालें!</span>
+                            <span style="color: #FF4444; font-size: 12px; font-weight: 900;">🚨 कृपया असली लाइव पीरियड नंबर डालें (फर्जी नंबर मान्य नहीं)!</span>
                         </div>
                         <div class="timer-box-large">⏰ {timer_str}</div>
                     </div>
@@ -643,10 +633,10 @@ else:
                 )
                 st.markdown(
                     """
-                    <div style="border: 2px dashed #00FFFF; background: #001122; padding: 18px; border-radius: 12px; text-align: center; margin-top: 10px;">
-                        <span class="radar-spinner-icon" style="margin-bottom: 6px;"></span>
-                        <div style="color: #00FFFF; font-size: 13px; font-weight: 900;">⚡ SERVER SYNC WAITING FOR LIVE BDG PERIOD...</div>
-                        <div style="color: #CCCCCC; font-size: 11px; margin-top: 4px;">जैसे ही आप सही लाइव पीरियड डालेंगे, सॉफ्टवेयर सेकंड्स के साथ अटैच होकर चालू हो जाएगा।</div>
+                    <div style="border: 2px dashed #FF0055; background: #220011; padding: 18px; border-radius: 12px; text-align: center; margin-top: 10px;">
+                        <span class="blinking-red-light" style="margin-bottom: 6px; width: 14px; height: 14px;"></span>
+                        <div style="color: #FF0055; font-size: 13px; font-weight: 900;">⚠️ STRIKE: WAITING FOR REAL BDG LIVE PERIOD...</div>
+                        <div style="color: #CCCCCC; font-size: 11px; margin-top: 4px;">फर्जी या गलत नंबर डालने पर स्कैनर बंद रहेगा। सही लाइव नंबर डालने पर ही स्कैनिंग शुरू होगी।</div>
                     </div>
                 """,
                     unsafe_allow_html=True,
@@ -655,14 +645,16 @@ else:
                 return
 
             try:
-                base_val = int(user_input_str)
+                base_period_num = int(user_input_str)
             except:
-                base_val = 10000
+                base_period_num = 10000
 
-            elapsed_blocks = (
-                current_block_start - st.session_state.base_input_block_time
-            ) // seconds
-            target_period_num = base_val + elapsed_blocks
+            current_real_time = int(time.time())
+            if st.session_state.base_input_time == 0:
+                st.session_state.base_input_time = current_real_time
+
+            elapsed_blocks = (current_real_time - st.session_state.base_input_time) // seconds
+            target_period_num = base_period_num + elapsed_blocks
             target_period_str = str(target_period_num)
 
             def calculate_consensus(p_num, offset_val):
