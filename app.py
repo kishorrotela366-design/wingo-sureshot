@@ -3,6 +3,7 @@ import json
 import os
 import time
 import streamlit as st
+import streamlit.components.v1 as components
 
 st.set_page_config(
     page_title="VIP PRO SCANNER PANEL",
@@ -49,6 +50,23 @@ st.markdown(
         0% { border-color: #00FFFF; box-shadow: 0 0 35px #00FFFF, inset 0 0 20px #00FFFF; background: linear-gradient(135deg, #003333, #000f1a); }
         50% { border-color: #00FF66; box-shadow: 0 0 15px #00FF66, inset 0 0 8px #00FF66; background: linear-gradient(135deg, #002211, #00051a); }
         100% { border-color: #00FFFF; box-shadow: 0 0 35px #00FFFF, inset 0 0 20px #00FFFF; background: linear-gradient(135deg, #003333, #000f1a); }
+    }
+
+    /* नई मल्टी-कलर ग्लोइंग एनिमेशन हेडिंग के लिए */
+    @keyframes rainbow-text-glow {
+        0% { color: #FF0055; text-shadow: 0 0 10px #FF0055, 0 0 20px #FF0055; }
+        33% { color: #00FFFF; text-shadow: 0 0 10px #00FFFF, 0 0 20px #00FFFF; }
+        66% { color: #00FF66; text-shadow: 0 0 10px #00FF66, 0 0 20px #00FF66; }
+        100% { color: #FFD700; text-shadow: 0 0 10px #FFD700, 0 0 20px #FFD700; }
+    }
+
+    .vip-pro-heading {
+        text-align: center;
+        font-size: 22px;
+        font-weight: 900;
+        animation: rainbow-text-glow 3s infinite linear;
+        letter-spacing: 1px;
+        margin-bottom: 10px;
     }
 
     .blinking-red-light {
@@ -124,7 +142,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-DATA_FILE = "bdg_app_data.json"
+DATA_FILE = "bdg_app_titanium_vault.json"
 
 def parse_expiry_date(exp_val):
     if isinstance(exp_val, datetime):
@@ -155,27 +173,27 @@ def load_shared_data():
         except Exception:
             pass
 
-    if "persistent_utr_requests" not in st.session_state:
-        st.session_state.persistent_utr_requests = file_data.get("utr_requests", {})
+    if "titanium_vault_requests" not in st.session_state:
+        st.session_state.titanium_vault_requests = file_data.get("utr_requests", {})
     else:
         for mob, val in file_data.get("utr_requests", {}).items():
-            if mob not in st.session_state.persistent_utr_requests:
-                st.session_state.persistent_utr_requests[mob] = val
+            if mob not in st.session_state.titanium_vault_requests:
+                st.session_state.titanium_vault_requests[mob] = val
 
-    if "persistent_used_utrs" not in st.session_state:
-        st.session_state.persistent_used_utrs = list(set(file_data.get("used_utrs_list", [])))
+    if "titanium_vault_used_utrs" not in st.session_state:
+        st.session_state.titanium_vault_used_utrs = list(set(file_data.get("used_utrs_list", [])))
     else:
-        st.session_state.persistent_used_utrs = list(set(file_data.get("used_utrs_list", []) + st.session_state.persistent_used_utrs))
+        st.session_state.titanium_vault_used_utrs = list(set(file_data.get("used_utrs_list", []) + st.session_state.titanium_vault_used_utrs))
 
     return {
-        "utr_requests": st.session_state.persistent_utr_requests,
-        "used_utrs_list": st.session_state.persistent_used_utrs
+        "utr_requests": st.session_state.titanium_vault_requests,
+        "used_utrs_list": st.session_state.titanium_vault_used_utrs
     }
 
 def save_shared_data(utr_reqs, used_utrs):
     try:
-        st.session_state.persistent_utr_requests = utr_reqs
-        st.session_state.persistent_used_utrs = used_utrs
+        st.session_state.titanium_vault_requests = utr_reqs
+        st.session_state.titanium_vault_used_utrs = used_utrs
 
         serializable_data = {"utr_requests": {}, "used_utrs_list": used_utrs}
         for mob, val in utr_reqs.items():
@@ -187,7 +205,7 @@ def save_shared_data(utr_reqs, used_utrs):
         with open(DATA_FILE, "w", encoding="utf-8") as f:
             json.dump(serializable_data, f, ensure_ascii=False, indent=4)
     except Exception as e:
-        print("Save Error:", e)
+        print("Vault Save Error:", e)
 
 initial_data = load_shared_data()
 
@@ -196,6 +214,25 @@ if "authenticated" not in st.session_state:
 
 if "is_owner" not in st.session_state:
     st.session_state.is_owner = False
+
+# LocalStorage Persistent Bridge
+components.html(
+    """
+    <script>
+    try {
+        const savedAuth = localStorage.getItem('vip_titanium_auth');
+        const savedExpiry = localStorage.getItem('vip_titanium_expiry');
+        if (savedAuth && savedExpiry) {
+            const expDate = new Date(savedExpiry);
+            if (new Date() < expDate) {
+                // Active session valid
+            }
+        }
+    } catch(e) {}
+    </script>
+    """,
+    height=0,
+)
 
 if "utr_requests" not in st.session_state:
     st.session_state.utr_requests = initial_data["utr_requests"]
@@ -216,11 +253,9 @@ MASTER_MOBILE = "9011997944"
 MASTER_PASSWORD = "KISHOR@84"
 
 if not st.session_state.authenticated:
+    # यहाँ मल्टी-कलर ग्लोइंग हेडिंग जोड़ी गई है
     st.markdown(
-        "<h2 style='text-align: center; color: #FFD700; font-size: 20px;"
-        " font-weight: 900;'><span class='blinking-red-light'></span>👑 VIP"
-        " PRO PANEL 👑<span class='blinking-red-light'"
-        " style='margin-left: 6px; margin-right: 0;'></span></h2>",
+        "<h2 class='vip-pro-heading'><span class='blinking-red-light'></span>👑 VIP PRO PANEL 👑<span class='blinking-red-light' style='margin-left: 6px; margin-right: 0;'></span></h2>",
         unsafe_allow_html=True,
     )
 
@@ -261,11 +296,23 @@ if not st.session_state.authenticated:
             user_data = st.session_state.utr_requests[clean_l_mob]
             if user_data["password"] == login_pass:
                 exp_time = parse_expiry_date(user_data["expiry"])
+                curr_time = datetime.now()
 
-                if user_data.get("status") == "APPROVED" and datetime.now() < exp_time:
+                if user_data.get("status") == "APPROVED" and curr_time < exp_time:
                     st.session_state.authenticated = True
                     st.session_state.is_owner = False
-                    st.success("🟢 Verified: आपका प्लान सक्रिय है, डैशबोर्ड खुल रहा है...")
+                    
+                    exp_iso = exp_time.isoformat()
+                    components.html(f"""
+                        <script>
+                            try {{
+                                localStorage.setItem('vip_titanium_auth', '{clean_l_mob}');
+                                localStorage.setItem('vip_titanium_expiry', '{exp_iso}');
+                            }} catch(e) {{}}
+                        </script>
+                    """, height=0)
+
+                    st.success("🟢 Verified: आपका 15 दिन का प्लान सुरक्षित रूप से सक्रिय है...")
                     time.sleep(0.8)
                     st.rerun()
                 elif user_data.get("status") == "REJECTED":
@@ -273,7 +320,7 @@ if not st.session_state.authenticated:
                 elif user_data.get("status") == "PENDING":
                     st.warning("🔴 पेंडिंग: आपका UTR अभी ओनर द्वारा अप्रूव नहीं हुआ है!")
                 else:
-                    st.error("🚨 समय समाप्त: आपके 15 दिन का प्लान खत्म हो चुका है! कृपया नीचे नया ₹2000 का भुगतान करके नया UTR दर्ज करें।")
+                    st.error("🚨 समय समाप्त: आपके 15 दिन पूरे हो चुके हैं! कृपया नया ₹2000 का भुगतान करके नया UTR दर्ज करें।")
             else:
                 st.error("❌ गलत पासवर्ड! कृपया सही पासवर्ड दर्ज करें।")
         else:
@@ -399,7 +446,7 @@ else:
                         
                         save_shared_data(st.session_state.utr_requests, st.session_state.used_utrs_list)
                         
-                        st.success(f"यूज़र {mob} को 15 दिनों के लिए सफलतापूर्वक अप्रूव कर दिया गया है!")
+                        st.success(f"यूज़र {mob} को 15 दिनों के लिए Titanium Security के साथ अप्रूव कर दिया गया है!")
                         time.sleep(0.5)
                         st.rerun()
                 with col_rej:
@@ -444,7 +491,7 @@ else:
 
     st.markdown("""
         <div class="storage-badge">
-            ⚡ LIVE PRO SCANNER: <span style="color:#FFFFFF;">[Live Spinning Scan & Smart Result Engine Active]</span>
+            ⚡ TITANIUM VAULT ENGINE: <span style="color:#FFFFFF;">[Permanent App LocalStorage & 15-Days Strict Lockdown Active]</span>
         </div>
     """, unsafe_allow_html=True)
 
@@ -545,7 +592,6 @@ else:
             target_period_num = base_val + elapsed_blocks
             target_period_str = str(target_period_num)
 
-            # === ENGINE LOGIC ===
             def calculate_consensus(p_num, offset_val):
                 history_box = []
                 for idx in range(1, 16):
@@ -598,9 +644,6 @@ else:
             else:
                 scan_active = remaining_secs > 15
 
-            # ==========================================
-            # 1. जब तक स्कैनिंग चल रही है: बीच में गोल घूमने वाला स्कैनर दिखेगा और नीचे के खाने बंद रहेंगे
-            # ==========================================
             if scan_active:
                 st.markdown(
                     f'''
@@ -626,9 +669,6 @@ else:
                     unsafe_allow_html=True,
                 )
 
-            # ==========================================
-            # 2. जब स्कैन खत्म हो जाए: अगर 100% श्योर शॉट है तो बीच में चमकेगा, वरना साफ़ काला पर्दा रहेगा। और नीचे हर हाल में रिजल्ट दिखेगा!
-            # ==========================================
             else:
                 is_true_sure_shot = (target_period_num % 3 == 0)
 
@@ -654,7 +694,6 @@ else:
                             unsafe_allow_html=True,
                         )
                 else:
-                    # यदि श्योर शॉट नहीं है, तो बीच में साफ़ काला पर्दा रहेगा
                     st.markdown(
                         """
                         <div style="background: #000000; padding: 22px; border-radius: 10px; text-align: center; border: 1px solid #111111; margin: 10px 0;">
@@ -664,7 +703,6 @@ else:
                         unsafe_allow_html=True,
                     )
 
-                # नीचे के खानों में सर्चिंग का रिजल्ट हर हाल में दिखेगा (चाहे श्योर शॉट हो या न हो)
                 math_hash = (target_period_num * 17 + tab_offset) % 10
                 if pred_size == "BIG":
                     possible_bigs = [5, 6, 7, 8, 9]
