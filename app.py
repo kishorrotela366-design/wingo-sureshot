@@ -52,7 +52,6 @@ st.markdown(
         100% { border-color: #00FFFF; box-shadow: 0 0 35px #00FFFF, inset 0 0 20px #00FFFF; background: linear-gradient(135deg, #003333, #000f1a); }
     }
 
-    /* अलग-अलग शब्दों के लिए जिप-झप और मल्टी-कलर एनीमेशन शटर */
     @keyframes vip-zipzap {
         0% { color: #FFD700; text-shadow: 0 0 10px #FFD700, 0 0 20px #FF0055; }
         50% { color: #00FFFF; text-shadow: 0 0 15px #00FFFF, 0 0 25px #00FF66; }
@@ -71,16 +70,17 @@ st.markdown(
         100% { color: #00FFFF; text-shadow: 0 0 10px #00FFFF, 0 0 20px #00FF66; }
     }
 
-    .vip-word { animation: vip-zipzap 1.2s infinite ease-in-out; font-weight: 900; margin: 0 6px; }
-    .pro-word { animation: pro-zipzap 1.2s infinite ease-in-out; font-weight: 900; margin: 0 6px; }
-    .panel-word { animation: panel-zipzap 1.2s infinite ease-in-out; font-weight: 900; margin: 0 6px; }
+    .vip-word { animation: vip-zipzap 1.2s infinite ease-in-out; font-weight: 900; margin: 0 3px; }
+    .pro-word { animation: pro-zipzap 1.2s infinite ease-in-out; font-weight: 900; margin: 0 3px; }
+    .panel-word { animation: panel-zipzap 1.2s infinite ease-in-out; font-weight: 900; margin: 0 3px; }
 
     .vip-pro-heading {
         text-align: center;
-        font-size: 22px;
+        font-size: 20px;
         font-weight: 900;
-        letter-spacing: 1px;
-        margin-bottom: 10px;
+        letter-spacing: 0.5px;
+        margin-bottom: 12px;
+        white-space: nowrap;
     }
 
     .blinking-red-light {
@@ -106,13 +106,14 @@ st.markdown(
 
     .radar-spinner-icon {
         display: inline-block !important;
-        width: 18px !important;
-        height: 18px !important;
-        border: 3px solid #00FFFF !important;
-        border-top: 3px solid transparent !important;
+        width: 20px !important;
+        height: 20px !important;
+        border: 3.5px solid #00FFFF !important;
+        border-top: 3.5px solid transparent !important;
         border-radius: 50% !important;
-        animation: radar-spin 0.7s linear infinite !important;
+        animation: radar-spin 0.6s linear infinite !important;
         vertical-align: middle !important;
+        box-shadow: 0 0 10px #00FFFF;
     }
     
     .target-period-box {
@@ -149,8 +150,6 @@ st.markdown(
     .result-item { flex: 1 !important; text-align: center !important; background: #1a0f00 !important; border: 2.5px solid #ffd700 !important; border-radius: 12px !important; padding: 12px 6px !important; box-shadow: 0 0 10px rgba(255,215,0,0.25) !important; }
     .auth-card { background: #0b071a !important; border: 2px solid #FFD700 !important; border-radius: 12px !important; padding: 16px !important; box-shadow: 0 0 15px rgba(255,215,0,0.2) !important; margin-top: 10px !important; }
     .admin-card { background: #110022 !important; border: 2px solid #00FF66 !important; border-radius: 12px !important; padding: 15px !important; margin-bottom: 15px !important; }
-    
-    .storage-badge { background: linear-gradient(135deg, #222200, #001100); border: 1.5px solid #00FF66; padding: 8px; border-radius: 8px; margin-bottom: 10px; text-align: center; box-shadow: 0 0 12px rgba(0,255,102,0.3); font-size: 12px; font-weight: 900; color: #00FF66; }
     </style>
 """,
     unsafe_allow_html=True,
@@ -507,12 +506,6 @@ else:
         </style>
     """, unsafe_allow_html=True)
 
-    st.markdown("""
-        <div class="storage-badge">
-            ⚡ VIP PRO ENGINE (50-PERIOD PRECISION ALARM SYNC): <span style="color:#FFFFFF;">[Permanent App LocalStorage & 15-Days Strict Lockdown Active]</span>
-        </div>
-    """, unsafe_allow_html=True)
-
     def update_period_callback():
         clean_val = "".join(filter(str.isdigit, st.session_state.period_text_box))
         st.session_state.user_base_period = clean_val
@@ -693,13 +686,10 @@ else:
             if scan_active:
                 st.markdown(
                     f'''
-                    <div style="animation: colorful-scanning-glow 1.5s infinite; border: 2.5px solid #00FFFF; padding: 20px; border-radius: 12px; text-align: center; margin: 10px 0;">
-                        <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
-                            <span class="radar-spinner-icon"></span>
-                            <span style="color: #00FFFF; font-size: 14px; font-weight: 900; letter-spacing: 1.5px; text-shadow: 0 0 10px #00FFFF;">50-PERIOD HIGH-SPEED SCAN ({mode_label})</span>
-                            <span class="blinking-red-light" style="margin:0;"></span>
-                        </div>
-                        <div style="color: #00FF66; font-size: 11px; margin-top: 8px; font-weight: 900; text-shadow: 0 0 8px #00FF66;">⚡ PRECISION TIMING SYNC ACTIVE... ({remaining_secs}s left)</div>
+                    <div style="animation: colorful-scanning-glow 1.5s infinite; border: 2.5px solid #00FFFF; padding: 16px; border-radius: 12px; text-align: center; margin: 8px 0; display: flex; align-items: center; justify-content: center; gap: 14px;">
+                        <span class="radar-spinner-icon"></span>
+                        <span style="color: #00FFFF; font-size: 15px; font-weight: 900; letter-spacing: 1.5px; text-shadow: 0 0 12px #00FFFF;">LIVE SCAN</span>
+                        <span class="blinking-red-light" style="margin: 0; width: 12px; height: 12px;"></span>
                     </div>
                 ''',
                     unsafe_allow_html=True,
@@ -707,9 +697,8 @@ else:
 
                 st.markdown(
                     """
-                    <div style="border: 1.5px dashed #333333; background: #000000; padding: 25px; border-radius: 12px; text-align: center; margin-top: 10px;">
-                        <div style="color: #666666; font-size: 13px; font-weight: 900; letter-spacing: 1px;">🔒 WAITING FOR SCAN COMPLETION</div>
-                        <div style="color: #444444; font-size: 11px; margin-top: 4px;">अलार्म बजने के समय पर सटीक परिणाम दिखाया जाएगा...</div>
+                    <div style="border: 1.5px dashed #333333; background: #000000; padding: 18px; border-radius: 12px; text-align: center; margin-top: 8px;">
+                        <div style="color: #666666; font-size: 12px; font-weight: 900; letter-spacing: 1px;">🔒 50-PERIOD ENGINE SCANNING...</div>
                     </div>
                 """,
                     unsafe_allow_html=True,
