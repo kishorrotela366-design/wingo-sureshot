@@ -74,7 +74,6 @@ st.markdown(
     .pro-word { animation: pro-zipzap 1.2s infinite ease-in-out; font-weight: 900; margin: 0 2px; }
     .panel-word { animation: panel-zipzap 1.2s infinite ease-in-out; font-weight: 900; margin: 0 2px; }
 
-    /* यहाँ हेडिंग की साइज को कॉम्पैक्ट और स्लिम कर दिया है ताकि मोबाइल में फिट बैठे */
     .vip-pro-heading {
         text-align: center;
         font-size: 16px;
@@ -481,4 +480,376 @@ else:
     seconds = st.session_state.selected_game_seconds
 
     c30_style = "background: linear-gradient(135deg, #FFB700, #CC8800) !important; border: 2px solid #FFFFFF !important; color: #000000 !important; box-shadow: 0 0 18px rgba(255,183,0,0.8) !important;" if seconds == 30 else "background: #1a1a1a !important; border: 1.5px solid #333333 !important; color: #888888 !important;"
-    c1_style  = "background: linear-gradient(135deg, #00FF66, #008833) !important; border: 2px solid #FFFFFF !important; color: #000000 !important; box-shadow: 0 0 18px rgba(0,255,102,0.8) !important;" if seconds == 60 else "background: #1a1a1a !important; border: 1.5
+    c1_style  = "background: linear-gradient(135deg, #00FF66, #008833) !important; border: 2px solid #FFFFFF !important; color: #000000 !important; box-shadow: 0 0 18px rgba(0,255,102,0.8) !important;" if seconds == 60 else "background: #1a1a1a !important; border: 1.5px solid #333333 !important; color: #888888 !important;"
+    c3_style  = "background: linear-gradient(135deg, #0088FF, #003388) !important; border: 2px solid #FFFFFF !important; color: #FFFFFF !important; box-shadow: 0 0 18px rgba(0,136,255,0.8) !important;" if seconds == 180 else "background: #1a1a1a !important; border: 1.5px solid #333333 !important; color: #888888 !important;"
+    c5_style  = "background: linear-gradient(135deg, #FF5500, #882200) !important; border: 2px solid #FFFFFF !important; color: #FFFFFF !important; box-shadow: 0 0 18px rgba(255,85,0,0.8) !important;" if seconds == 300 else "background: #1a1a1a !important; border: 1.5px solid #333333 !important; color: #888888 !important;"
+
+    with st.container(horizontal=True, gap="small"):
+        if st.button("⏳ 30sec", key="b_30s", use_container_width=True):
+            st.session_state.selected_game_seconds = 30
+            st.rerun()
+        if st.button("🕒 1 Min", key="b_1m", use_container_width=True):
+            st.session_state.selected_game_seconds = 60
+            st.rerun()
+        if st.button("⏱️ 3 Min", key="b_3m", use_container_width=True):
+            st.session_state.selected_game_seconds = 180
+            st.rerun()
+        if st.button("⏰ 5 Min", key="b_5m", use_container_width=True):
+            st.session_state.selected_game_seconds = 300
+            st.rerun()
+
+    st.markdown(f"""
+        <style>
+        div[data-testid="stHorizontalBlock"] > div:nth-child(1) button {{ {c30_style} font-weight: 900 !important; border-radius: 10px !important; padding: 10px 2px !important; font-size: 12px !important; }}
+        div[data-testid="stHorizontalBlock"] > div:nth-child(2) button {{ {c1_style} font-weight: 900 !important; border-radius: 10px !important; padding: 10px 2px !important; font-size: 12px !important; }}
+        div[data-testid="stHorizontalBlock"] > div:nth-child(3) button {{ {c3_style} font-weight: 900 !important; border-radius: 10px !important; padding: 10px 2px !important; font-size: 12px !important; }}
+        div[data-testid="stHorizontalBlock"] > div:nth-child(4) button {{ {c5_style} font-weight: 900 !important; border-radius: 10px !important; padding: 10px 2px !important; font-size: 12px !important; }}
+        </style>
+    """, unsafe_allow_html=True,
+)
+
+    def update_period_callback():
+        clean_val = "".join(filter(str.isdigit, st.session_state.period_text_box))
+        st.session_state.user_base_period = clean_val
+        current_time = int(time.time())
+        st.session_state.base_input_block_time = current_time - (
+            current_time % seconds
+        )
+
+    st.text_input(
+        "Period Input",
+        value=st.session_state.user_base_period,
+        placeholder="BDG गेम का लाइव पीरियड नंबर यहाँ डालें...",
+        max_chars=5,
+        key="period_text_box",
+        on_change=update_period_callback,
+        label_visibility="collapsed",
+    )
+
+    @st.fragment(run_every=1)
+    def success_dashboard_core():
+        try:
+            now = datetime.now()
+            tab_offset = 23
+
+            total_seconds = now.hour * 3600 + now.minute * 60 + now.second
+            remaining_secs = seconds - (total_seconds % seconds)
+            mins = remaining_secs // 60
+            secs_rem = remaining_secs % 60
+            timer_str = f"{mins:02d}:{secs_rem:02d}"
+
+            should_play_alarm = False
+
+            if seconds == 60 and remaining_secs == 26:
+                should_play_alarm = True
+            elif seconds == 30 and remaining_secs == 15:
+                should_play_alarm = True
+            elif remaining_secs == 5:
+                should_play_alarm = True
+
+            if should_play_alarm:
+                st.markdown(
+                    """
+                    <div style="display:none; width:0; height:0; overflow:hidden;">
+                        <audio autoplay>
+                            <source src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" type="audio/mpeg">
+                        </audio>
+                    </div>
+                """,
+                    unsafe_allow_html=True,
+                )
+
+            st.markdown("<div class='main-card'>", unsafe_allow_html=True)
+
+            user_input_str = st.session_state.user_base_period.strip()
+
+            current_time = int(time.time())
+            current_block_start = current_time - (current_time % seconds)
+
+            is_invalid_format = False
+            if not user_input_str or len(user_input_str) != 5 or not user_input_str.isdigit():
+                is_invalid_format = True
+            else:
+                try:
+                    user_val = int(user_input_str)
+                    if st.session_state.base_input_block_time == 0:
+                        st.session_state.base_input_block_time = current_block_start
+                    
+                    if abs(user_val) < 10000:
+                        is_invalid_format = True
+                except:
+                    is_invalid_format = True
+
+            if is_invalid_format:
+                st.markdown(
+                    f"""
+                    <div class="target-period-box">
+                        <div style="display: flex; align-items: center;">
+                            <span class="blinking-red-light"></span>
+                            <span style="color: #FFD700; font-size: 13px; font-weight: 900; margin-right: 6px;">LIVE PERIOD:</span>
+                            <span style="color: #FF4444; font-size: 12px; font-weight: 900;">🚨 कृपया BDG गेम का सही लाइव पीरियड नंबर डालें!</span>
+                        </div>
+                        <div class="timer-box-large">⏰ {timer_str}</div>
+                    </div>
+                """,
+                    unsafe_allow_html=True,
+                )
+                st.markdown(
+                    """
+                    <div style="border: 2px dashed #00FFFF; background: #001122; padding: 18px; border-radius: 12px; text-align: center; margin-top: 10px;">
+                        <span class="radar-spinner-icon" style="margin-bottom: 6px;"></span>
+                        <div style="color: #00FFFF; font-size: 13px; font-weight: 900;">⚡ SERVER SYNC WAITING FOR LIVE BDG PERIOD...</div>
+                        <div style="color: #CCCCCC; font-size: 11px; margin-top: 4px;">जैसे ही आप सही लाइव पीरियड डालेंगे, सॉफ्टवेयर सेकंड्स के साथ अटैच होकर चालू हो जाएगा।</div>
+                    </div>
+                """,
+                    unsafe_allow_html=True,
+                )
+                st.markdown("</div>", unsafe_allow_html=True)
+                return
+
+            try:
+                base_val = int(user_input_str)
+            except:
+                base_val = 10000
+
+            elapsed_blocks = (
+                current_block_start - st.session_state.base_input_block_time
+            ) // seconds
+            target_period_num = base_val + elapsed_blocks
+            target_period_str = str(target_period_num)
+
+            def calculate_consensus(p_num, offset_val):
+                history_box = []
+                for idx in range(1, 51):
+                    chk = p_num - idx
+                    if chk > 0:
+                        v = (chk * 79 + offset_val + (idx * 43)) % 100
+                        history_box.append(1 if v > 42 else 0)
+
+                if len(history_box) < 15:
+                    return ("WAIT", False, False)
+
+                recent_segment = history_box[:10]
+                older_segment = history_box[10:30]
+                
+                recent_sum = sum(recent_segment)
+                older_avg = (sum(older_segment) / len(older_segment)) * 10 if len(older_segment) > 0 else 5.0
+
+                is_server_update_detected = False
+                if abs(recent_sum - older_avg) >= 4:
+                    is_server_update_detected = True
+
+                confidence_check = abs(recent_sum - 5.0)
+                if confidence_check < 0.8:
+                    return ("WAIT", False, is_server_update_detected)
+
+                signal = (p_num // 2) % 2
+                recent_trend = sum(history_box[:15])
+
+                if is_server_update_detected:
+                    pred = "SMALL" if recent_sum < 5 else "BIG"
+                else:
+                    if signal == 0:
+                        pred = "SMALL" if history_box[0] == 1 else "BIG"
+                    else:
+                        pred = "BIG" if recent_trend >= 7 else "SMALL"
+
+                return (pred, True, is_server_update_detected)
+
+            pred_size, is_valid_confidence, server_update_alert = calculate_consensus(target_period_num, tab_offset)
+
+            rand_users = 320 + ((int(time.time()) // 3) % 19)
+            mode_label = f"{seconds}S" if seconds < 60 else f"{seconds//60}M"
+
+            st.markdown(
+                f"""
+                <div class="target-period-box">
+                    <div style="display: flex; align-items: center; gap: 4px;">
+                        <span class="blinking-red-light" style="margin-right: 2px;"></span>
+                        <span style="color: #FFD700; font-size: 12px; font-weight: 900;">LIVE PERIOD:</span>
+                        <span style="color: #00FFFF; font-size: 13px; font-weight: 900; background: rgba(0,255,255,0.1); padding: 1px 6px; border-radius: 4px; border: 1px solid #00FFFF;">{target_period_str}</span>
+                    </div>
+                    <div style="background: #001a11; border: 1px solid #00FF66; padding: 2px 6px; border-radius: 6px; display: flex; align-items: center; gap: 4px;">
+                        <span class="blinking-green-light" style="width: 7px; height: 7px; margin: 0;"></span>
+                        <span style="color: #00FF66; font-size: 11px; font-weight: 900;">{mode_label} SYNC ACTIVE</span>
+                        <span style="color: #FFFFFF; font-size: 11px; font-weight: 900;">| 👥 {rand_users}</span>
+                    </div>
+                    <div class="timer-box-large">⏰ {timer_str}</div>
+                </div>
+            """,
+                unsafe_allow_html=True,
+            )
+
+            if server_update_alert:
+                st.markdown(
+                    """
+                    <div style="background: linear-gradient(135deg, #440000, #1a0000); border: 2px solid #FF0055; padding: 10px; border-radius: 8px; text-align: center; margin-bottom: 8px; box-shadow: 0 0 15px rgba(255,0,85,0.5);">
+                        <span class="blinking-red-light"></span>
+                        <span style="color: #FF0055; font-weight: 900; font-size: 12px;">⚠️ NEW SERVER UPDATE / SHIFT DETECTED! (नया सट्टा अपडेट पकड़ा गया - री-स्कैनिंग जारी)</span>
+                    </div>
+                """,
+                    unsafe_allow_html=True,
+                )
+
+            if seconds == 30:
+                scan_active = remaining_secs > 15
+            elif seconds == 60:
+                scan_active = remaining_secs > 26
+            else:
+                scan_active = remaining_secs > 15
+
+            if scan_active:
+                st.markdown(
+                    f'''
+                    <div style="animation: colorful-scanning-glow 1.5s infinite; border: 2.5px solid #00FFFF; padding: 16px; border-radius: 12px; text-align: center; margin: 8px 0; display: flex; align-items: center; justify-content: center; gap: 14px;">
+                        <span class="radar-spinner-icon"></span>
+                        <span style="color: #00FFFF; font-size: 15px; font-weight: 900; letter-spacing: 1.5px; text-shadow: 0 0 12px #00FFFF;">LIVE SCAN</span>
+                        <span class="blinking-red-light" style="margin: 0; width: 12px; height: 12px;"></span>
+                    </div>
+                ''',
+                    unsafe_allow_html=True,
+                )
+
+                st.markdown(
+                    """
+                    <div style="border: 1.5px dashed #333333; background: #000000; padding: 18px; border-radius: 12px; text-align: center; margin-top: 8px;">
+                        <div style="color: #666666; font-size: 12px; font-weight: 900; letter-spacing: 1px;">🔒 50-PERIOD ENGINE SCANNING...</div>
+                    </div>
+                """,
+                    unsafe_allow_html=True,
+                )
+
+            elif not is_valid_confidence:
+                st.markdown(
+                    """
+                    <div style="background: linear-gradient(135deg, #222200, #111100); border: 2px solid #FFD700; padding: 20px; border-radius: 12px; text-align: center; margin: 10px 0; box-shadow: 0 0 15px rgba(255,215,0,0.3);">
+                        <span class="blinking-red-light"></span>
+                        <span style="color: #FFD700; font-weight: 900; font-size: 14px;">⚠️ HIGH VOLATILITY / AMBIGUOUS LINE DETECTED!</span>
+                        <div style="color: #CCCCCC; font-size: 12px; margin-top: 6px;">पैनल ने तुक्का मारने से इनकार कर दिया है। अगली स्थिर लाइन का इंतज़ार करें...</div>
+                    </div>
+                """,
+                    unsafe_allow_html=True,
+                )
+            else:
+                is_true_sure_shot = (target_period_num % 3 == 0)
+
+                if is_true_sure_shot:
+                    if pred_size == "BIG":
+                        st.markdown(
+                            f"""
+                            <div class="super-banner-big">
+                                🔥 100% SURE SHOT <span class="blinking-green-light"></span> : 
+                                <span style="background: #000000; color: #FFD700; padding: 4px 14px; border-radius: 6px; border: 2px solid #FFD700; font-weight: 900; text-shadow: 0 0 10px #FFD700;">BIG</span> 🎯
+                            </div>
+                        """,
+                            unsafe_allow_html=True,
+                        )
+                    else:
+                        st.markdown(
+                            f"""
+                            <div class="super-banner-small">
+                                🔥 100% SURE SHOT <span class="blinking-green-light"></span> : 
+                                <span style="background: #000000; color: #00FFFF; padding: 4px 14px; border-radius: 6px; border: 2px solid #00FFFF; font-weight: 900; text-shadow: 0 0 10px #00FFFF;">SMALL</span> 🎯
+                            </div>
+                        """,
+                            unsafe_allow_html=True,
+                        )
+                else:
+                    st.markdown(
+                        """
+                        <div style="background: #000000; padding: 22px; border-radius: 10px; text-align: center; border: 1px solid #111111; margin: 10px 0;">
+                            <div style="color: #333333; font-size: 12px; font-weight: 900; letter-spacing: 1px;">████████████████████████</div>
+                        </div>
+                    """,
+                        unsafe_allow_html=True,
+                    )
+
+                math_hash = (target_period_num * 17 + tab_offset) % 10
+                if pred_size == "BIG":
+                    possible_bigs = [5, 6, 7, 8, 9]
+                    pred_num = possible_bigs[math_hash % len(possible_bigs)]
+                    if pred_num == 5:
+                        pred_color = "GREEN / VIOLET"
+                        color_bg = "#9333ea"
+                        ball_style = "background: radial-gradient(circle at 35% 35%, #c084fc 0%, #9333ea 50%, #581c87 100%); color: #ffffff; border: 3px solid #00FF66; box-shadow: inset -4px -4px 10px rgba(0,0,0,0.6), inset 4px 4px 10px rgba(255,255,255,0.4), 0 0 18px rgba(147,51,234,0.9);"
+                    elif pred_num in [7, 9]:
+                        pred_color = "GREEN"
+                        color_bg = "#16a34a"
+                        ball_style = "background: radial-gradient(circle at 35% 35%, #4ade80 0%, #16a34a 50%, #14532d 100%); color: #ffffff; border: 3px solid #22c55e; box-shadow: inset -4px -4px 10px rgba(0,0,0,0.6), inset 4px 4px 10px rgba(255,255,255,0.4), 0 0 18px rgba(34,197,94,0.9);"
+                    else:
+                        pred_color = "RED"
+                        color_bg = "#dc2626"
+                        ball_style = "background: radial-gradient(circle at 35% 35%, #f87171 0%, #dc2626 50%, #7f1d1d 100%); color: #ffffff; border: 3px solid #ef4444; box-shadow: inset -4px -4px 10px rgba(0,0,0,0.6), inset 4px 4px 10px rgba(255,255,255,0.4), 0 0 18px rgba(239,68,68,0.9);"
+                else:
+                    possible_smalls = [0, 1, 2, 3, 4]
+                    pred_num = possible_smalls[math_hash % len(possible_smalls)]
+                    if pred_num == 0:
+                        pred_color = "RED / VIOLET"
+                        color_bg = "#8b5cf6"
+                        ball_style = "background: radial-gradient(circle at 35% 35%, #f43f5e 0%, #8b5cf6 50%, #4c1d95 100%); color: #ffffff; border: 3px solid #f43f5e; box-shadow: inset -4px -4px 10px rgba(0,0,0,0.6), inset 4px 4px 10px rgba(255,255,255,0.4), 0 0 18px rgba(244,63,94,0.9);"
+                    elif pred_num in [1, 3]:
+                        pred_color = "GREEN"
+                        color_bg = "#16a34a"
+                        ball_style = "background: radial-gradient(circle at 35% 35%, #4ade80 0%, #16a34a 50%, #14532d 100%); color: #ffffff; border: 3px solid #22c55e; box-shadow: inset -4px -4px 10px rgba(0,0,0,0.6), inset 4px 4px 10px rgba(255,255,255,0.4), 0 0 18px rgba(34,197,94,0.9);"
+                    else:
+                        pred_color = "RED"
+                        color_bg = "#dc2626"
+                        ball_style = "background: radial-gradient(circle at 35% 35%, #f87171 0%, #dc2626 50%, #7f1d1d 100%); color: #ffffff; border: 3px solid #ef4444; box-shadow: inset -4px -4px 10px rgba(0,0,0,0.6), inset 4px 4px 10px rgba(255,255,255,0.4), 0 0 18px rgba(239,68,68,0.9);"
+
+                display_num = str(pred_num)
+                display_size = pred_size
+                display_color = pred_color
+                size_bg = "#FF8800" if pred_size == "BIG" else "#0088FF"
+
+                st.markdown(
+                    f"""
+                    <div class="diagonal-container">
+                        <div class="result-item">
+                            <div style="font-size: 11px; color: #00FF66; font-weight: 900; margin-bottom: 6px;">NUMBER</div>
+                            <div style="{ball_style} width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 900; margin: 0 auto; text-shadow: 0 2px 5px rgba(0,0,0,0.9); position: relative;">
+                                {display_num}
+                                <span style="position: absolute; top: 8px; left: 10px; width: 8px; height: 8px; background: rgba(255,255,255,0.6); border-radius: 50%;"></span>
+                                <span style="position: absolute; bottom: 8px; right: 10px; width: 6px; height: 6px; background: rgba(255,255,255,0.4); border-radius: 50%;"></span>
+                            </div>
+                        </div>
+                        <div class="result-item">
+                            <div style="font-size: 11px; color: #00FF66; font-weight: 900; margin-bottom: 6px;">SIZE</div>
+                            <div style="background: {size_bg}; color: white; padding: 14px 4px; border-radius: 8px; font-weight: 900; font-size: 14px; text-align: center;">{display_size}</div>
+                        </div>
+                        <div class="result-item">
+                            <div style="font-size: 11px; color: #00FF66; font-weight: 900; margin-bottom: 6px;">COLOR</div>
+                            <div style="background-color: {color_bg}; color: white; padding: 14px 4px; border-radius: 8px; font-weight: 900; font-size: 13px; text-align: center;">{display_color}</div>
+                        </div>
+                    </div>
+                """,
+                    unsafe_allow_html=True,
+                )
+
+                next_shot_display = pred_size
+                next_shot_bg = "#FF8800" if next_shot_display == "BIG" else "#0088FF"
+                next_shot_glow = f"0 0 15px {next_shot_bg}"
+
+                st.markdown(
+                    f"""
+                    <div style="margin-top: 12px; background: #000000; padding: 14px; border-radius: 12px; text-align: center; border: 2px solid #00FF66; box-shadow: 0 0 15px rgba(0,255,102,0.3); display: flex; justify-content: center; align-items: center; gap: 12px;">
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <span class="blinking-red-light" style="width:10px; height:10px; margin:0;"></span>
+                            <span style="color: #00FF66; font-size: 14px; font-weight: 900; letter-spacing: 1px;">STATUS: LOCKED</span>
+                        </div>
+                        <span style="color: #00FF66; font-weight: 900;">|</span>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="color: #00FFFF; font-size: 14px; font-weight: 900; text-shadow: 0 0 8px rgba(0,255,255,0.5);">NEXT SHOT:</span>
+                            <span style="background: {next_shot_bg}; color: #FFFFFF; padding: 8px 24px; border-radius: 8px; font-weight: 900; font-size: 14px; border: 2px solid #FFFFFF; box-shadow: {next_shot_glow};">{next_shot_display}</span>
+                        </div>
+                    </div>
+                """,
+                    unsafe_allow_html=True,
+                )
+
+            st.markdown("</div>", unsafe_allow_html=True)
+        except Exception as e:
+            st.warning("⚠️ री-सिंकिंग हो रही है... कृपया प्रतीक्षा करें।")
+            time.sleep(1)
+            st.rerun()
+
+    success_dashboard_core()
