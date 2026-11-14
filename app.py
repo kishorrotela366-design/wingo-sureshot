@@ -21,7 +21,6 @@ st.markdown(
     .stAppDeployButton {display: none !important;}
     [data-testid="stStatusWidget"] {visibility: hidden !important;}
     
-    /* सभी सामान्य टेक्स्ट और लेबल्स को थोड़ा मोटा और स्पष्ट किया गया है */
     p, span, label, div, input, button { font-weight: 700 !important; }
 
     @keyframes super-fast-blink {
@@ -34,6 +33,36 @@ st.markdown(
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
     }
+
+    @keyframes color-shift-1 {
+        0% { color: #FFD700; text-shadow: 0 0 12px #FFD700; }
+        33% { color: #FF0055; text-shadow: 0 0 15px #FF0055; }
+        66% { color: #00FFFF; text-shadow: 0 0 12px #00FFFF; }
+        100% { color: #FFD700; text-shadow: 0 0 12px #FFD700; }
+    }
+    @keyframes color-shift-2 {
+        0% { color: #00FF66; text-shadow: 0 0 12px #00FF66; }
+        33% { color: #FFD700; text-shadow: 0 0 15px #FFD700; }
+        66% { color: #FF0055; text-shadow: 0 0 12px #FF0055; }
+        100% { color: #00FF66; text-shadow: 0 0 12px #00FF66; }
+    }
+    @keyframes color-shift-3 {
+        0% { color: #00FFFF; text-shadow: 0 0 12px #00FFFF; }
+        33% { color: #00FF66; text-shadow: 0 0 15px #00FF66; }
+        66% { color: #FFD700; text-shadow: 0 0 12px #FFD700; }
+        100% { color: #00FFFF; text-shadow: 0 0 12px #00FFFF; }
+    }
+    @keyframes color-shift-4 {
+        0% { color: #FF0055; text-shadow: 0 0 12px #FF0055; }
+        33% { color: #00FFFF; text-shadow: 0 0 15px #00FFFF; }
+        66% { color: #00FF66; text-shadow: 0 0 12px #00FF66; }
+        100% { color: #FF0055; text-shadow: 0 0 12px #FF0055; }
+    }
+
+    .anim-vip { animation: color-shift-1 1.2s infinite; display: inline-block; }
+    .anim-bdg { animation: color-shift-2 0.9s infinite; display: inline-block; }
+    .anim-game { animation: color-shift-3 1.5s infinite; display: inline-block; }
+    .anim-hack { animation: color-shift-4 1.1s infinite; display: inline-block; }
     
     @keyframes colorful-scanning-glow {
         0% { border-color: #00FFFF; box-shadow: 0 0 20px #00FFFF, inset 0 0 15px #00FFFF; background: linear-gradient(135deg, #002222, #000a0a); }
@@ -121,8 +150,6 @@ st.markdown(
     .result-item { flex: 1 !important; text-align: center !important; background: #1a0f00 !important; border: 2.5px solid #ffd700 !important; border-radius: 12px !important; padding: 12px 6px !important; box-shadow: 0 0 10px rgba(255,215,0,0.25) !important; }
     .auth-card { background: #0b071a !important; border: 2px solid #FFD700 !important; border-radius: 12px !important; padding: 16px !important; box-shadow: 0 0 15px rgba(255,215,0,0.2) !important; margin-top: 10px !important; }
     .admin-card { background: #110022 !important; border: 2px solid #00FF66 !important; border-radius: 12px !important; padding: 15px !important; margin-bottom: 15px !important; }
-    
-    .storage-badge { background: linear-gradient(135deg, #222200, #001100); border: 1.5px solid #00FF66; padding: 8px; border-radius: 8px; margin-bottom: 10px; text-align: center; box-shadow: 0 0 12px rgba(0,255,102,0.3); font-size: 13px; font-weight: 900; color: #00FF66; }
     </style>
 """,
     unsafe_allow_html=True,
@@ -158,29 +185,10 @@ def load_shared_data():
                         val["expiry"] = parse_expiry_date(val["expiry"])
         except Exception:
             pass
-
-    if "persistent_utr_requests" not in st.session_state:
-        st.session_state.persistent_utr_requests = file_data.get("utr_requests", {})
-    else:
-        for mob, val in file_data.get("utr_requests", {}).items():
-            if mob not in st.session_state.persistent_utr_requests:
-                st.session_state.persistent_utr_requests[mob] = val
-
-    if "persistent_used_utrs" not in st.session_state:
-        st.session_state.persistent_used_utrs = list(set(file_data.get("used_utrs_list", [])))
-    else:
-        st.session_state.persistent_used_utrs = list(set(file_data.get("used_utrs_list", []) + st.session_state.persistent_used_utrs))
-
-    return {
-        "utr_requests": st.session_state.persistent_utr_requests,
-        "used_utrs_list": st.session_state.persistent_used_utrs
-    }
+    return file_data
 
 def save_shared_data(utr_reqs, used_utrs):
     try:
-        st.session_state.persistent_utr_requests = utr_reqs
-        st.session_state.persistent_used_utrs = used_utrs
-
         serializable_data = {"utr_requests": {}, "used_utrs_list": used_utrs}
         for mob, val in utr_reqs.items():
             val_copy = val.copy()
@@ -193,19 +201,11 @@ def save_shared_data(utr_reqs, used_utrs):
     except Exception as e:
         print("Save Error:", e)
 
-initial_data = load_shared_data()
-
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 
 if "is_owner" not in st.session_state:
     st.session_state.is_owner = False
-
-if "utr_requests" not in st.session_state:
-    st.session_state.utr_requests = initial_data["utr_requests"]
-
-if "used_utrs_list" not in st.session_state:
-    st.session_state.used_utrs_list = initial_data["used_utrs_list"]
 
 if "user_base_period" not in st.session_state:
     st.session_state.user_base_period = ""
@@ -226,10 +226,10 @@ if not st.session_state.authenticated:
         <div style='text-align: center; margin-bottom: 10px;'>
             <h2 style='font-size: 20px; font-weight: 900; margin: 0; display: inline-block;'>
                 <span class='blinking-red-light'></span>
-                <span style='color: #FFD700; text-shadow: 0 0 10px #FFD700;'>👑 VIP</span> 
-                <span style='color: #00FF66; text-shadow: 0 0 10px #00FF66;'>BDG</span> 
-                <span style='color: #00FFFF; text-shadow: 0 0 10px #00FFFF;'>GAME</span> 
-                <span style='color: #FF0055; text-shadow: 0 0 10px #FF0055;'>HACK 👑</span>
+                <span class='anim-vip'>👑 VIP</span> 
+                <span class='anim-bdg'>BDG</span> 
+                <span class='anim-game'>GAME</span> 
+                <span class='anim-hack'>HACK 👑</span>
                 <span class='blinking-red-light' style='margin-left: 6px; margin-right: 0;'></span>
             </h2>
         </div>
@@ -258,8 +258,7 @@ if not st.session_state.authenticated:
         "🚀 UNLOCK PANEL (LOGIN)", use_container_width=True, key="login_btn"
     ):
         latest_data = load_shared_data()
-        st.session_state.utr_requests = latest_data["utr_requests"]
-        st.session_state.used_utrs_list = latest_data["used_utrs_list"]
+        utr_requests = latest_data.get("utr_requests", {})
 
         clean_l_mob = "".join(filter(str.isdigit, login_mob))
 
@@ -270,11 +269,12 @@ if not st.session_state.authenticated:
             time.sleep(0.8)
             st.rerun()
 
-        elif clean_l_mob in st.session_state.utr_requests:
-            user_data = st.session_state.utr_requests[clean_l_mob]
+        elif clean_l_mob in utr_requests:
+            user_data = utr_requests[clean_l_mob]
             if user_data["password"] == login_pass:
-                exp_time = parse_expiry_date(user_data["expiry"])
+                exp_time = parse_expiry_date(user_data.get("expiry"))
 
+                # Strict Server-Side 15-Day Security Check
                 if user_data.get("status") == "APPROVED" and datetime.now() < exp_time:
                     st.session_state.authenticated = True
                     st.session_state.is_owner = False
@@ -286,7 +286,7 @@ if not st.session_state.authenticated:
                 elif user_data.get("status") == "PENDING":
                     st.warning("🔴 पेंडिंग: आपका UTR अभी ओनर द्वारा अप्रूव नहीं हुआ है!")
                 else:
-                    st.error("🚨 समय समाप्त: आपके 15 दिन का प्लान खत्म हो चुका है! कृपया नीचे नया ₹2000 का भुगतान करके नया UTR दर्ज करें।")
+                    st.error("🚨 समय समाप्त: आपके 15 दिन का प्लान पूरी तरह खत्म हो चुका है! कृपया नीचे नया ₹2000 का भुगतान करके नया UTR दर्ज करें।")
             else:
                 st.error("❌ गलत पासवर्ड! कृपया सही पासवर्ड दर्ज करें।")
         else:
@@ -337,8 +337,8 @@ if not st.session_state.authenticated:
         key="user_renew_btn",
     ):
         latest_data = load_shared_data()
-        st.session_state.utr_requests = latest_data["utr_requests"]
-        st.session_state.used_utrs_list = latest_data["used_utrs_list"]
+        utr_reqs = latest_data.get("utr_requests", {})
+        used_utrs = latest_data.get("used_utrs_list", [])
 
         clean_r_mob = "".join(filter(str.isdigit, renew_mob))
         clean_utr = "".join(filter(str.isdigit, renew_utr_input))
@@ -349,19 +349,19 @@ if not st.session_state.authenticated:
             st.error("⚠️ कृपया अपना पासवर्ड दर्ज करें!")
         elif len(clean_utr) != 12:
             st.error("⚠️ अमान्य UTR! कृपया ठीक 12 अंकों का सही UTR नंबर डालें!")
-        elif clean_utr in st.session_state.used_utrs_list:
+        elif clean_utr in used_utrs:
             st.error(
                 "🚨 सुरक्षा चेतावनी: यह UTR नंबर पहले ही इस्तेमाल किया जा चुका है! कृपया कोई नया UTR नंबर डालें।"
             )
         else:
-            st.session_state.utr_requests[clean_r_mob] = {
+            utr_reqs[clean_r_mob] = {
                 "utr": clean_utr,
                 "password": renew_pass,
                 "status": "PENDING",
-                "expiry": datetime.now() + timedelta(days=15),
+                "expiry": (datetime.now() + timedelta(days=15)).isoformat(),
                 "time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             }
-            save_shared_data(st.session_state.utr_requests, st.session_state.used_utrs_list)
+            save_shared_data(utr_reqs, used_utrs)
             st.success(
                 "📩 नया UTR सफलतापूर्वक सबमिट हो गया है! 🔴 (पेंडिंग)। ओनर द्वारा वेरीफाई और अप्रूव होने के बाद आपका पैनल चालू होगा."
             )
@@ -371,8 +371,8 @@ if not st.session_state.authenticated:
 # ================= DASHBOARD SCREEN =================
 else:
     latest_data = load_shared_data()
-    st.session_state.utr_requests = latest_data["utr_requests"]
-    st.session_state.used_utrs_list = latest_data["used_utrs_list"]
+    utr_requests = latest_data.get("utr_requests", {})
+    used_utrs_list = latest_data.get("used_utrs_list", [])
 
     if st.session_state.is_owner:
         st.markdown("<div class='admin-card'>", unsafe_allow_html=True)
@@ -386,7 +386,7 @@ else:
             unsafe_allow_html=True,
         )
 
-        pending_requests = {mob: req for mob, req in st.session_state.utr_requests.items() if req.get("status") == "PENDING"}
+        pending_requests = {mob: req for mob, req in utr_requests.items() if req.get("status") == "PENDING"}
 
         if not pending_requests:
             st.info("अभी तक कोई पेंडिंग UTR रिक्वेस्ट नहीं है।")
@@ -405,37 +405,38 @@ else:
                 col_app, col_rej = st.columns(2)
                 with col_app:
                     if st.button(f"✅ Approve", key=f"app_{mob}"):
-                        if req["utr"] not in st.session_state.used_utrs_list:
-                            st.session_state.used_utrs_list.append(req["utr"])
+                        if req["utr"] not in used_utrs_list:
+                            used_utrs_list.append(req["utr"])
 
-                        st.session_state.utr_requests[mob]["status"] = "APPROVED"
-                        st.session_state.utr_requests[mob]["expiry"] = datetime.now() + timedelta(days=15)
+                        utr_requests[mob]["status"] = "APPROVED"
+                        # Strict 15 days locked expiry timestamp
+                        utr_requests[mob]["expiry"] = (datetime.now() + timedelta(days=15)).isoformat()
                         
-                        save_shared_data(st.session_state.utr_requests, st.session_state.used_utrs_list)
+                        save_shared_data(utr_requests, used_utrs_list)
                         
                         st.success(f"यूज़र {mob} को 15 दिनों के लिए सफलतापूर्वक अप्रूव कर दिया गया है!")
                         time.sleep(0.5)
                         st.rerun()
                 with col_rej:
                     if st.button(f"❌ Reject", key=f"rej_{mob}"):
-                        st.session_state.utr_requests[mob]["status"] = "REJECTED"
-                        save_shared_data(st.session_state.utr_requests, st.session_state.used_utrs_list)
+                        utr_requests[mob]["status"] = "REJECTED"
+                        save_shared_data(utr_requests, used_utrs_list)
                         st.error(f"यूज़र {mob} का UTR रिजेक्ट कर दिया गया।")
                         time.sleep(0.5)
                         st.rerun()
 
         st.markdown("</div>", unsafe_allow_html=True)
 
-    # --- VIP BDG GAME HACK HEADER ---
+    # --- VIP BDG GAME HACK HEADER WITH INDEPENDENT COLOR-CHANGING ANIMATION ---
     st.markdown(
         """
         <div style='text-align: center; margin: 4px 0 10px 0;'>
             <h2 style='font-size: 18px; font-weight: 900; margin: 0; display: inline-block;'>
                 <span class='blinking-red-light'></span>
-                <span style='color: #FFD700; text-shadow: 0 0 10px #FFD700;'>👑 VIP</span> 
-                <span style='color: #00FF66; text-shadow: 0 0 10px #00FF66;'>BDG</span> 
-                <span style='color: #00FFFF; text-shadow: 0 0 10px #00FFFF;'>GAME</span> 
-                <span style='color: #FF0055; text-shadow: 0 0 10px #FF0055;'>HACK 👑</span>
+                <span class='anim-vip'>👑 VIP</span> 
+                <span class='anim-bdg'>BDG</span> 
+                <span class='anim-game'>GAME</span> 
+                <span class='anim-hack'>HACK 👑</span>
                 <span class='blinking-red-light' style='margin-left: 6px; margin-right: 0;'></span>
             </h2>
         </div>
@@ -471,12 +472,6 @@ else:
         div[data-testid="stHorizontalBlock"] > div:nth-child(3) button {{ {c3_style} font-weight: 900 !important; border-radius: 10px !important; padding: 10px 2px !important; font-size: 13px !important; }}
         div[data-testid="stHorizontalBlock"] > div:nth-child(4) button {{ {c5_style} font-weight: 900 !important; border-radius: 10px !important; padding: 10px 2px !important; font-size: 13px !important; }}
         </style>
-    """, unsafe_allow_html=True)
-
-    st.markdown("""
-        <div class="storage-badge">
-            ⚡ LIVE PRO SCANNER: <span style="color:#FFFFFF;">[Live Spinning Scan & Smart Result Engine Active]</span>
-        </div>
     """, unsafe_allow_html=True)
 
     def update_period_callback():
@@ -633,12 +628,11 @@ else:
                 st.markdown(
                     f'''
                     <div style="animation: colorful-scanning-glow 1.5s infinite; border: 2.5px solid #00FFFF; padding: 20px; border-radius: 12px; text-align: center; margin: 10px 0;">
-                        <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
-                            <span class="radar-spinner-icon"></span>
-                            <span style="color: #00FFFF; font-size: 15px; font-weight: 900; letter-spacing: 1.5px; text-shadow: 0 0 10px #00FFFF;">LIVE COLOR SCANNING ({mode_label})</span>
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 12px;">
                             <span class="blinking-red-light" style="margin:0;"></span>
+                            <span style="color: #00FFFF; font-size: 15px; font-weight: 900; letter-spacing: 1.5px; text-shadow: 0 0 10px #00FFFF;">LIVE SCAN</span>
+                            <span class="radar-spinner-icon" style="margin:0;"></span>
                         </div>
-                        <div style="color: #00FF66; font-size: 12px; margin-top: 8px; font-weight: 900; text-shadow: 0 0 8px #00FF66;">⚡ SERVER PATTERN ROTATING... ({remaining_secs}s left)</div>
                     </div>
                 ''',
                     unsafe_allow_html=True,
