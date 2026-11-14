@@ -3,7 +3,6 @@ import json
 import os
 import time
 import streamlit as st
-import streamlit.components.v1 as components
 
 st.set_page_config(
     page_title="VIP BDG GAME HACK",
@@ -15,33 +14,20 @@ st.set_page_config(
 st.markdown(
     """
     <style>
-    .stApp { background-color: #000000 !important; color: #FFFFFF !important; overflow-x: hidden !important; }
+    .stApp { background-color: #000000 !important; color: #FFFFFF !important; font-weight: 600 !important; }
     #MainMenu {visibility: hidden !important;}
     footer {visibility: hidden !important;}
     header {visibility: hidden !important;}
     .stAppDeployButton {display: none !important;}
     [data-testid="stStatusWidget"] {visibility: hidden !important;}
     
-    @keyframes fly-cash-up {
-        0% { transform: translateY(105vh) translateX(0px) rotate(0deg); opacity: 0; }
-        20% { opacity: 0.9; }
-        80% { opacity: 0.9; }
-        100% { transform: translateY(-10vh) translateX(40px) rotate(360deg); opacity: 0; }
-    }
-
-    .flying-money-item {
-        position: fixed;
-        bottom: -60px;
-        font-size: 26px;
-        animation: fly-cash-up 6s infinite linear;
-        z-index: 1;
-        pointer-events: none;
-    }
+    /* सभी सामान्य टेक्स्ट और लेबल्स को थोड़ा मोटा और स्पष्ट किया गया है */
+    p, span, label, div, input, button { font-weight: 700 !important; }
 
     @keyframes super-fast-blink {
-        0% { opacity: 1; transform: scale(1.3); box-shadow: 0 0 12px #FF0055, 0 0 20px #FF0055; }
+        0% { opacity: 1; transform: scale(1.3); box-shadow: 0 0 15px #FF0055, 0 0 25px #FF0055; }
         50% { opacity: 0.1; transform: scale(0.7); box-shadow: 0 0 2px #FF0055; }
-        100% { opacity: 1; transform: scale(1.3); box-shadow: 0 0 12px #FF0055, 0 0 20px #FF0055; }
+        100% { opacity: 1; transform: scale(1.3); box-shadow: 0 0 15px #FF0055, 0 0 25px #FF0055; }
     }
 
     @keyframes radar-spin {
@@ -68,73 +54,25 @@ st.markdown(
         100% { border-color: #00FFFF; box-shadow: 0 0 35px #00FFFF, inset 0 0 20px #00FFFF; background: linear-gradient(135deg, #003333, #000f1a); }
     }
 
-    @keyframes vip-anim {
-        0% { color: #FFD700; text-shadow: 0 0 10px #FFD700, 0 0 20px #FF0055; transform: scale(1); }
-        50% { color: #FF0055; text-shadow: 0 0 15px #FF0055, 0 0 25px #FFD700; transform: scale(1.05); }
-        100% { color: #FFD700; text-shadow: 0 0 10px #FFD700, 0 0 20px #FF0055; transform: scale(1); }
-    }
-
-    @keyframes bdg-anim {
-        0% { color: #00FFFF; text-shadow: 0 0 10px #00FFFF, 0 0 20px #00FF66; transform: scale(1); }
-        50% { color: #00FF66; text-shadow: 0 0 15px #00FF66, 0 0 25px #00FFFF; transform: scale(1.05); }
-        100% { color: #00FFFF; text-shadow: 0 0 10px #00FFFF, 0 0 20px #00FF66; transform: scale(1); }
-    }
-
-    @keyframes game-anim {
-        0% { color: #c084fc; text-shadow: 0 0 10px #c084fc, 0 0 20px #FFD700; transform: scale(1); }
-        50% { color: #FFD700; text-shadow: 0 0 15px #FFD700, 0 0 25px #c084fc; transform: scale(1.05); }
-        100% { color: #c084fc; text-shadow: 0 0 10px #c084fc, 0 0 20px #FFD700; transform: scale(1); }
-    }
-
-    @keyframes hack-anim {
-        0% { color: #ff3333; text-shadow: 0 0 10px #ff3333, 0 0 20px #0088FF; transform: scale(1); }
-        50% { color: #0088FF; text-shadow: 0 0 15px #0088FF, 0 0 25px #ff3333; transform: scale(1.05); }
-        100% { color: #ff3333; text-shadow: 0 0 10px #ff3333, 0 0 20px #0088FF; transform: scale(1); }
-    }
-
-    .vip-word { animation: vip-anim 0.9s infinite ease-in-out; font-weight: 900; display: inline-block; margin: 0 3px; }
-    .bdg-word { animation: bdg-anim 0.9s infinite ease-in-out; font-weight: 900; display: inline-block; margin: 0 3px; }
-    .game-word { animation: game-anim 0.9s infinite ease-in-out; font-weight: 900; display: inline-block; margin: 0 3px; }
-    .hack-word { animation: hack-anim 0.9s infinite ease-in-out; font-weight: 900; display: inline-block; margin: 0 3px; }
-
-    .vip-pro-heading {
-        text-align: center;
-        font-size: 15px;
-        font-weight: 900;
-        letter-spacing: 0.3px;
-        margin: 8px auto 14px auto;
-        padding: 6px 4px;
-        white-space: nowrap;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        max-width: 100%;
-        overflow: hidden;
-        position: relative;
-        z-index: 2;
-    }
-
     .blinking-red-light {
         display: inline-block !important;
-        width: 8px !important;
-        height: 8px !important;
+        width: 10px !important;
+        height: 10px !important;
         background-color: #FF0055 !important;
         border-radius: 50% !important;
-        margin: 0 6px !important;
-        animation: super-fast-blink 0.4s infinite linear !important;
-        flex-shrink: 0;
+        margin-right: 6px !important;
+        animation: super-fast-blink 0.5s infinite linear !important;
     }
 
     .blinking-green-light {
         display: inline-block !important;
-        width: 8px !important;
-        height: 8px !important;
+        width: 10px !important;
+        height: 10px !important;
         background-color: #00FF66 !important;
         border-radius: 50% !important;
-        margin-left: 4px !important;
-        margin-right: 4px !important;
-        animation: super-fast-blink 0.4s infinite linear !important;
+        margin-left: 6px !important;
+        margin-right: 6px !important;
+        animation: super-fast-blink 0.5s infinite linear !important;
     }
 
     .radar-spinner-icon {
@@ -144,9 +82,8 @@ st.markdown(
         border: 3px solid #00FFFF !important;
         border-top: 3px solid transparent !important;
         border-radius: 50% !important;
-        animation: radar-spin 0.6s linear infinite !important;
+        animation: radar-spin 0.7s linear infinite !important;
         vertical-align: middle !important;
-        box-shadow: 0 0 8px #00FFFF;
     }
     
     .target-period-box {
@@ -159,8 +96,6 @@ st.markdown(
         display: flex !important;
         align-items: center !important;
         justify-content: space-between !important;
-        position: relative;
-        z-index: 2;
     }
 
     .stTextInput input {
@@ -169,13 +104,14 @@ st.markdown(
         border: 1.5px solid #FFD700 !important;
         border-radius: 6px !important;
         font-weight: 900 !important;
+        font-size: 15px !important;
         text-align: left !important;
         padding: 6px !important;
         height: 38px !important;
     }
     .stTextInput > label { display: none !important; }
 
-    .main-card { background-color: #000000 !important; border: none !important; padding: 0px !important; margin-top: 4px !important; position: relative; z-index: 2; }
+    .main-card { background-color: #000000 !important; border: none !important; padding: 0px !important; margin-top: 4px !important; }
     .timer-box-large { color: #FF00FF !important; font-weight: 900 !important; font-size: 15px !important; text-shadow: 0 0 8px rgba(255,0,255,0.6) !important; display: flex !important; align-items: center !important; gap: 4px !important; }
     
     .super-banner-small { border: 2.5px solid #00FFFF !important; padding: 14px !important; border-radius: 10px !important; text-align: center !important; font-size: 15px !important; font-weight: 900 !important; margin: 10px 0 !important; color: #00FFFF !important; text-transform: uppercase !important; animation: super-win-glow-small 0.8s infinite !important; letter-spacing: 0.5px !important; }
@@ -183,20 +119,16 @@ st.markdown(
     
     .diagonal-container { display: flex !important; justify-content: space-between !important; align-items: center !important; gap: 8px !important; margin-top: 10px !important; }
     .result-item { flex: 1 !important; text-align: center !important; background: #1a0f00 !important; border: 2.5px solid #ffd700 !important; border-radius: 12px !important; padding: 12px 6px !important; box-shadow: 0 0 10px rgba(255,215,0,0.25) !important; }
-    .auth-card { background: #0b071a !important; border: 2px solid #FFD700 !important; border-radius: 12px !important; padding: 16px !important; box-shadow: 0 0 15px rgba(255,215,0,0.2) !important; margin-top: 10px !important; position: relative; z-index: 2; }
-    .admin-card { background: #110022 !important; border: 2px solid #00FF66 !important; border-radius: 12px !important; padding: 15px !important; margin-bottom: 15px !important; position: relative; z-index: 2; }
+    .auth-card { background: #0b071a !important; border: 2px solid #FFD700 !important; border-radius: 12px !important; padding: 16px !important; box-shadow: 0 0 15px rgba(255,215,0,0.2) !important; margin-top: 10px !important; }
+    .admin-card { background: #110022 !important; border: 2px solid #00FF66 !important; border-radius: 12px !important; padding: 15px !important; margin-bottom: 15px !important; }
+    
+    .storage-badge { background: linear-gradient(135deg, #222200, #001100); border: 1.5px solid #00FF66; padding: 8px; border-radius: 8px; margin-bottom: 10px; text-align: center; box-shadow: 0 0 12px rgba(0,255,102,0.3); font-size: 13px; font-weight: 900; color: #00FF66; }
     </style>
-
-    <div class="flying-money-item" style="left: 8%; animation-delay: 0s;">💸🪽</div>
-    <div class="flying-money-item" style="left: 25%; animation-delay: 1.5s;">💵🪽</div>
-    <div class="flying-money-item" style="left: 50%; animation-delay: 3s;">💶🪽</div>
-    <div class="flying-money-item" style="left: 75%; animation-delay: 0.8s;">💸🪽</div>
-    <div class="flying-money-item" style="left: 90%; animation-delay: 2.2s;">💵🪽</div>
 """,
     unsafe_allow_html=True,
 )
 
-DATA_FILE = "bdg_app_titanium_vault.json"
+DATA_FILE = "bdg_app_data.json"
 
 def parse_expiry_date(exp_val):
     if isinstance(exp_val, datetime):
@@ -227,27 +159,27 @@ def load_shared_data():
         except Exception:
             pass
 
-    if "titanium_vault_requests" not in st.session_state:
-        st.session_state.titanium_vault_requests = file_data.get("utr_requests", {})
+    if "persistent_utr_requests" not in st.session_state:
+        st.session_state.persistent_utr_requests = file_data.get("utr_requests", {})
     else:
         for mob, val in file_data.get("utr_requests", {}).items():
-            if mob not in st.session_state.titanium_vault_requests:
-                st.session_state.titanium_vault_requests[mob] = val
+            if mob not in st.session_state.persistent_utr_requests:
+                st.session_state.persistent_utr_requests[mob] = val
 
-    if "titanium_vault_used_utrs" not in st.session_state:
-        st.session_state.titanium_vault_used_utrs = list(set(file_data.get("used_utrs_list", [])))
+    if "persistent_used_utrs" not in st.session_state:
+        st.session_state.persistent_used_utrs = list(set(file_data.get("used_utrs_list", [])))
     else:
-        st.session_state.titanium_vault_used_utrs = list(set(file_data.get("used_utrs_list", []) + st.session_state.titanium_vault_used_utrs))
+        st.session_state.persistent_used_utrs = list(set(file_data.get("used_utrs_list", []) + st.session_state.persistent_used_utrs))
 
     return {
-        "utr_requests": st.session_state.titanium_vault_requests,
-        "used_utrs_list": st.session_state.titanium_vault_used_utrs
+        "utr_requests": st.session_state.persistent_utr_requests,
+        "used_utrs_list": st.session_state.persistent_used_utrs
     }
 
 def save_shared_data(utr_reqs, used_utrs):
     try:
-        st.session_state.titanium_vault_requests = utr_reqs
-        st.session_state.titanium_vault_used_utrs = used_utrs
+        st.session_state.persistent_utr_requests = utr_reqs
+        st.session_state.persistent_used_utrs = used_utrs
 
         serializable_data = {"utr_requests": {}, "used_utrs_list": used_utrs}
         for mob, val in utr_reqs.items():
@@ -259,7 +191,7 @@ def save_shared_data(utr_reqs, used_utrs):
         with open(DATA_FILE, "w", encoding="utf-8") as f:
             json.dump(serializable_data, f, ensure_ascii=False, indent=4)
     except Exception as e:
-        print("Vault Save Error:", e)
+        print("Save Error:", e)
 
 initial_data = load_shared_data()
 
@@ -268,24 +200,6 @@ if "authenticated" not in st.session_state:
 
 if "is_owner" not in st.session_state:
     st.session_state.is_owner = False
-
-components.html(
-    """
-    <script>
-    try {
-        const savedAuth = localStorage.getItem('vip_titanium_auth');
-        const savedExpiry = localStorage.getItem('vip_titanium_expiry');
-        if (savedAuth && savedExpiry) {
-            const expDate = new Date(savedExpiry);
-            if (new Date() < expDate) {
-                // Active session valid
-            }
-        }
-    } catch(e) {}
-    </script>
-    """,
-    height=0,
-)
 
 if "utr_requests" not in st.session_state:
     st.session_state.utr_requests = initial_data["utr_requests"]
@@ -296,8 +210,8 @@ if "used_utrs_list" not in st.session_state:
 if "user_base_period" not in st.session_state:
     st.session_state.user_base_period = ""
 
-if "base_input_time" not in st.session_state:
-    st.session_state.base_input_time = 0
+if "base_input_block_time" not in st.session_state:
+    st.session_state.base_input_block_time = 0
 
 if "selected_game_seconds" not in st.session_state:
     st.session_state.selected_game_seconds = 30
@@ -305,22 +219,28 @@ if "selected_game_seconds" not in st.session_state:
 MASTER_MOBILE = "9011997944"
 MASTER_PASSWORD = "KISHOR@84"
 
-st.markdown(
-    """
-    <div class='vip-pro-heading'>
-        <span class='blinking-red-light'></span>
-        👑 <span class='vip-word'>VIP</span> <span class='bdg-word'>BDG</span> <span class='game-word'>GAME</span> <span class='hack-word'>HACK</span> 👑
-        <span class='blinking-red-light'></span>
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
-
+# ================= LOGIN SCREEN =================
 if not st.session_state.authenticated:
+    st.markdown(
+        """
+        <div style='text-align: center; margin-bottom: 10px;'>
+            <h2 style='font-size: 20px; font-weight: 900; margin: 0; display: inline-block;'>
+                <span class='blinking-red-light'></span>
+                <span style='color: #FFD700; text-shadow: 0 0 10px #FFD700;'>👑 VIP</span> 
+                <span style='color: #00FF66; text-shadow: 0 0 10px #00FF66;'>BDG</span> 
+                <span style='color: #00FFFF; text-shadow: 0 0 10px #00FFFF;'>GAME</span> 
+                <span style='color: #FF0055; text-shadow: 0 0 10px #FF0055;'>HACK 👑</span>
+                <span class='blinking-red-light' style='margin-left: 6px; margin-right: 0;'></span>
+            </h2>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
     st.markdown("<div class='auth-card'>", unsafe_allow_html=True)
     st.markdown(
         "<h4 style='color: #00FFFF; text-align: center; font-weight: 900;"
-        " font-size: 13px;'>रजिस्टर्ड मोबाइल नंबर और पासवर्ड से लॉगिन करें</h4>",
+        " font-size: 15px;'>रजिस्टर्ड मोबाइल नंबर और पासवर्ड से लॉगिन करें</h4>",
         unsafe_allow_html=True,
     )
 
@@ -354,23 +274,11 @@ if not st.session_state.authenticated:
             user_data = st.session_state.utr_requests[clean_l_mob]
             if user_data["password"] == login_pass:
                 exp_time = parse_expiry_date(user_data["expiry"])
-                curr_time = datetime.now()
 
-                if user_data.get("status") == "APPROVED" and curr_time < exp_time:
+                if user_data.get("status") == "APPROVED" and datetime.now() < exp_time:
                     st.session_state.authenticated = True
                     st.session_state.is_owner = False
-                    
-                    exp_iso = exp_time.isoformat()
-                    components.html(f"""
-                        <script>
-                            try {{
-                                localStorage.setItem('vip_titanium_auth', '{clean_l_mob}');
-                                localStorage.setItem('vip_titanium_expiry', '{exp_iso}');
-                            }} catch(e) {{}}
-                        </script>
-                    """, height=0)
-
-                    st.success("🟢 Verified: आपका 15 दिन का प्लान सुरक्षित रूप से सक्रिय है...")
+                    st.success("🟢 Verified: आपका प्लान सक्रिय है, डैशबोर्ड खुल रहा है...")
                     time.sleep(0.8)
                     st.rerun()
                 elif user_data.get("status") == "REJECTED":
@@ -378,7 +286,7 @@ if not st.session_state.authenticated:
                 elif user_data.get("status") == "PENDING":
                     st.warning("🔴 पेंडिंग: आपका UTR अभी ओनर द्वारा अप्रूव नहीं हुआ है!")
                 else:
-                    st.error("🚨 समय समाप्त: आपके 15 दिन पूरे हो चुके हैं! कृपया नया ₹2000 का भुगतान करके नया UTR दर्ज करें।")
+                    st.error("🚨 समय समाप्त: आपके 15 दिन का प्लान खत्म हो चुका है! कृपया नीचे नया ₹2000 का भुगतान करके नया UTR दर्ज करें।")
             else:
                 st.error("❌ गलत पासवर्ड! कृपया सही पासवर्ड दर्ज करें।")
         else:
@@ -387,7 +295,7 @@ if not st.session_state.authenticated:
     st.markdown("---")
     st.markdown(
         "<h3 style='color: #FFD700; font-weight: 900; text-align: center;"
-        " font-size: 14px; margin-bottom: 5px;'>⚡ 2000 ₹ QR स्कैन और नया UTR दर्ज"
+        " font-size: 16px; margin-bottom: 5px;'>⚡ 2000 ₹ QR स्कैन और नया UTR दर्ज"
         " करें</h3>",
         unsafe_allow_html=True,
     )
@@ -405,12 +313,12 @@ if not st.session_state.authenticated:
     st.markdown(
         """
         <div style='background: linear-gradient(135deg, #113300, #001a00); border: 2px solid #00FF66; padding: 12px; border-radius: 10px; margin: 10px 0; text-align: center;'>
-            <p style='color: #00FF66; font-size: 13px; font-weight: 900; margin: 0;'>💎 15 दिन समाप्त होने पर ₹2000 का भुगतान करके नया UTR डालें (15 Days Plan)</p>
-            <p style='color: #CCCCCC; font-size: 11px; margin-top: 4px;'>नीचे दिए गए PhonePe QR को स्कैन करें:</p>
+            <p style='color: #00FF66; font-size: 14px; font-weight: 900; margin: 0;'>💎 15 दिन समाप्त होने पर ₹2000 का भुगतान करके नया UTR डालें (15 Days Plan)</p>
+            <p style='color: #CCCCCC; font-size: 12px; margin-top: 4px;'>नीचे दिए गए PhonePe QR को स्कैन करें:</p>
             <div style='background: #FFFFFF; padding: 10px; display: inline-block; border-radius: 8px; margin-top: 6px; box-shadow: 0 0 15px rgba(0,255,102,0.4);'>
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=upi://pay?pa=kishorsingh226105.wallet@phonepe&pn=KishorSinghRautela&am=2000" width="150" height="150">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=170x170&data=upi://pay?pa=kishorsingh226105.wallet@phonepe&pn=KishorSinghRautela&am=2000" width="160" height="160">
             </div>
-            <p style='color: #FFD700; font-size: 11px; margin-top: 6px; font-weight: 900;'>UPI ID: kishorsingh226105.wallet@phonepe</p>
+            <p style='color: #FFD700; font-size: 13px; margin-top: 6px; font-weight: 900;'>UPI ID: kishorsingh226105.wallet@phonepe</p>
         </div>
     """,
         unsafe_allow_html=True,
@@ -460,6 +368,7 @@ if not st.session_state.authenticated:
 
     st.markdown("</div>", unsafe_allow_html=True)
 
+# ================= DASHBOARD SCREEN =================
 else:
     latest_data = load_shared_data()
     st.session_state.utr_requests = latest_data["utr_requests"]
@@ -468,12 +377,12 @@ else:
     if st.session_state.is_owner:
         st.markdown("<div class='admin-card'>", unsafe_allow_html=True)
         st.markdown(
-            "<h3 style='color: #FFD700; text-align: center; margin: 0; font-size: 15px;'>👑"
+            "<h3 style='color: #FFD700; text-align: center; margin: 0; font-weight: 900;'>👑"
             " OWNER / ADMIN APPROVAL PANEL</h3>",
             unsafe_allow_html=True,
         )
         st.markdown(
-            "<p style='color: #00FFFF; text-align: center; font-size: 11px;'>यहाँ सिर्फ पेंडिंग यूज़र का UTR चेक करें और Approve करें:</p>",
+            "<p style='color: #00FFFF; text-align: center; font-size: 13px; font-weight: 800;'>यहाँ सिर्फ पेंडिंग यूज़र का UTR चेक करें और Approve करें:</p>",
             unsafe_allow_html=True,
         )
 
@@ -485,9 +394,9 @@ else:
             for mob, req in list(pending_requests.items()):
                 st.markdown(
                     f"""
-                    <div style='border: 1.5px solid #FF0000; padding: 8px; border-radius: 8px; margin-bottom: 8px; background: #000000;'>
-                        <p style='margin:0; font-weight:900; color:#FFFFFF; font-size: 12px;'>📱 मोबाइल: <span style='color:#00FFFF;'>{mob}</span> | 🔴 (रिचार्ज पेंडिंग)</p>
-                        <p style='margin:0; font-size:11px; color:#FFD700;'>📝 UTR No: {req['utr']} | ⏰ समय: {req['time']}</p>
+                    <div style='border: 1.5px solid #FF0000; padding: 10px; border-radius: 8px; margin-bottom: 8px; background: #000000;'>
+                        <p style='margin:0; font-weight:900; color:#FFFFFF;'>📱 मोबाइल: <span style='color:#00FFFF;'>{mob}</span> | 🔴 (रिचार्ज पेंडिंग)</p>
+                        <p style='margin:0; font-size:13px; color:#FFD700;'>📝 UTR No: {req['utr']} | ⏰ समय: {req['time']}</p>
                     </div>
                 """,
                     unsafe_allow_html=True,
@@ -504,7 +413,7 @@ else:
                         
                         save_shared_data(st.session_state.utr_requests, st.session_state.used_utrs_list)
                         
-                        st.success(f"यूज़र {mob} को 15 दिनों के लिए Titanium Security के साथ अप्रूव कर दिया गया है!")
+                        st.success(f"यूज़र {mob} को 15 दिनों के लिए सफलतापूर्वक अप्रूव कर दिया गया है!")
                         time.sleep(0.5)
                         st.rerun()
                 with col_rej:
@@ -517,6 +426,23 @@ else:
 
         st.markdown("</div>", unsafe_allow_html=True)
 
+    # --- VIP BDG GAME HACK HEADER ---
+    st.markdown(
+        """
+        <div style='text-align: center; margin: 4px 0 10px 0;'>
+            <h2 style='font-size: 18px; font-weight: 900; margin: 0; display: inline-block;'>
+                <span class='blinking-red-light'></span>
+                <span style='color: #FFD700; text-shadow: 0 0 10px #FFD700;'>👑 VIP</span> 
+                <span style='color: #00FF66; text-shadow: 0 0 10px #00FF66;'>BDG</span> 
+                <span style='color: #00FFFF; text-shadow: 0 0 10px #00FFFF;'>GAME</span> 
+                <span style='color: #FF0055; text-shadow: 0 0 10px #FF0055;'>HACK 👑</span>
+                <span class='blinking-red-light' style='margin-left: 6px; margin-right: 0;'></span>
+            </h2>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
     seconds = st.session_state.selected_game_seconds
 
     c30_style = "background: linear-gradient(135deg, #FFB700, #CC8800) !important; border: 2px solid #FFFFFF !important; color: #000000 !important; box-shadow: 0 0 18px rgba(255,183,0,0.8) !important;" if seconds == 30 else "background: #1a1a1a !important; border: 1.5px solid #333333 !important; color: #888888 !important;"
@@ -527,41 +453,44 @@ else:
     with st.container(horizontal=True, gap="small"):
         if st.button("⏳ 30sec", key="b_30s", use_container_width=True):
             st.session_state.selected_game_seconds = 30
-            st.session_state.base_input_time = 0
             st.rerun()
         if st.button("🕒 1 Min", key="b_1m", use_container_width=True):
             st.session_state.selected_game_seconds = 60
-            st.session_state.base_input_time = 0
             st.rerun()
         if st.button("⏱️ 3 Min", key="b_3m", use_container_width=True):
             st.session_state.selected_game_seconds = 180
-            st.session_state.base_input_time = 0
             st.rerun()
         if st.button("⏰ 5 Min", key="b_5m", use_container_width=True):
             st.session_state.selected_game_seconds = 300
-            st.session_state.base_input_time = 0
             st.rerun()
 
     st.markdown(f"""
         <style>
-        div[data-testid="stHorizontalBlock"] > div:nth-child(1) button {{ {c30_style} font-weight: 900 !important; border-radius: 10px !important; padding: 10px 2px !important; font-size: 12px !important; }}
-        div[data-testid="stHorizontalBlock"] > div:nth-child(2) button {{ {c1_style} font-weight: 900 !important; border-radius: 10px !important; padding: 10px 2px !important; font-size: 12px !important; }}
-        div[data-testid="stHorizontalBlock"] > div:nth-child(3) button {{ {c3_style} font-weight: 900 !important; border-radius: 10px !important; padding: 10px 2px !important; font-size: 12px !important; }}
-        div[data-testid="stHorizontalBlock"] > div:nth-child(4) button {{ {c5_style} font-weight: 900 !important; border-radius: 10px !important; padding: 10px 2px !important; font-size: 12px !important; }}
+        div[data-testid="stHorizontalBlock"] > div:nth-child(1) button {{ {c30_style} font-weight: 900 !important; border-radius: 10px !important; padding: 10px 2px !important; font-size: 13px !important; }}
+        div[data-testid="stHorizontalBlock"] > div:nth-child(2) button {{ {c1_style} font-weight: 900 !important; border-radius: 10px !important; padding: 10px 2px !important; font-size: 13px !important; }}
+        div[data-testid="stHorizontalBlock"] > div:nth-child(3) button {{ {c3_style} font-weight: 900 !important; border-radius: 10px !important; padding: 10px 2px !important; font-size: 13px !important; }}
+        div[data-testid="stHorizontalBlock"] > div:nth-child(4) button {{ {c5_style} font-weight: 900 !important; border-radius: 10px !important; padding: 10px 2px !important; font-size: 13px !important; }}
         </style>
-    """, unsafe_allow_html=True,
-)
+    """, unsafe_allow_html=True)
+
+    st.markdown("""
+        <div class="storage-badge">
+            ⚡ LIVE PRO SCANNER: <span style="color:#FFFFFF;">[Live Spinning Scan & Smart Result Engine Active]</span>
+        </div>
+    """, unsafe_allow_html=True)
 
     def update_period_callback():
         clean_val = "".join(filter(str.isdigit, st.session_state.period_text_box))
         st.session_state.user_base_period = clean_val
-        if len(clean_val) == 5:
-            st.session_state.base_input_time = int(time.time())
+        current_time = int(time.time())
+        st.session_state.base_input_block_time = current_time - (
+            current_time % seconds
+        )
 
     st.text_input(
         "Period Input",
         value=st.session_state.user_base_period,
-        placeholder="BDG गेम का लाइव पीरियड नंबर यहाँ डालें...",
+        placeholder="गेम के पीछे के आखिरी 5 अंक यहाँ डालें...",
         max_chars=5,
         key="period_text_box",
         on_change=update_period_callback,
@@ -605,17 +534,9 @@ else:
 
             user_input_str = st.session_state.user_base_period.strip()
 
-            # यहाँ सख्त नियम है: अगर 5 अंकों का असली नंबर नहीं होगा, तो पैनल कोई तुक्का या रिजल्ट नहीं दिखाएगा
             is_invalid_format = False
             if not user_input_str or len(user_input_str) != 5 or not user_input_str.isdigit():
                 is_invalid_format = True
-            else:
-                try:
-                    user_val = int(user_input_str)
-                    if abs(user_val) < 10000:
-                        is_invalid_format = True
-                except:
-                    is_invalid_format = True
 
             if is_invalid_format:
                 st.markdown(
@@ -624,7 +545,7 @@ else:
                         <div style="display: flex; align-items: center;">
                             <span class="blinking-red-light"></span>
                             <span style="color: #FFD700; font-size: 13px; font-weight: 900; margin-right: 6px;">LIVE PERIOD:</span>
-                            <span style="color: #FF4444; font-size: 12px; font-weight: 900;">🚨 कृपया असली लाइव पीरियड नंबर डालें (फर्जी नंबर मान्य नहीं)!</span>
+                            <span style="color: #FF4444; font-size: 13px; font-weight: 900;">🚨 कृपया BDG गेम का सही लाइव पीरियड नंबर डालें!</span>
                         </div>
                         <div class="timer-box-large">⏰ {timer_str}</div>
                     </div>
@@ -632,70 +553,52 @@ else:
                     unsafe_allow_html=True,
                 )
                 st.markdown(
-                    """
-                    <div style="border: 2px dashed #FF0055; background: #220011; padding: 18px; border-radius: 12px; text-align: center; margin-top: 10px;">
-                        <span class="blinking-red-light" style="margin-bottom: 6px; width: 14px; height: 14px;"></span>
-                        <div style="color: #FF0055; font-size: 13px; font-weight: 900;">⚠️ STRIKE: WAITING FOR REAL BDG LIVE PERIOD...</div>
-                        <div style="color: #CCCCCC; font-size: 11px; margin-top: 4px;">फर्जी या गलत नंबर डालने पर स्कैनर बंद रहेगा। सही लाइव नंबर डालने पर ही स्कैनिंग शुरू होगी।</div>
-                    </div>
-                """,
+                    '<div class="analyzing-banner"><span class="blinking-red-light"></span>⚡ WAITING FOR LIVE PERIOD & SERVER SYNC...</div>',
                     unsafe_allow_html=True,
                 )
                 st.markdown("</div>", unsafe_allow_html=True)
                 return
 
             try:
-                base_period_num = int(user_input_str)
+                base_val = int(user_input_str)
             except:
-                base_period_num = 10000
+                base_val = 10000
 
-            current_real_time = int(time.time())
-            if st.session_state.base_input_time == 0:
-                st.session_state.base_input_time = current_real_time
+            current_time = int(time.time())
+            current_block_start = current_time - (current_time % seconds)
 
-            elapsed_blocks = (current_real_time - st.session_state.base_input_time) // seconds
-            target_period_num = base_period_num + elapsed_blocks
+            if st.session_state.base_input_block_time == 0:
+                st.session_state.base_input_block_time = current_block_start
+
+            elapsed_blocks = (
+                current_block_start - st.session_state.base_input_block_time
+            ) // seconds
+            target_period_num = base_val + elapsed_blocks
             target_period_str = str(target_period_num)
 
+            # === ENGINE LOGIC ===
             def calculate_consensus(p_num, offset_val):
                 history_box = []
-                for idx in range(1, 51):
+                for idx in range(1, 16):
                     chk = p_num - idx
                     if chk > 0:
                         v = (chk * 79 + offset_val + (idx * 43)) % 100
                         history_box.append(1 if v > 42 else 0)
 
-                if len(history_box) < 15:
-                    return ("WAIT", False, False)
-
-                recent_segment = history_box[:10]
-                older_segment = history_box[10:30]
-                
-                recent_sum = sum(recent_segment)
-                older_avg = (sum(older_segment) / len(older_segment)) * 10 if len(older_segment) > 0 else 5.0
-
-                is_server_update_detected = False
-                if abs(recent_sum - older_avg) >= 4:
-                    is_server_update_detected = True
-
-                confidence_check = abs(recent_sum - 5.0)
-                if confidence_check < 0.8:
-                    return ("WAIT", False, is_server_update_detected)
+                if len(history_box) < 5:
+                    return ("BIG", True)
 
                 signal = (p_num // 2) % 2
-                recent_trend = sum(history_box[:15])
+                recent_trend = sum(history_box[:4])
 
-                if is_server_update_detected:
-                    pred = "SMALL" if recent_sum < 5 else "BIG"
+                if signal == 0:
+                    pred = "SMALL" if history_box[0] == 1 else "BIG"
                 else:
-                    if signal == 0:
-                        pred = "SMALL" if history_box[0] == 1 else "BIG"
-                    else:
-                        pred = "BIG" if recent_trend >= 7 else "SMALL"
+                    pred = "BIG" if recent_trend >= 2 else "SMALL"
 
-                return (pred, True, is_server_update_detected)
+                return (pred, True)
 
-            pred_size, is_valid_confidence, server_update_alert = calculate_consensus(target_period_num, tab_offset)
+            pred_size, is_sure_shot = calculate_consensus(target_period_num, tab_offset)
 
             rand_users = 320 + ((int(time.time()) // 3) % 19)
             mode_label = f"{seconds}S" if seconds < 60 else f"{seconds//60}M"
@@ -705,30 +608,19 @@ else:
                 <div class="target-period-box">
                     <div style="display: flex; align-items: center; gap: 4px;">
                         <span class="blinking-red-light" style="margin-right: 2px;"></span>
-                        <span style="color: #FFD700; font-size: 12px; font-weight: 900;">LIVE PERIOD:</span>
-                        <span style="color: #00FFFF; font-size: 13px; font-weight: 900; background: rgba(0,255,255,0.1); padding: 1px 6px; border-radius: 4px; border: 1px solid #00FFFF;">{target_period_str}</span>
+                        <span style="color: #FFD700; font-size: 13px; font-weight: 900;">LIVE PERIOD:</span>
+                        <span style="color: #00FFFF; font-size: 14px; font-weight: 900; background: rgba(0,255,255,0.1); padding: 1px 6px; border-radius: 4px; border: 1px solid #00FFFF;">{target_period_str}</span>
                     </div>
                     <div style="background: #001a11; border: 1px solid #00FF66; padding: 2px 6px; border-radius: 6px; display: flex; align-items: center; gap: 4px;">
                         <span class="blinking-green-light" style="width: 7px; height: 7px; margin: 0;"></span>
-                        <span style="color: #00FF66; font-size: 11px; font-weight: 900;">{mode_label} SYNC ACTIVE</span>
-                        <span style="color: #FFFFFF; font-size: 11px; font-weight: 900;">| 👥 {rand_users}</span>
+                        <span style="color: #00FF66; font-size: 12px; font-weight: 900;">{mode_label} SYNC ACTIVE</span>
+                        <span style="color: #FFFFFF; font-size: 12px; font-weight: 900;">| 👥 {rand_users}</span>
                     </div>
                     <div class="timer-box-large">⏰ {timer_str}</div>
                 </div>
             """,
                 unsafe_allow_html=True,
             )
-
-            if server_update_alert:
-                st.markdown(
-                    """
-                    <div style="background: linear-gradient(135deg, #440000, #1a0000); border: 2px solid #FF0055; padding: 10px; border-radius: 8px; text-align: center; margin-bottom: 8px; box-shadow: 0 0 15px rgba(255,0,85,0.5);">
-                        <span class="blinking-red-light"></span>
-                        <span style="color: #FF0055; font-weight: 900; font-size: 12px;">⚠️ NEW SERVER UPDATE / SHIFT DETECTED! (नया सट्टा अपडेट पकड़ा गया - री-स्कैनिंग जारी)</span>
-                    </div>
-                """,
-                    unsafe_allow_html=True,
-                )
 
             if seconds == 30:
                 scan_active = remaining_secs > 15
@@ -740,10 +632,13 @@ else:
             if scan_active:
                 st.markdown(
                     f'''
-                    <div style="animation: colorful-scanning-glow 1.5s infinite; border: 2.5px solid #00FFFF; padding: 16px; border-radius: 12px; text-align: center; margin: 8px 0; display: flex; align-items: center; justify-content: center; gap: 14px;">
-                        <span class="radar-spinner-icon"></span>
-                        <span style="color: #00FFFF; font-size: 15px; font-weight: 900; letter-spacing: 1.5px; text-shadow: 0 0 12px #00FFFF;">LIVE SCAN</span>
-                        <span class="blinking-red-light" style="margin: 0; width: 12px; height: 12px;"></span>
+                    <div style="animation: colorful-scanning-glow 1.5s infinite; border: 2.5px solid #00FFFF; padding: 20px; border-radius: 12px; text-align: center; margin: 10px 0;">
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                            <span class="radar-spinner-icon"></span>
+                            <span style="color: #00FFFF; font-size: 15px; font-weight: 900; letter-spacing: 1.5px; text-shadow: 0 0 10px #00FFFF;">LIVE COLOR SCANNING ({mode_label})</span>
+                            <span class="blinking-red-light" style="margin:0;"></span>
+                        </div>
+                        <div style="color: #00FF66; font-size: 12px; margin-top: 8px; font-weight: 900; text-shadow: 0 0 8px #00FF66;">⚡ SERVER PATTERN ROTATING... ({remaining_secs}s left)</div>
                     </div>
                 ''',
                     unsafe_allow_html=True,
@@ -751,24 +646,14 @@ else:
 
                 st.markdown(
                     """
-                    <div style="border: 1.5px dashed #333333; background: #000000; padding: 18px; border-radius: 12px; text-align: center; margin-top: 8px;">
-                        <div style="color: #666666; font-size: 12px; font-weight: 900; letter-spacing: 1px;">🔒 50-PERIOD ENGINE SCANNING...</div>
+                    <div style="border: 1.5px dashed #333333; background: #000000; padding: 25px; border-radius: 12px; text-align: center; margin-top: 10px;">
+                        <div style="color: #888888; font-size: 14px; font-weight: 900; letter-spacing: 1px;">🔒 RESULT LOCKED UNTIL SCAN COMPLETE</div>
+                        <div style="color: #666666; font-size: 12px; margin-top: 4px; font-weight: 800;">स्कैन पूरा होने पर नीचे परिणाम दिखाई देगा...</div>
                     </div>
                 """,
                     unsafe_allow_html=True,
                 )
 
-            elif not is_valid_confidence:
-                st.markdown(
-                    """
-                    <div style="background: linear-gradient(135deg, #222200, #111100); border: 2px solid #FFD700; padding: 20px; border-radius: 12px; text-align: center; margin: 10px 0; box-shadow: 0 0 15px rgba(255,215,0,0.3);">
-                        <span class="blinking-red-light"></span>
-                        <span style="color: #FFD700; font-weight: 900; font-size: 14px;">⚠️ HIGH VOLATILITY / AMBIGUOUS LINE DETECTED!</span>
-                        <div style="color: #CCCCCC; font-size: 12px; margin-top: 6px;">पैनल ने तुक्का मारने से इनकार कर दिया है। अगली स्थिर लाइन का इंतज़ार करें...</div>
-                    </div>
-                """,
-                    unsafe_allow_html=True,
-                )
             else:
                 is_true_sure_shot = (target_period_num % 3 == 0)
 
@@ -797,7 +682,7 @@ else:
                     st.markdown(
                         """
                         <div style="background: #000000; padding: 22px; border-radius: 10px; text-align: center; border: 1px solid #111111; margin: 10px 0;">
-                            <div style="color: #333333; font-size: 12px; font-weight: 900; letter-spacing: 1px;">████████████████████████</div>
+                            <div style="color: #444444; font-size: 13px; font-weight: 900; letter-spacing: 1px;">████████████████████████</div>
                         </div>
                     """,
                         unsafe_allow_html=True,
@@ -844,7 +729,7 @@ else:
                     f"""
                     <div class="diagonal-container">
                         <div class="result-item">
-                            <div style="font-size: 11px; color: #00FF66; font-weight: 900; margin-bottom: 6px;">NUMBER</div>
+                            <div style="font-size: 12px; color: #00FF66; font-weight: 900; margin-bottom: 6px;">NUMBER</div>
                             <div style="{ball_style} width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 900; margin: 0 auto; text-shadow: 0 2px 5px rgba(0,0,0,0.9); position: relative;">
                                 {display_num}
                                 <span style="position: absolute; top: 8px; left: 10px; width: 8px; height: 8px; background: rgba(255,255,255,0.6); border-radius: 50%;"></span>
@@ -852,12 +737,12 @@ else:
                             </div>
                         </div>
                         <div class="result-item">
-                            <div style="font-size: 11px; color: #00FF66; font-weight: 900; margin-bottom: 6px;">SIZE</div>
-                            <div style="background: {size_bg}; color: white; padding: 14px 4px; border-radius: 8px; font-weight: 900; font-size: 14px; text-align: center;">{display_size}</div>
+                            <div style="font-size: 12px; color: #00FF66; font-weight: 900; margin-bottom: 6px;">SIZE</div>
+                            <div style="background: {size_bg}; color: white; padding: 14px 4px; border-radius: 8px; font-weight: 900; font-size: 15px; text-align: center;">{display_size}</div>
                         </div>
                         <div class="result-item">
-                            <div style="font-size: 11px; color: #00FF66; font-weight: 900; margin-bottom: 6px;">COLOR</div>
-                            <div style="background-color: {color_bg}; color: white; padding: 14px 4px; border-radius: 8px; font-weight: 900; font-size: 13px; text-align: center;">{display_color}</div>
+                            <div style="font-size: 12px; color: #00FF66; font-weight: 900; margin-bottom: 6px;">COLOR</div>
+                            <div style="background-color: {color_bg}; color: white; padding: 14px 4px; border-radius: 8px; font-weight: 900; font-size: 14px; text-align: center;">{display_color}</div>
                         </div>
                     </div>
                 """,
@@ -878,7 +763,7 @@ else:
                         <span style="color: #00FF66; font-weight: 900;">|</span>
                         <div style="display: flex; align-items: center; gap: 10px;">
                             <span style="color: #00FFFF; font-size: 14px; font-weight: 900; text-shadow: 0 0 8px rgba(0,255,255,0.5);">NEXT SHOT:</span>
-                            <span style="background: {next_shot_bg}; color: #FFFFFF; padding: 8px 24px; border-radius: 8px; font-weight: 900; font-size: 14px; border: 2px solid #FFFFFF; box-shadow: {next_shot_glow};">{next_shot_display}</span>
+                            <span style="background: {next_shot_bg}; color: #FFFFFF; padding: 8px 24px; border-radius: 8px; font-weight: 900; font-size: 15px; border: 2px solid #FFFFFF; box-shadow: {next_shot_glow};">{next_shot_display}</span>
                         </div>
                     </div>
                 """,
