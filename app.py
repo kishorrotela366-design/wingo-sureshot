@@ -52,18 +52,33 @@ st.markdown(
         100% { border-color: #00FFFF; box-shadow: 0 0 35px #00FFFF, inset 0 0 20px #00FFFF; background: linear-gradient(135deg, #003333, #000f1a); }
     }
 
-    @keyframes rainbow-text-glow {
-        0% { color: #FF0055; text-shadow: 0 0 10px #FF0055, 0 0 20px #FF0055; }
-        33% { color: #00FFFF; text-shadow: 0 0 10px #00FFFF, 0 0 20px #00FFFF; }
-        66% { color: #00FF66; text-shadow: 0 0 10px #00FF66, 0 0 20px #00FF66; }
-        100% { color: #FFD700; text-shadow: 0 0 10px #FFD700, 0 0 20px #FFD700; }
+    /* अलग-अलग शब्दों के लिए जिप-झप और मल्टी-कलर एनीमेशन शटर */
+    @keyframes vip-zipzap {
+        0% { color: #FFD700; text-shadow: 0 0 10px #FFD700, 0 0 20px #FF0055; }
+        50% { color: #00FFFF; text-shadow: 0 0 15px #00FFFF, 0 0 25px #00FF66; }
+        100% { color: #FFD700; text-shadow: 0 0 10px #FFD700, 0 0 20px #FF0055; }
     }
+
+    @keyframes pro-zipzap {
+        0% { color: #FF0055; text-shadow: 0 0 10px #FF0055, 0 0 20px #FFD700; }
+        50% { color: #00FF66; text-shadow: 0 0 15px #00FF66, 0 0 25px #00FFFF; }
+        100% { color: #FF0055; text-shadow: 0 0 10px #FF0055, 0 0 20px #FFD700; }
+    }
+
+    @keyframes panel-zipzap {
+        0% { color: #00FFFF; text-shadow: 0 0 10px #00FFFF, 0 0 20px #00FF66; }
+        50% { color: #FFD700; text-shadow: 0 0 15px #FFD700, 0 0 25px #FF0055; }
+        100% { color: #00FFFF; text-shadow: 0 0 10px #00FFFF, 0 0 20px #00FF66; }
+    }
+
+    .vip-word { animation: vip-zipzap 1.2s infinite ease-in-out; font-weight: 900; margin: 0 6px; }
+    .pro-word { animation: pro-zipzap 1.2s infinite ease-in-out; font-weight: 900; margin: 0 6px; }
+    .panel-word { animation: panel-zipzap 1.2s infinite ease-in-out; font-weight: 900; margin: 0 6px; }
 
     .vip-pro-heading {
         text-align: center;
         font-size: 22px;
         font-weight: 900;
-        animation: rainbow-text-glow 3s infinite linear;
         letter-spacing: 1px;
         margin-bottom: 10px;
     }
@@ -252,7 +267,13 @@ MASTER_PASSWORD = "KISHOR@84"
 
 if not st.session_state.authenticated:
     st.markdown(
-        "<h2 class='vip-pro-heading'><span class='blinking-red-light'></span>👑 VIP PRO PANEL 👑<span class='blinking-red-light' style='margin-left: 6px; margin-right: 0;'></span></h2>",
+        """
+        <h2 class='vip-pro-heading'>
+            <span class='blinking-red-light'></span>
+            👑 <span class='vip-word'>VIP</span> <span class='pro-word'>PRO</span> <span class='panel-word'>PANEL</span> 👑
+            <span class='blinking-red-light' style='margin-left: 6px; margin-right: 0;'></span>
+        </h2>
+        """,
         unsafe_allow_html=True,
     )
 
@@ -488,7 +509,7 @@ else:
 
     st.markdown("""
         <div class="storage-badge">
-            ⚡ TITANIUM VAULT ENGINE (STRICT 100-PERIOD DEEP SCAN & ZERO GUESS ACTIVE): <span style="color:#FFFFFF;">[Permanent App LocalStorage & 15-Days Strict Lockdown Active]</span>
+            ⚡ VIP PRO ENGINE (50-PERIOD PRECISION ALARM SYNC): <span style="color:#FFFFFF;">[Permanent App LocalStorage & 15-Days Strict Lockdown Active]</span>
         </div>
     """, unsafe_allow_html=True)
 
@@ -589,45 +610,41 @@ else:
             target_period_num = base_val + elapsed_blocks
             target_period_str = str(target_period_num)
 
-            # Strict 100-Period Deep Matcher & Zero-Guess Filter
             def calculate_consensus(p_num, offset_val):
                 history_box = []
-                for idx in range(1, 101):
+                for idx in range(1, 51):
                     chk = p_num - idx
                     if chk > 0:
                         v = (chk * 79 + offset_val + (idx * 43)) % 100
                         history_box.append(1 if v > 42 else 0)
 
-                if len(history_box) < 30:
+                if len(history_box) < 15:
                     return ("WAIT", False, False)
 
-                # Strict pattern validation to avoid random guesswork
-                recent_segment = history_box[:15]
-                older_segment = history_box[15:60]
+                recent_segment = history_box[:10]
+                older_segment = history_box[10:30]
                 
                 recent_sum = sum(recent_segment)
-                older_avg = (sum(older_segment) / len(older_segment)) * 15 if len(older_segment) > 0 else 7.5
+                older_avg = (sum(older_segment) / len(older_segment)) * 10 if len(older_segment) > 0 else 5.0
 
                 is_server_update_detected = False
-                if abs(recent_sum - older_avg) >= 5:
+                if abs(recent_sum - older_avg) >= 4:
                     is_server_update_detected = True
 
-                # Strict threshold check to ensure high confidence before outputting
-                confidence_check = abs(recent_sum - 7.5)
-                if confidence_check < 1.2:
-                    # Too chaotic / ambiguous -> do not guess randomly, request strict wait
+                confidence_check = abs(recent_sum - 5.0)
+                if confidence_check < 0.8:
                     return ("WAIT", False, is_server_update_detected)
 
                 signal = (p_num // 2) % 2
-                recent_trend = sum(history_box[:20])
+                recent_trend = sum(history_box[:15])
 
                 if is_server_update_detected:
-                    pred = "SMALL" if recent_sum < 7 else "BIG"
+                    pred = "SMALL" if recent_sum < 5 else "BIG"
                 else:
                     if signal == 0:
                         pred = "SMALL" if history_box[0] == 1 else "BIG"
                     else:
-                        pred = "BIG" if recent_trend >= 10 else "SMALL"
+                        pred = "BIG" if recent_trend >= 7 else "SMALL"
 
                 return (pred, True, is_server_update_detected)
 
@@ -667,11 +684,11 @@ else:
                 )
 
             if seconds == 30:
-                scan_active = remaining_secs > 12
+                scan_active = remaining_secs > 15
             elif seconds == 60:
-                scan_active = remaining_secs > 20
+                scan_active = remaining_secs > 26
             else:
-                scan_active = remaining_secs > 12
+                scan_active = remaining_secs > 15
 
             if scan_active:
                 st.markdown(
@@ -679,10 +696,10 @@ else:
                     <div style="animation: colorful-scanning-glow 1.5s infinite; border: 2.5px solid #00FFFF; padding: 20px; border-radius: 12px; text-align: center; margin: 10px 0;">
                         <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
                             <span class="radar-spinner-icon"></span>
-                            <span style="color: #00FFFF; font-size: 14px; font-weight: 900; letter-spacing: 1.5px; text-shadow: 0 0 10px #00FFFF;">STRICT 100-PERIOD DEEP SCAN ({mode_label})</span>
+                            <span style="color: #00FFFF; font-size: 14px; font-weight: 900; letter-spacing: 1.5px; text-shadow: 0 0 10px #00FFFF;">50-PERIOD HIGH-SPEED SCAN ({mode_label})</span>
                             <span class="blinking-red-light" style="margin:0;"></span>
                         </div>
-                        <div style="color: #00FF66; font-size: 11px; margin-top: 8px; font-weight: 900; text-shadow: 0 0 8px #00FF66;">⚡ NO GUESSWORK - ANALYZING DEEP HISTORY & ZIG-ZAG... ({remaining_secs}s left)</div>
+                        <div style="color: #00FF66; font-size: 11px; margin-top: 8px; font-weight: 900; text-shadow: 0 0 8px #00FF66;">⚡ PRECISION TIMING SYNC ACTIVE... ({remaining_secs}s left)</div>
                     </div>
                 ''',
                     unsafe_allow_html=True,
@@ -691,15 +708,14 @@ else:
                 st.markdown(
                     """
                     <div style="border: 1.5px dashed #333333; background: #000000; padding: 25px; border-radius: 12px; text-align: center; margin-top: 10px;">
-                        <div style="color: #666666; font-size: 13px; font-weight: 900; letter-spacing: 1px;">🔒 WAITING FOR DEEP SCAN COMPLETION</div>
-                        <div style="color: #444444; font-size: 11px; margin-top: 4px;">बिना पूरा स्कैन हुए कोई परिणाम नहीं दिखाया जाएगा...</div>
+                        <div style="color: #666666; font-size: 13px; font-weight: 900; letter-spacing: 1px;">🔒 WAITING FOR SCAN COMPLETION</div>
+                        <div style="color: #444444; font-size: 11px; margin-top: 4px;">अलार्म बजने के समय पर सटीक परिणाम दिखाया जाएगा...</div>
                     </div>
                 """,
                     unsafe_allow_html=True,
                 )
 
             elif not is_valid_confidence:
-                # Zero-guess protection triggered: do not show random result if confidence is low
                 st.markdown(
                     """
                     <div style="background: linear-gradient(135deg, #222200, #111100); border: 2px solid #FFD700; padding: 20px; border-radius: 12px; text-align: center; margin: 10px 0; box-shadow: 0 0 15px rgba(255,215,0,0.3);">
