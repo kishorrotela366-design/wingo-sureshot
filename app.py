@@ -6,7 +6,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 
 st.set_page_config(
-    page_title="VIP PRO SCANNER PANEL",
+    page_title="VIP BDG GAME HACK",
     page_icon="⚡",
     layout="centered",
     initial_sidebar_state="collapsed",
@@ -15,13 +15,30 @@ st.set_page_config(
 st.markdown(
     """
     <style>
-    .stApp { background-color: #000000 !important; color: #FFFFFF !important; }
+    .stApp { background-color: #000000 !important; color: #FFFFFF !important; overflow-x: hidden !important; }
     #MainMenu {visibility: hidden !important;}
     footer {visibility: hidden !important;}
     header {visibility: hidden !important;}
     .stAppDeployButton {display: none !important;}
     [data-testid="stStatusWidget"] {visibility: hidden !important;}
     
+    /* पंख लगाकर उड़ने वाले पैसे के बंडलों का एनिमेशन */
+    @keyframes fly-cash-up {
+        0% { transform: translateY(105vh) translateX(0px) rotate(0deg); opacity: 0; }
+        20% { opacity: 0.9; }
+        80% { opacity: 0.9; }
+        100% { transform: translateY(-10vh) translateX(40px) rotate(360deg); opacity: 0; }
+    }
+
+    .flying-money-item {
+        position: fixed;
+        bottom: -60px;
+        font-size: 26px;
+        animation: fly-cash-up 6s infinite linear;
+        z-index: 1;
+        pointer-events: none;
+    }
+
     @keyframes super-fast-blink {
         0% { opacity: 1; transform: scale(1.3); box-shadow: 0 0 12px #FF0055, 0 0 20px #FF0055; }
         50% { opacity: 0.1; transform: scale(0.7); box-shadow: 0 0 2px #FF0055; }
@@ -52,36 +69,55 @@ st.markdown(
         100% { border-color: #00FFFF; box-shadow: 0 0 35px #00FFFF, inset 0 0 20px #00FFFF; background: linear-gradient(135deg, #003333, #000f1a); }
     }
 
-    @keyframes vip-zipzap {
-        0% { color: #FFD700; text-shadow: 0 0 8px #FFD700, 0 0 15px #FF0055; }
-        50% { color: #00FFFF; text-shadow: 0 0 12px #00FFFF, 0 0 20px #00FF66; }
-        100% { color: #FFD700; text-shadow: 0 0 8px #FFD700, 0 0 15px #FF0055; }
+    /* VIP के लिए अलग चमक (गोल्डन और नियॉन पिंक) */
+    @keyframes vip-anim {
+        0% { color: #FFD700; text-shadow: 0 0 10px #FFD700, 0 0 20px #FF0055; transform: scale(1); }
+        50% { color: #FF0055; text-shadow: 0 0 15px #FF0055, 0 0 25px #FFD700; transform: scale(1.05); }
+        100% { color: #FFD700; text-shadow: 0 0 10px #FFD700, 0 0 20px #FF0055; transform: scale(1); }
     }
 
-    @keyframes pro-zipzap {
-        0% { color: #FF0055; text-shadow: 0 0 8px #FF0055, 0 0 15px #FFD700; }
-        50% { color: #00FF66; text-shadow: 0 0 12px #00FF66, 0 0 20px #00FFFF; }
-        100% { color: #FF0055; text-shadow: 0 0 8px #FF0055, 0 0 15px #FFD700; }
+    /* BDG के लिए अलग चमक (नियोन सियान और ग्रीन) */
+    @keyframes bdg-anim {
+        0% { color: #00FFFF; text-shadow: 0 0 10px #00FFFF, 0 0 20px #00FF66; transform: scale(1); }
+        50% { color: #00FF66; text-shadow: 0 0 15px #00FF66, 0 0 25px #00FFFF; transform: scale(1.05); }
+        100% { color: #00FFFF; text-shadow: 0 0 10px #00FFFF, 0 0 20px #00FF66; transform: scale(1); }
     }
 
-    @keyframes panel-zipzap {
-        0% { color: #00FFFF; text-shadow: 0 0 8px #00FFFF, 0 0 15px #00FF66; }
-        50% { color: #FFD700; text-shadow: 0 0 12px #FFD700, 0 0 20px #FF0055; }
-        100% { color: #00FFFF; text-shadow: 0 0 8px #00FFFF, 0 0 15px #00FF66; }
+    /* GAME के लिए अलग चमक (पर्पल और ब्राइट येलो) */
+    @keyframes game-anim {
+        0% { color: #c084fc; text-shadow: 0 0 10px #c084fc, 0 0 20px #FFD700; transform: scale(1); }
+        50% { color: #FFD700; text-shadow: 0 0 15px #FFD700, 0 0 25px #c084fc; transform: scale(1.05); }
+        100% { color: #c084fc; text-shadow: 0 0 10px #c084fc, 0 0 20px #FFD700; transform: scale(1); }
     }
 
-    .vip-word { animation: vip-zipzap 1.2s infinite ease-in-out; font-weight: 900; margin: 0 2px; }
-    .pro-word { animation: pro-zipzap 1.2s infinite ease-in-out; font-weight: 900; margin: 0 2px; }
-    .panel-word { animation: panel-zipzap 1.2s infinite ease-in-out; font-weight: 900; margin: 0 2px; }
+    /* HACK के लिए अलग चमक (लाल और इलेक्ट्रिक ब्लू) */
+    @keyframes hack-anim {
+        0% { color: #ff3333; text-shadow: 0 0 10px #ff3333, 0 0 20px #0088FF; transform: scale(1); }
+        50% { color: #0088FF; text-shadow: 0 0 15px #0088FF, 0 0 25px #ff3333; transform: scale(1.05); }
+        100% { color: #ff3333; text-shadow: 0 0 10px #ff3333, 0 0 20px #0088FF; transform: scale(1); }
+    }
+
+    .vip-word { animation: vip-anim 0.9s infinite ease-in-out; font-weight: 900; display: inline-block; margin: 0 3px; }
+    .bdg-word { animation: bdg-anim 0.9s infinite ease-in-out; font-weight: 900; display: inline-block; margin: 0 3px; }
+    .game-word { animation: game-anim 0.9s infinite ease-in-out; font-weight: 900; display: inline-block; margin: 0 3px; }
+    .hack-word { animation: hack-anim 0.9s infinite ease-in-out; font-weight: 900; display: inline-block; margin: 0 3px; }
 
     .vip-pro-heading {
         text-align: center;
-        font-size: 16px;
+        font-size: 15px;
         font-weight: 900;
         letter-spacing: 0.3px;
-        margin-bottom: 8px;
-        padding: 4px 0;
+        margin: 8px auto 14px auto;
+        padding: 6px 4px;
         white-space: nowrap;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        max-width: 100%;
+        overflow: hidden;
+        position: relative;
+        z-index: 2;
     }
 
     .blinking-red-light {
@@ -90,8 +126,9 @@ st.markdown(
         height: 8px !important;
         background-color: #FF0055 !important;
         border-radius: 50% !important;
-        margin-right: 4px !important;
-        animation: super-fast-blink 0.5s infinite linear !important;
+        margin: 0 6px !important;
+        animation: super-fast-blink 0.4s infinite linear !important;
+        flex-shrink: 0;
     }
 
     .blinking-green-light {
@@ -102,7 +139,7 @@ st.markdown(
         border-radius: 50% !important;
         margin-left: 4px !important;
         margin-right: 4px !important;
-        animation: super-fast-blink 0.5s infinite linear !important;
+        animation: super-fast-blink 0.4s infinite linear !important;
     }
 
     .radar-spinner-icon {
@@ -127,6 +164,8 @@ st.markdown(
         display: flex !important;
         align-items: center !important;
         justify-content: space-between !important;
+        position: relative;
+        z-index: 2;
     }
 
     .stTextInput input {
@@ -141,7 +180,7 @@ st.markdown(
     }
     .stTextInput > label { display: none !important; }
 
-    .main-card { background-color: #000000 !important; border: none !important; padding: 0px !important; margin-top: 4px !important; }
+    .main-card { background-color: #000000 !important; border: none !important; padding: 0px !important; margin-top: 4px !important; position: relative; z-index: 2; }
     .timer-box-large { color: #FF00FF !important; font-weight: 900 !important; font-size: 15px !important; text-shadow: 0 0 8px rgba(255,0,255,0.6) !important; display: flex !important; align-items: center !important; gap: 4px !important; }
     
     .super-banner-small { border: 2.5px solid #00FFFF !important; padding: 14px !important; border-radius: 10px !important; text-align: center !important; font-size: 15px !important; font-weight: 900 !important; margin: 10px 0 !important; color: #00FFFF !important; text-transform: uppercase !important; animation: super-win-glow-small 0.8s infinite !important; letter-spacing: 0.5px !important; }
@@ -149,9 +188,16 @@ st.markdown(
     
     .diagonal-container { display: flex !important; justify-content: space-between !important; align-items: center !important; gap: 8px !important; margin-top: 10px !important; }
     .result-item { flex: 1 !important; text-align: center !important; background: #1a0f00 !important; border: 2.5px solid #ffd700 !important; border-radius: 12px !important; padding: 12px 6px !important; box-shadow: 0 0 10px rgba(255,215,0,0.25) !important; }
-    .auth-card { background: #0b071a !important; border: 2px solid #FFD700 !important; border-radius: 12px !important; padding: 16px !important; box-shadow: 0 0 15px rgba(255,215,0,0.2) !important; margin-top: 10px !important; }
-    .admin-card { background: #110022 !important; border: 2px solid #00FF66 !important; border-radius: 12px !important; padding: 15px !important; margin-bottom: 15px !important; }
+    .auth-card { background: #0b071a !important; border: 2px solid #FFD700 !important; border-radius: 12px !important; padding: 16px !important; box-shadow: 0 0 15px rgba(255,215,0,0.2) !important; margin-top: 10px !important; position: relative; z-index: 2; }
+    .admin-card { background: #110022 !important; border: 2px solid #00FF66 !important; border-radius: 12px !important; padding: 15px !important; margin-bottom: 15px !important; position: relative; z-index: 2; }
     </style>
+
+    <!-- पंख लगाकर उड़ने वाले पैसे के बंडल (Flying Cash with Wings Effect) -->
+    <div class="flying-money-item" style="left: 8%; animation-delay: 0s;">💸🪽</div>
+    <div class="flying-money-item" style="left: 25%; animation-delay: 1.5s;">💵🪽</div>
+    <div class="flying-money-item" style="left: 50%; animation-delay: 3s;">💶🪽</div>
+    <div class="flying-money-item" style="left: 75%; animation-delay: 0.8s;">💸🪽</div>
+    <div class="flying-money-item" style="left: 90%; animation-delay: 2.2s;">💵🪽</div>
 """,
     unsafe_allow_html=True,
 )
@@ -265,18 +311,19 @@ if "selected_game_seconds" not in st.session_state:
 MASTER_MOBILE = "9011997944"
 MASTER_PASSWORD = "KISHOR@84"
 
-if not st.session_state.authenticated:
-    st.markdown(
-        """
-        <h2 class='vip-pro-heading'>
-            <span class='blinking-red-light'></span>
-            👑 <span class='vip-word'>VIP</span> <span class='pro-word'>PRO</span> <span class='panel-word'>PANEL</span> 👑
-            <span class='blinking-red-light' style='margin-left: 4px; margin-right: 0;'></span>
-        </h2>
-        """,
-        unsafe_allow_html=True,
-    )
+# अलग-अलग कलर्स और आगे-पीछे लाल बत्तियों के साथ वीआईपी हेडिंग
+st.markdown(
+    """
+    <div class='vip-pro-heading'>
+        <span class='blinking-red-light'></span>
+        👑 <span class='vip-word'>VIP</span> <span class='bdg-word'>BDG</span> <span class='game-word'>GAME</span> <span class='hack-word'>HACK</span> 👑
+        <span class='blinking-red-light'></span>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 
+if not st.session_state.authenticated:
     st.markdown("<div class='auth-card'>", unsafe_allow_html=True)
     st.markdown(
         "<h4 style='color: #00FFFF; text-align: center; font-weight: 900;"
