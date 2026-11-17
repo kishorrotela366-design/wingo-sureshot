@@ -43,7 +43,7 @@ st.markdown(
     @keyframes color-shift-2 {
         0% { color: #00FF66; text-shadow: 0 0 12px #00FF66; }
         33% { color: #FFD700; text-shadow: 0 0 15px #FFD700; }
-        66% { color: #FF0055; text-shadow: 0 0 12px #FF0055; }
+        66% { color: #FF0055; text-shadow: 0 0 12px #FFD700; }
         100% { color: #00FF66; text-shadow: 0 0 12px #00FF66; }
     }
     @keyframes color-shift-3 {
@@ -54,7 +54,7 @@ st.markdown(
     }
     @keyframes color-shift-4 {
         0% { color: #FF0055; text-shadow: 0 0 12px #FF0055; }
-        33% { color: #00FFFF; text-shadow: 0 0 15px #00FFFF; }
+        33% { color: #00FFFF; text-shadow: 0 0 15px #FF0055; }
         66% { color: #00FF66; text-shadow: 0 0 12px #00FF66; }
         100% { color: #FF0055; text-shadow: 0 0 12px #FF0055; }
     }
@@ -239,13 +239,7 @@ if not st.session_state.authenticated:
 
     st.markdown("<div class='auth-card'>", unsafe_allow_html=True)
     
-    # 1. ऊपर लॉगिन सेक्शन (मोबाइल नंबर और पासवर्ड)
-    st.markdown(
-        "<h4 style='color: #00FFFF; text-align: center; font-weight: 900;"
-        " font-size: 15px;'>रजिस्टर्ड मोबाइल नंबर और पासवर्ड से लॉगिन करें</h4>",
-        unsafe_allow_html=True,
-    )
-
+    # 1. ऊपर मुख्य लॉगिन सेक्शन (मोबाइल नंबर और पासवर्ड)
     login_mob = st.text_input(
         "📱 मोबाइल नंबर", placeholder="Enter mobile number", key="login_mob_input"
     )
@@ -288,30 +282,20 @@ if not st.session_state.authenticated:
                 elif user_data.get("status") == "PENDING":
                     st.warning("🔴 पेंडिंग: आपका UTR अभी ओनर द्वारा अप्रूव नहीं हुआ है!")
                 else:
-                    st.error("🚨 समय समाप्त: आपके 15 दिन का प्लान पूरी तरह खत्म हो चुका है! कृपया नीचे नया ₹2000 का भुगतान करके नया UTR दर्ज करें।")
+                    st.error("🚨 समय समाप्त: आपके 15 दिन का प्लान पूरी तरह खत्म हो चुका है! कृपया नीचे QR स्कैन करके नया UTR दर्ज करें।")
             else:
                 st.error("❌ गलत पासवर्ड! कृपया सही पासवर्ड दर्ज करें।")
         else:
-            st.error("❌ यह मोबाइल नंबर रजिस्टर्ड नहीं है! कृपया नया UTR दर्ज करें।")
+            st.error("❌ यह मोबाइल नंबर रजिस्टर्ड नहीं है! कृपया नीचे नया UTR दर्ज करें।")
 
     st.markdown("---")
     
-    # 3. नीचे QR कोड और UTR रिन्यूअल सेक्शन (अपनी पुरानी सही जगह पर)
+    # 3. नीचे QR कोड और 12 अंकों का UTR नंबर सबमिट करने वाला सेक्शन (बीच के फालतू खांचे हटा दिए गए हैं)
     st.markdown(
         "<h3 style='color: #FFD700; font-weight: 900; text-align: center;"
         " font-size: 16px; margin-bottom: 5px;'>⚡ 2000 ₹ QR स्कैन और नया UTR दर्ज"
         " करें</h3>",
         unsafe_allow_html=True,
-    )
-
-    renew_mob = st.text_input(
-        "📱 रजिस्टर्ड मोबाइल नंबर", placeholder="Enter mobile", key="renew_mob_input"
-    )
-    renew_pass = st.text_input(
-        "🔒 पासवर्ड",
-        type="password",
-        placeholder="Enter password",
-        key="renew_pass_input",
     )
 
     st.markdown(
@@ -326,6 +310,16 @@ if not st.session_state.authenticated:
         </div>
     """,
         unsafe_allow_html=True,
+    )
+
+    renew_mob = st.text_input(
+        "📱 रजिस्टर्ड मोबाइल नंबर", placeholder="Enter mobile", key="renew_mob_input"
+    )
+    renew_pass = st.text_input(
+        "🔒 पासवर्ड",
+        type="password",
+        placeholder="Enter password",
+        key="renew_pass_input",
     )
 
     renew_utr_input = st.text_input(
