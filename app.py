@@ -239,8 +239,64 @@ if not st.session_state.authenticated:
 
     st.markdown("<div class='auth-card'>", unsafe_allow_html=True)
     
-    # [बदलाव]: ऊपर वाला मोबाइल नंबर, पासवर्ड और लॉगिन वाला हिस्सा यहाँ से पूरी तरह हटा दिया गया है।
+    # 1. ऊपर लॉगिन सेक्शन (मोबाइल नंबर और पासवर्ड)
+    st.markdown(
+        "<h4 style='color: #00FFFF; text-align: center; font-weight: 900;"
+        " font-size: 15px;'>रजिस्टर्ड मोबाइल नंबर और पासवर्ड से लॉगिन करें</h4>",
+        unsafe_allow_html=True,
+    )
+
+    login_mob = st.text_input(
+        "📱 मोबाइल नंबर", placeholder="Enter mobile number", key="login_mob_input"
+    )
+    login_pass = st.text_input(
+        "🔒 पासवर्ड",
+        type="password",
+        placeholder="Enter password",
+        key="login_pass_input",
+    )
+
+    # 2. ठीक उसके नीचे लॉगिन बटन (सिस्टम)
+    if st.button(
+        "🚀 UNLOCK PANEL (LOGIN)", use_container_width=True, key="login_btn"
+    ):
+        latest_data = load_shared_data()
+        utr_requests = latest_data.get("utr_requests", {})
+
+        clean_l_mob = "".join(filter(str.isdigit, login_mob))
+
+        if clean_l_mob == MASTER_MOBILE and login_pass == MASTER_PASSWORD:
+            st.session_state.authenticated = True
+            st.session_state.is_owner = True
+            st.success("👑 ओनर एक्सेस सफल! कंट्रोल पैनल खुल रहा है...")
+            time.sleep(0.8)
+            st.rerun()
+
+        elif clean_l_mob in utr_requests:
+            user_data = utr_requests[clean_l_mob]
+            if user_data["password"] == login_pass:
+                exp_time = parse_expiry_date(user_data.get("expiry"))
+
+                if user_data.get("status") == "APPROVED" and datetime.now() < exp_time:
+                    st.session_state.authenticated = True
+                    st.session_state.is_owner = False
+                    st.success("🟢 Verified: आपका प्लान सक्रिय है, डैशबोर्ड खुल रहा है...")
+                    time.sleep(0.8)
+                    st.rerun()
+                elif user_data.get("status") == "REJECTED":
+                    st.error("🔴 रिजेक्टेड: आपका UTR ओनर द्वारा रिजेक्ट कर दिया गया है!")
+                elif user_data.get("status") == "PENDING":
+                    st.warning("🔴 पेंडिंग: आपका UTR अभी ओनर द्वारा अप्रूव नहीं हुआ है!")
+                else:
+                    st.error("🚨 समय समाप्त: आपके 15 दिन का प्लान पूरी तरह खत्म हो चुका है! कृपया नीचे नया ₹2000 का भुगतान करके नया UTR दर्ज करें।")
+            else:
+                st.error("❌ गलत पासवर्ड! कृपया सही पासवर्ड दर्ज करें।")
+        else:
+            st.error("❌ यह मोबाइल नंबर रजिस्टर्ड नहीं है! कृपया नया UTR दर्ज करें।")
+
+    st.markdown("---")
     
+    # 3. नीचे QR कोड और UTR रिन्यूअल सेक्शन (अपनी पुरानी सही जगह पर)
     st.markdown(
         "<h3 style='color: #FFD700; font-weight: 900; text-align: center;"
         " font-size: 16px; margin-bottom: 5px;'>⚡ 2000 ₹ QR स्कैन और नया UTR दर्ज"
@@ -278,46 +334,6 @@ if not st.session_state.authenticated:
         max_chars=12,
         key="renew_utr_input",
     )
-
-    # [बदलाव]: नीचे मोबाइल नंबर और पासवर्ड इनपुट के बाद यहाँ लॉगिन / अनलॉक बटन (सिस्टम) जोड़ दिया गया है।
-    if st.button(
-        "🚀 UNLOCK PANEL (LOGIN)", use_container_width=True, key="login_btn"
-    ):
-        latest_data = load_shared_data()
-        utr_requests = latest_data.get("utr_requests", {})
-
-        clean_l_mob = "".join(filter(str.isdigit, renew_mob))
-
-        if clean_l_mob == MASTER_MOBILE and renew_pass == MASTER_PASSWORD:
-            st.session_state.authenticated = True
-            st.session_state.is_owner = True
-            st.success("👑 ओनर एक्सेस सफल! कंट्रोल पैनल खुल रहा है...")
-            time.sleep(0.8)
-            st.rerun()
-
-        elif clean_l_mob in utr_requests:
-            user_data = utr_requests[clean_l_mob]
-            if user_data["password"] == renew_pass:
-                exp_time = parse_expiry_date(user_data.get("expiry"))
-
-                if user_data.get("status") == "APPROVED" and datetime.now() < exp_time:
-                    st.session_state.authenticated = True
-                    st.session_state.is_owner = False
-                    st.success("🟢 Verified: आपका प्लान सक्रिय है, डैशबोर्ड खुल रहा है...")
-                    time.sleep(0.8)
-                    st.rerun()
-                elif user_data.get("status") == "REJECTED":
-                    st.error("🔴 रिजेक्टेड: आपका UTR ओनर द्वारा रिजेक्ट कर दिया गया है!")
-                elif user_data.get("status") == "PENDING":
-                    st.warning("🔴 पेंडिंग: आपका UTR अभी ओनर द्वारा अप्रूव नहीं हुआ है!")
-                else:
-                    st.error("🚨 समय समाप्त: आपके 15 दिन का प्लान पूरी तरह खत्म हो चुका है! कृपया नया UTR सबमिट करें।")
-            else:
-                st.error("❌ गलत पासवर्ड! कृपया सही पासवर्ड दर्ज करें।")
-        else:
-            st.error("❌ यह मोबाइल नंबर रजिस्टर्ड नहीं है! कृपया नया UTR दर्ज करें।")
-
-    st.markdown("---")
 
     if st.button(
         "🔄 नया UTR सबमिट करें (RENEW REQUEST)",
