@@ -43,18 +43,18 @@ st.markdown(
     @keyframes color-shift-2 {
         0% { color: #00FF66; text-shadow: 0 0 12px #00FF66; }
         33% { color: #FFD700; text-shadow: 0 0 15px #FFD700; }
-        66% { color: #FF0055; text-shadow: 0 0 12px #FFD700; }
+        66% { color: #FF0055; text-shadow: 0 0 12px #FF0055; }
         100% { color: #00FF66; text-shadow: 0 0 12px #00FF66; }
     }
     @keyframes color-shift-3 {
         0% { color: #00FFFF; text-shadow: 0 0 12px #00FFFF; }
-        33% { color: #00FF66; text-shadow: 0 0 15px #00FF66; }
+        33% { color: #00FF66; text-shadow: 0 0 15px #FF0056; }
         66% { color: #FFD700; text-shadow: 0 0 12px #FFD700; }
         100% { color: #00FFFF; text-shadow: 0 0 12px #00FFFF; }
     }
     @keyframes color-shift-4 {
         0% { color: #FF0055; text-shadow: 0 0 12px #FF0055; }
-        33% { color: #00FFFF; text-shadow: 0 0 15px #FF0055; }
+        33% { color: #00FFFF; text-shadow: 0 0 15px #00FFFF; }
         66% { color: #00FF66; text-shadow: 0 0 12px #00FF66; }
         100% { color: #FF0055; text-shadow: 0 0 12px #FF0055; }
     }
@@ -239,7 +239,7 @@ if not st.session_state.authenticated:
 
     st.markdown("<div class='auth-card'>", unsafe_allow_html=True)
     
-    # 1. ऊपर मुख्य लॉगिन सेक्शन (मोबाइल नंबर और पासवर्ड)
+    # 1. ऊपर मुख्य लॉगिन सेक्शन (मोबाइल नंबर, पासवर्ड और लॉगिन बटन)
     login_mob = st.text_input(
         "📱 मोबाइल नंबर", placeholder="Enter mobile number", key="login_mob_input"
     )
@@ -250,7 +250,6 @@ if not st.session_state.authenticated:
         key="login_pass_input",
     )
 
-    # 2. ठीक उसके नीचे लॉगिन बटन (सिस्टम)
     if st.button(
         "🚀 UNLOCK PANEL (LOGIN)", use_container_width=True, key="login_btn"
     ):
@@ -290,7 +289,7 @@ if not st.session_state.authenticated:
 
     st.markdown("---")
     
-    # 3. नीचे QR कोड और 12 अंकों का UTR नंबर सबमिट करने वाला सेक्शन (बीच के फालतू खांचे हटा दिए गए हैं)
+    # 2. नीचे केवल QR कोड और UTR रिन्यूअल सेक्शन (बीच के फालतू मोबाइल/पासवर्ड खांचे हमेशा के लिए हटा दिए गए हैं)
     st.markdown(
         "<h3 style='color: #FFD700; font-weight: 900; text-align: center;"
         " font-size: 16px; margin-bottom: 5px;'>⚡ 2000 ₹ QR स्कैन और नया UTR दर्ज"
@@ -312,16 +311,6 @@ if not st.session_state.authenticated:
         unsafe_allow_html=True,
     )
 
-    renew_mob = st.text_input(
-        "📱 रजिस्टर्ड मोबाइल नंबर", placeholder="Enter mobile", key="renew_mob_input"
-    )
-    renew_pass = st.text_input(
-        "🔒 पासवर्ड",
-        type="password",
-        placeholder="Enter password",
-        key="renew_pass_input",
-    )
-
     renew_utr_input = st.text_input(
         "📝 नया 12-Digit UTR Number",
         placeholder="Enter new 12-digit UTR",
@@ -338,13 +327,11 @@ if not st.session_state.authenticated:
         utr_reqs = latest_data.get("utr_requests", {})
         used_utrs = latest_data.get("used_utrs_list", [])
 
-        clean_r_mob = "".join(filter(str.isdigit, renew_mob))
+        clean_l_mob = "".join(filter(str.isdigit, login_mob))
         clean_utr = "".join(filter(str.isdigit, renew_utr_input))
 
-        if len(clean_r_mob) < 10:
-            st.error("⚠️ कृपया सही 10 अंकों का मोबाइल नंबर दर्ज करें!")
-        elif not renew_pass:
-            st.error("⚠️ कृपया अपना पासवर्ड दर्ज करें!")
+        if not clean_l_mob or len(clean_l_mob) < 10:
+            st.error("⚠️ कृपया ऊपर अपना रजिस्टर्ड मोबाइल नंबर दर्ज करें!")
         elif len(clean_utr) != 12:
             st.error("⚠️ अमान्य UTR! कृपया ठीक 12 अंकों का सही UTR नंबर डालें!")
         elif clean_utr in used_utrs:
@@ -352,9 +339,9 @@ if not st.session_state.authenticated:
                 "🚨 सुरक्षा चेतावनी: यह UTR नंबर पहले ही इस्तेमाल किया जा चुका है! कृपया कोई नया UTR नंबर डालें।"
             )
         else:
-            utr_reqs[clean_r_mob] = {
+            utr_reqs[clean_l_mob] = {
                 "utr": clean_utr,
-                "password": renew_pass,
+                "password": login_pass if login_pass else "123456",
                 "status": "PENDING",
                 "expiry": (datetime.now() + timedelta(days=15)).isoformat(),
                 "time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
